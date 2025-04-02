@@ -14,5 +14,16 @@ namespace XYZFrameWork.Base
         protected virtual void FindUI()
         {
         }
+
+        private void Awake()
+        {
+            FindUI();
+            OnAwake();
+        }
+
+        protected virtual void OnAwake()
+        {
+            
+        }
     }
 }

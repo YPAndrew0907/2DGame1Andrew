@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace StateMachine
+namespace MachineNode
 {
-    public class BattleStart : IStateNode
+    public class GameEnd : IStateNode
     {
         public string StateID { get; }
 
-        public void OnCreate(BattleStateMachine machine)
+        public void OnCreate(IMachineMaster inClassName)
         {
-            
+
         }
 
         public IEnumerator OnEnterAsync(StateTransitionContext context, CancellationToken ct)

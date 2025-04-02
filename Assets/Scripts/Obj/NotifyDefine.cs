@@ -5,22 +5,20 @@
         private static int _eventId;
         public static  int eventId => _eventId++;
     }
+
+    #region 流程
+    public static readonly int GAME_START = EventDefine.eventId;
     
-    #region 地图
-    public static readonly int MAP_ENTER = EventDefine.eventId;
+    public static readonly int ROUND_START = EventDefine.eventId;
+    public static readonly int ROUND_END = EventDefine.eventId;
+    public static readonly int ROUND_NEXT = EventDefine.eventId;
+    
+    public static readonly int GAME_END = EventDefine.eventId;
     #endregion
     
-    
-    #region 战斗
-    public static readonly int BATTLE_START = EventDefine.eventId;
-    
-    public static readonly int BATTLE_ROUND_START = EventDefine.eventId;
-    public static readonly int BATTLE_ROUND_END = EventDefine.eventId;
-    public static readonly int BATTLE_NEXT_ROUND = EventDefine.eventId;
-    public static readonly int BATTLE_QUEUE_CHANGE = EventDefine.eventId;
-    public static readonly int BATTLE_END = EventDefine.eventId;
+    #region 特殊时刻
+    public static readonly int SHUFFLE = EventDefine.eventId;
     
     #endregion
-    
     
 }

@@ -4,38 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
 
-    #region 核心接口定义
-    /// <summary>
-    /// 增强型状态节点接口
-    /// </summary>
-    public interface IStateNode
-    {
-        /// <summary>
-        /// 状态唯一标识（建议使用枚举或字符串常量）
-        /// </summary>
-        string StateID { get; }
-
-        void OnCreate(BattleStateMachine machine);
-        /// <summary>
-        /// 异步进入状态
-        /// </summary>
-        IEnumerator OnEnterAsync(StateTransitionContext context, CancellationToken ct);
-
-        /// <summary>
-        /// 异步退出状态
-        /// </summary>
-        IEnumerator OnExitAsync(StateTransitionContext context, CancellationToken ct);
-
-        /// <summary>
-        /// 状态更新
-        /// </summary>
-        void OnUpdate(float deltaTime);
-
-        /// <summary>
-        /// 获取所有合法转移路径
-        /// </summary>
-        IEnumerable<StateTransition> GetTransitions();
-    }
 
     /// <summary>
     /// 状态转移上下文
@@ -78,12 +46,13 @@ using System.Threading;
         /// </summary>
         public int Priority;
     }
-    #endregion
 
     #region 状态机核心实现
 
-    public class BattleStateMachine : MonoBehaviour
+    public class XStateMachine
     {
+        private  MonoBehaviour _owner;
+        
         // 运行时数据
         private Dictionary<string, IStateNode> _states = new Dictionary<string, IStateNode>();
         private IStateNode _currentState;
@@ -93,13 +62,18 @@ using System.Threading;
 
         // 调试配置
         [Header("Debug Settings")]
-        [SerializeField] private bool _enableDebugLog = true;
-        [SerializeField] private float _minTransitionInterval = 0.1f;
+        private bool _enableDebugLog = true; 
+        private float _minTransitionInterval = 0.1f;
         private float _lastTransitionTime;
 
         // 公开属性
         public string CurrentStateID => _currentState?.StateID ?? "NONE";
         public IReadOnlyList<string> StateHistory => _stateHistory.AsReadOnly();
+
+        public XStateMachine(MonoBehaviour owner)
+        {
+            _owner = owner;
+        }
 
         /// <summary>
         /// 注册状态节点
@@ -130,7 +104,7 @@ using System.Threading;
                 return;
             }
 
-            _ = StartCoroutine(TransitionRoutine(initialStateID, null));
+            _ = _owner.StartCoroutine(TransitionRoutine(initialStateID, null));
         }
 
         /// <summary>
@@ -153,7 +127,7 @@ using System.Threading;
                 return;
             }
 
-            _activeCoroutine = StartCoroutine(TransitionRoutine(targetStateID, payload));
+            _activeCoroutine = _owner.StartCoroutine(TransitionRoutine(targetStateID, payload));
         }
 
         private IEnumerator TransitionRoutine(string targetStateID, object payload)
@@ -243,13 +217,13 @@ using System.Threading;
         {
             _cts?.Cancel();
             _cts?.Dispose();
-            StopAllCoroutines();
+            _owner.StopAllCoroutines();
         }
 
         private void LogDebug(string message)
         {
             if (_enableDebugLog)
-                Debug.Log($"[BattleStateMachine] {message}");
+                Debug.Log($"[XStateMachine] {message}");
         }
 
         #region 调试工具

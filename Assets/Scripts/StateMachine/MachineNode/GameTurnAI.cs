@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace StateMachine.BattleMachineNode
+namespace MachineNode
 {
-    public class BattleTurnAI : IStateNode
+    public class GameTurnAI : IStateNode
     {
         public string StateID { get; }
 
-        public void OnCreate(BattleStateMachine machine)
+        public void OnCreate(IMachineMaster machine)
         {
             
         }

@@ -41,34 +41,46 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Base\BaseSingle.cs" />
-    <Compile Include="Assets\Scripts\Base\BaseSystem.cs" />
-    <Compile Include="Assets\Scripts\Base\BattleProperty.cs" />
-    <Compile Include="Assets\Scripts\Base\BindableData.cs" />
-    <Compile Include="Assets\Scripts\Base\BaseAutoMonoSingle.cs" />
-    <Compile Include="Assets\Scripts\Base\BaseWindow.cs" />
-    <Compile Include="Assets\Scripts\Base\BaseModel.cs" />
-    <Compile Include="Assets\Scripts\Base\BaseViewMono.cs" />
+    <Compile Include="Assets\Scripts\Cfg\UICfg.cs" />
+    <Compile Include="Assets\Scripts\Obj\NotifyMsg.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMonoSingleton.cs" />
-    <Compile Include="Assets\Scripts\Base\BaseMono.cs" />
-    <Compile Include="Assets\Scripts\Mgr\CoroutineMgr.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnNext.cs" />
+    <Compile Include="Assets\Scripts\Base\BattleProperty.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnStart.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameEnd.cs" />
+    <Compile Include="Assets\Scripts\Mgr\UIMgr.cs" />
     <Compile Include="Assets\Scripts\Mgr\NotifyParamMgr.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleMachineNode\BattleTurnAI.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseSingle.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseModel.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseWindow.cs" />
+    <Compile Include="Assets\Scripts\Base\BindableData.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnAI.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameStart.cs" />
+    <Compile Include="Assets\Scripts\Cfg\LogTxt.cs" />
+    <Compile Include="Assets\Scripts\Mgr\NotifyMgr.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseSystem.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnEnd.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseAutoMonoSingle.cs" />
     <Compile Include="Assets\Scripts\Mgr\RoundMgr.cs" />
     <Compile Include="Assets\Scripts\Mgr\ModelMgr.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleMachineNode\BattleTurnEnd.cs" />
-    <Compile Include="Assets\Scripts\Mgr\UIMgr.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleStateMachine.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleMachineNode\BattleTurnNext.cs" />
-    <Compile Include="Assets\Scripts\Mgr\NotifyMgr.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleMachineNode\BattleTurnStart.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleMachineNode\BattleEnd.cs" />
-    <Compile Include="Assets\Scripts\StateMachine\BattleMachineNode\BattleStart.cs" />
-    <Compile Include="Assets\Scripts\Cfg\LogTxt.cs" />
+    <Compile Include="Assets\Scripts\Mgr\CoroutineMgr.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyParam.cs" />
-    <Compile Include="Assets\Scripts\Cfg\UICfg.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyDefine.cs" />
-    <Compile Include="Assets\Scripts\Obj\NotifyMsg.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\XStateMachine.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseViewMono.cs" />
+    <Compile Include="Assets\Scripts\Base\BaseMono.cs" />
+    <Compile Include="Assets\Scripts\UI\GameSceneUI.cs" />
+    <Compile Include="Assets\Scripts\Cfg\GameCfg.cs" />
+    <Compile Include="Assets\Scripts\UI\GameUIState.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\BaseGameUIState.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\IStateNode.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\GuessOrRememberState.cs" />
+    <Compile Include="Assets\Scripts\Obj\CardValue.cs" />
+    <Compile Include="Assets\Scripts\Mgr\CardMgr.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\IAttachNode.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\XAttachMachine.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnDeal.cs" />
+    <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnRequestCard.cs" />
     <Reference Include="UnityEngine">
       <HintPath>P:\UnityEditor\2021.3.44f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
@@ -774,14 +786,14 @@
     <Reference Include="Unity.Rider.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.InternalAPIEditorBridge.001">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.InternalAPIEditorBridge.001.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Extras.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InternalAPIEditorBridge.001">
+      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.InternalAPIEditorBridge.001.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
@@ -833,25 +845,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="UniTask.Addressables.csproj">
-      <Project>{7751c00a-93fc-aca7-ef4d-7aad6c4d0638}</Project>
-      <Name>UniTask.Addressables</Name>
-    </ProjectReference>
     <ProjectReference Include="UniTask.DOTween.csproj">
       <Project>{44c13e6d-5bc1-0cab-3d6c-9d42a919c20a}</Project>
       <Name>UniTask.DOTween</Name>
     </ProjectReference>
-    <ProjectReference Include="UniTask.csproj">
-      <Project>{250ab150-bd69-7002-4192-e6f02307faea}</Project>
-      <Name>UniTask</Name>
+    <ProjectReference Include="UniTask.Linq.csproj">
+      <Project>{3ada58d4-9b03-7a32-ac2a-95df7dd14a15}</Project>
+      <Name>UniTask.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="UniTask.TextMeshPro.csproj">
       <Project>{9f9b94b2-1dcd-22d0-d836-994c60fe0f14}</Project>
       <Name>UniTask.TextMeshPro</Name>
     </ProjectReference>
-    <ProjectReference Include="UniTask.Linq.csproj">
-      <Project>{3ada58d4-9b03-7a32-ac2a-95df7dd14a15}</Project>
-      <Name>UniTask.Linq</Name>
+    <ProjectReference Include="UniTask.csproj">
+      <Project>{250ab150-bd69-7002-4192-e6f02307faea}</Project>
+      <Name>UniTask</Name>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.Addressables.csproj">
+      <Project>{7751c00a-93fc-aca7-ef4d-7aad6c4d0638}</Project>
+      <Name>UniTask.Addressables</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
