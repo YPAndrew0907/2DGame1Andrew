@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UnityEngine.SceneManagement;
 
 namespace MachineNode
 {
+    // 关卡结束
     public class GameEnd : IStateNode
     {
         public string StateID { get; }
@@ -20,7 +22,10 @@ namespace MachineNode
 
         public IEnumerator OnExitAsync(StateTransitionContext context, CancellationToken ct)
         {
-            throw new System.NotImplementedException();
+            
+            
+            SceneManager.LoadScene("Scenes/Home", LoadSceneMode.Single);
+            yield return null;
         }
 
         public void OnUpdate(float deltaTime)

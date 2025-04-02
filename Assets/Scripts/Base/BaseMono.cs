@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace XYZFrameWork.Base
+namespace Base
 {
     public class BaseMono : MonoBehaviour
     {

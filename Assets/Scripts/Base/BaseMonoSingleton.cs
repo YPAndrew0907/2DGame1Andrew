@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Base;
 using UnityEngine;
 
 namespace XYZFrameWork.Base
