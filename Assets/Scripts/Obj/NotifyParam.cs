@@ -76,7 +76,7 @@
             _values = null;
         }
 
-        public void SetValue(object value)
+        public void SetValue(Object value)
         {
             _value = value;
             _init = true;

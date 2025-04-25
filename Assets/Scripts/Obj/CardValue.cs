@@ -2,22 +2,25 @@
 {
     public enum CardValue
     {
-        A,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,J,Q,K
+        A = 0, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, J, Q, K, Back
     }
+
     public enum CardSuit
     {
         Spade,Heart,Club,Diamond
     }
     
-    public class Card
+    public class CardObj
     {
-        private readonly CardValue _value;
-        private readonly CardSuit  _suit;
+        public readonly CardValue Value;
+        public readonly CardSuit  Suit;
+        public bool IsFaceUp; // 是否正面朝上
 
-        public Card(CardValue value, CardSuit suit)
+        public CardObj(CardValue value, CardSuit suit)
         {
-            _value     = value;
-            _suit = suit;
+            Value     = value;
+            Suit = suit;
+            IsFaceUp = false;
         }
     }
 }

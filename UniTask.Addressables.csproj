@@ -334,6 +334,24 @@
     <Reference Include="unityplastic">
       <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.collab-proxy@2.5.1\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
+    <Reference Include="DemiLib">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DemiLib\Core\DemiLib.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenProEditor">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTweenPro\Editor\DOTweenProEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenEditor">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTween\Editor\DOTweenEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="DemiEditor">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DemiLib\Core\Editor\DemiEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTween\DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenPro">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTweenPro\DOTweenPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>P:\UnityEditor\2021.3.44f1c1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>

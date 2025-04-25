@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Obj;
 using XYZFrameWork.Base;
 using Random = UnityEngine.Random;
@@ -7,10 +8,10 @@ namespace Mgr
 {
     public class CardMgr: BaseSingle<CardMgr>
     {
-        public readonly Card[] Cards = new Card[52];
+        public readonly CardObj[] Cards = new CardObj[52]; // 所有的牌
         
-        public  Card[] AICards     { get; private set; }
-        public  Card[] PlayerCards { get; private set; }
+        public CardObj[] AICards     { get; private set; }
+        public CardObj[] PlayerCards { get; private set; }
 
         private int _curCardIndex = 0;
         
@@ -23,7 +24,7 @@ namespace Mgr
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    Cards[i + j] = new Card((CardValue)i, (CardSuit)j);
+                    Cards[i + j] = new CardObj((CardValue)i, (CardSuit)j);
                 }
             }
 
@@ -51,7 +52,7 @@ namespace Mgr
 
             _curCardIndex = 0;
             // CurFirst = Math.min ++;
-            NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE);
+            NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_START,Cards);
         }
         
         // 发牌

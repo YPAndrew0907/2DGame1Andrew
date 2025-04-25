@@ -52,11 +52,13 @@ namespace AttachMachine
         /// </summary>
         public void StartMachine(string initialStateID)
         {
-            if (!_nodes.ContainsKey(initialStateID))
+            if (_nodes.TryGetValue(initialStateID,out var initialState))
             {
-                Debug.LogError($"依附节点 {initialStateID} 未注册");
+                initialState.OnExitAsync(null);
+                return;
             }
             
+            Debug.LogError($"依附节点 {initialStateID} 未注册");
         }
         
         private void Update()

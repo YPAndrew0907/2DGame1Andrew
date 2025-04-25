@@ -13,6 +13,7 @@ public interface IStateNode
     string StateID { get; }
 
     void OnCreate(IMachineMaster machine);
+
     /// <summary>
     /// 异步进入状态
     /// </summary>
@@ -27,14 +28,9 @@ public interface IStateNode
     /// 状态更新
     /// </summary>
     void OnUpdate(float deltaTime);
-
-    /// <summary>
-    /// 获取所有合法转移路径
-    /// </summary>
-    IEnumerable<StateTransition> GetTransitions();
 }
 
 public interface IMachineMaster
 {
-    
+
 }

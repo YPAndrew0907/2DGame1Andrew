@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using Base;
+using Mgr;
 using UnityEngine.SceneManagement;
 using XYZFrameWork.Base;
 namespace UI
@@ -24,9 +25,32 @@ namespace UI
 		//AUTO-GENERATE-END
 
 
-		private void Start()
+		private void OnEnable()
+		{
+			_btnQuit.onClick.AddListener(OnQuitClick);
+			_btnStart.onClick.AddListener(OnStartClick);
+			_txtLevel.text = "Level: " + DataMgr.Instance.CurLevel;
+		}
+
+		private void OnDisable()
+		{
+			_btnQuit.onClick.RemoveListener(OnQuitClick);
+			_btnStart.onClick.RemoveListener(OnStartClick);
+		}
+
+		public void OnStartClick()
 		{
 			SceneManager.LoadScene("Game", LoadSceneMode.Single);
 		}
+
+		public void OnQuitClick()
+		{
+			#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+			#else 
+			Application.Quit();
+			#endif
+		}
+		
     }
 }

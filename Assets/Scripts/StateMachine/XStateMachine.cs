@@ -117,10 +117,7 @@ using System.Threading;
                 Debug.LogError("无效的目标状态ID");
                 return;
             }
-
-            if (!CanTransition(targetStateID))
-                return;
-
+            
             if (_activeCoroutine != null)
             {
                 Debug.LogWarning($"正在从 {CurrentStateID} 向 {targetStateID} 转移中");
@@ -181,26 +178,6 @@ using System.Threading;
             _lastTransitionTime = Time.time;
         }
 
-        private bool CanTransition(string targetStateID)
-        {
-            // 当前无状态时允许任何转移
-            if (_currentState == null)
-                return true;
-
-            // 检查目标状态是否在合法转移列表中
-            var validTransitions = _currentState.GetTransitions();
-            foreach (var transition in validTransitions)
-            {
-                if (transition.TargetStateID == targetStateID)
-                {
-                    return transition.ConditionChecker == null || transition.ConditionChecker();
-                }
-            }
-
-            Debug.LogWarning($"非法状态转移：{_currentState.StateID} -> {targetStateID}");
-            return false;
-        }
-
         private void Update()
         {
             try
@@ -225,41 +202,5 @@ using System.Threading;
             if (_enableDebugLog)
                 Debug.Log($"[XStateMachine] {message}");
         }
-
-        #region 调试工具
-        /// <summary>
-        /// 打印状态转移图
-        /// </summary>
-        public void PrintStateGraph()
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("=== 状态转移图 ===");
-
-            foreach (var state in _states.Values)
-            {
-                sb.Append($"{state.StateID} => ");
-                var transitions = state.GetTransitions();
-                foreach (var t in transitions)
-                {
-                    sb.Append($"[{t.TargetStateID}(P:{t.Priority})] ");
-                }
-                sb.AppendLine();
-            }
-
-            Debug.Log(sb.ToString());
-        }
-
-        /// <summary>
-        /// 回滚到上一个状态（调试用）
-        /// </summary>
-        public void RollbackState()
-        {
-            if (_stateHistory.Count < 2)
-                return;
-
-            var targetState = _stateHistory[_stateHistory.Count - 2];
-            RequestTransition(targetState);
-        }
-        #endregion
     }
     #endregion

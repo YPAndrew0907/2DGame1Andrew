@@ -2,25 +2,31 @@
 using System.Collections.Generic;
 using System.Threading;
 using Obj;
+using UI;
 using UnityEngine;
 
-namespace UI
+namespace AttachMachine
 {
     public class GuessOrRememberState : BaseGameUIState
     {
         public override string                    StateID => "GuessOrRememberState";
+        public const    string                    GuessOrRememberStateID = "GuessOrRememberState";
         public          SkillType                 Skill   { get; set; }
         private         IGuessOrRememberUIElement _uiElement;
         
         public List<CardValue> RememberCards { get; set; }
             
-        public override void OnCreate(IMachineMaster machine)
+        public override void OnCreate(GameSceneAiui sceneAiui)
         {
-            Machine = machine as GameMachine;
-            Skill = SkillType.None;
+            
+            if (sceneAiui is IGuessOrRememberUIElement uiElement)
+            {
+                _uiElement = uiElement;
+            }
+            Skill   = SkillType.None;
         }
 
-        public override IEnumerator OnEnterAsync(StateTransitionContext context, CancellationToken ct)
+        public override IEnumerator OnEnterAsync(object payload)
         {
             if (Skill == SkillType.None)
             {
@@ -33,7 +39,7 @@ namespace UI
             yield break;
         }
 
-        public override IEnumerator OnExitAsync(StateTransitionContext context, CancellationToken ct)
+        public override IEnumerator OnExitAsync(object payload)
         {
             
             yield break;

@@ -27,10 +27,5 @@ namespace MachineNode
         {
             throw new System.NotImplementedException();
         }
-
-        public IEnumerable<StateTransition> GetTransitions()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

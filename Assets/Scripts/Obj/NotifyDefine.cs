@@ -17,7 +17,8 @@
     #endregion
     
     #region 特殊时刻
-    public static readonly int SHUFFLE = EventDefine.eventId;
+    public static readonly int SHUFFLE_START = EventDefine.eventId;
+    public static readonly int SHUFFLE_END = EventDefine.eventId;
     
     #endregion
     
