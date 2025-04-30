@@ -1,9 +1,11 @@
 ﻿using System.Collections;
+using System.Runtime.Serialization;
 using System.Threading;
 using Mgr;
 using TMPro;
 using UI;
 using UnityEngine;
+using XYZFrameWork;
 
 namespace AttachMachine
 {
@@ -14,11 +16,11 @@ namespace AttachMachine
         public  override string StateID => StateIDStr;
         public const string      StateIDStr = "ShuffleUIState";
 
-        public override void OnCreate(GameSceneAiui sceneAiui)
+        public override void OnCreate(GameSceneUI sceneUI)
         {
-            if (sceneAiui is IShuffleUIState uiState)
+            if (sceneUI is IShuffleUIState uiState)
             {
-                _shuffleUIState = sceneAiui as IShuffleUIState;
+                _shuffleUIState = sceneUI as IShuffleUIState;
             }
             
         }
@@ -26,12 +28,17 @@ namespace AttachMachine
         public override IEnumerator OnEnterAsync(object payload)
         {
             NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_START);
-            yield break;
+            CardMgr.Instance.Shuffle();
+            var dealRole = DataMgr.Instance.CurShuffleRole;
+
+            yield return _shuffleUIState.ShuffleUI.StartShuffle(dealRole);
+            yield return OnExitAsync(null);
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
             NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_END);
+            DataMgr.Instance.NextDealRole();
             yield break;
         }
 
@@ -39,10 +46,9 @@ namespace AttachMachine
         {
             
         }
-        
     }
     public interface IShuffleUIState
     {
-        public GameObject ShuffleUI { get;  }
+        public ShuffleUI ShuffleUI { get;  }
     }
 }

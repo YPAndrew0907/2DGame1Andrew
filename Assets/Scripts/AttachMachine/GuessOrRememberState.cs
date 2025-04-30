@@ -11,26 +11,25 @@ namespace AttachMachine
     {
         public override string                    StateID => "GuessOrRememberState";
         public const    string                    GuessOrRememberStateID = "GuessOrRememberState";
-        public          SkillType                 Skill   { get; set; }
+        public          SkillType                 Skill   { get; private set; }
         private         IGuessOrRememberUIElement _uiElement;
         
         public List<CardValue> RememberCards { get; set; }
             
-        public override void OnCreate(GameSceneAiui sceneAiui)
+        public override void OnCreate(GameSceneUI sceneUI)
         {
-            
-            if (sceneAiui is IGuessOrRememberUIElement uiElement)
+            if (sceneUI is IGuessOrRememberUIElement uiElement)
             {
                 _uiElement = uiElement;
             }
-            Skill   = SkillType.None;
+            Skill         = SkillType.None;
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
             if (Skill == SkillType.None)
             {
-                _uiElement.GuessOrRememberPanel?.SetActive(true);
+                _uiElement.GuessOrRememberPanel.gameObject.SetActive(true);
             }
             else if (Skill == SkillType.Guess)
             {
@@ -61,13 +60,7 @@ namespace AttachMachine
     public interface IGuessOrRememberUIElement
     {
         // 选择哪个技能
-        public GameObject GuessOrRememberPanel { get; }
-        
-        // 猜测面板
-        public GameObject GuessPanel { get; }
-        
-        // 记忆面板 每次自己洗牌时随机记住某几张牌的具体位置
-        public GameObject RememberPanel { get; }
+        public GuessOrRememberUI GuessOrRememberPanel { get; }
     }
     
 }

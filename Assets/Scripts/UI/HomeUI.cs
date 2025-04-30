@@ -24,7 +24,6 @@ namespace UI
 		
 		//AUTO-GENERATE-END
 
-
 		private void OnEnable()
 		{
 			_btnQuit.onClick.AddListener(OnQuitClick);

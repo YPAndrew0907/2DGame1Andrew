@@ -17,9 +17,12 @@
     #endregion
     
     #region 特殊时刻
-    public static readonly int SHUFFLE_START = EventDefine.eventId;
-    public static readonly int SHUFFLE_END = EventDefine.eventId;
-    
+    public static readonly int SHUFFLE_START           = EventDefine.eventId;
+    public static readonly int SHUFFLE_END             = EventDefine.eventId;
+    public static readonly int SKILL_CARD_SELECT_START = EventDefine.eventId;
+    public static readonly int SKILL_CARD_SELECT_END   = EventDefine.eventId;
+    public static readonly int GAME_READY              = EventDefine.eventId;
+
     #endregion
-    
+
 }

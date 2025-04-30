@@ -15,7 +15,7 @@ namespace AttachMachine
         /// </summary>
         string StateID { get; }
 
-        void OnCreate(GameSceneAiui sceneAiui);
+        void OnCreate(GameSceneUI sceneUI);
         /// <summary>
         /// 异步进入状态
         /// </summary>

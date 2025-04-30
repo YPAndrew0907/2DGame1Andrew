@@ -8,17 +8,17 @@ using UnityEngine;
 namespace AttachMachine
 {
     // 发牌状态（AI）
-    public class DealCardAIUIState : BaseGameUIState
+    public class DealCardUIState : BaseGameUIState
     {
-        IDealCardAIUIState      _dealCardAIuiState;
+        IDealCardUIState      _dealCardUIState;
         public  override string StateID => StateIDStr;
-        public const     string StateIDStr = "DealCardAIUIState";
+        public const     string StateIDStr = "DealCardUIState";
 
-        public override void OnCreate(GameSceneAiui sceneAiui)
+        public override void OnCreate(GameSceneUI sceneUI)
         {
-            if (sceneAiui is IShuffleUIState uiState)
+            if (sceneUI is IShuffleUIState uiState)
             {
-                _dealCardAIuiState = sceneAiui as IDealCardAIUIState;
+                _dealCardUIState = sceneUI as IDealCardUIState;
             }
             
         }
@@ -41,8 +41,9 @@ namespace AttachMachine
         }
         
     }
-    public interface IDealCardAIUIState
+    public interface IDealCardUIState
     {
-        public GameObject DealCardAIUI { get;  }
+        public DealCardAIUI DealCardAIUI { get;  }
+        public DealCardPlayerUI DealCardPlayerUI { get;}
     }
 }

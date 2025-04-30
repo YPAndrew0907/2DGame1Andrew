@@ -9,10 +9,9 @@ using DG.Tweening;
 using Mgr;
 using Obj;
 using XYZFrameWork;
-
 namespace UI
 {
-    public class ShuffleHeap : BaseViewMono
+    public class ShuffleUI : BaseViewMono
     {
 		//AUTO-GENERATE
 		private CardHeap _monoCards2;
@@ -26,15 +25,13 @@ namespace UI
 		//AUTO-GENERATE-END
 		
 		public CardObj[]    remaindCard;
-
 		public CanvasGroup shuffleAni;
-
 		public void Start()
 		{
 			NotifyMgr.Instance.RegisterEvent(NotifyDefine.SHUFFLE_START, OnShuffle);
 			NotifyMgr.Instance.RegisterEvent(NotifyDefine.SHUFFLE_END, OnShuffleEnd);
 		}
-
+		
 		private void OnShuffle(NotifyMsg notifyMsg)
 		{
 			if (notifyMsg.Param is CustomParam param)
@@ -46,12 +43,10 @@ namespace UI
 				}
 			}
 		}
-
 		private void OnShuffleEnd(NotifyMsg notifyMsg)
 		{
 			CoroutineMgr.Instance.StartCoroutine(CorShuffleEnd());
 		}
-
 		IEnumerator CorShuffleStart()
 		{
 			shuffleAni.alpha = 0;
@@ -60,13 +55,32 @@ namespace UI
 			yield return new WaitForSeconds(0.32f);
 			_monoCards2.SetCard(remaindCard);
 		}
-
 		IEnumerator CorShuffleEnd()
 		{
 			yield return new WaitForSeconds(0.1f);
 			shuffleAni.DOFade(0, 0.3f);
 			yield return new WaitForSeconds(0.32f);
 			shuffleAni.blocksRaycasts = false;
+		}
+
+		// 需要外部调用的部分。
+		public IEnumerator StartShuffle(int shuffleRole)
+		{
+			switch (shuffleRole)
+			{
+				case -1:   
+					print("由对方洗牌");
+					break;
+				case 1:  
+					print("由玩家洗牌");
+					break;
+				default: 
+					print("洗牌人员初始化错误");
+					break;
+			}
+			var allCards = CardMgr.Instance.Cards;
+			_monoCards2.SetCard(allCards);		
+			yield break;
 		}
     }
 }
