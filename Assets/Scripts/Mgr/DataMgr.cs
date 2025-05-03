@@ -18,8 +18,8 @@ namespace Mgr
             _curLevel = PlayerPrefs.GetInt(CurLevelStr, 1);
             _money = PlayerPrefs.GetInt(MoneyStr, 200);
             NotifyMgr.Register(NotifyDefine.GAME_END,SaveGameInfo);
-            NotifyMgr.Register(NotifyDefine.GAME_READY,SaveGameInfo);
-            
+            NotifyMgr.Register(NotifyDefine.GAME_END,Reset);
+            NotifyMgr.Register(NotifyDefine.GAME_READY,LoadLevelInfo);
         }
 
         
@@ -54,6 +54,10 @@ namespace Mgr
         public int ShuffleRole    { get; private set; }
         // 当前发牌人员。 -1 表示需要随机。
         public int CurShuffleRole { get; private set; } = -1;
+        public int TableLevel     { get; private set; } = 0;
+        public int CurMinBetMoney    => 5 * TableLevel;
+        public int CurMaxBetMoney    => 50 * TableLevel;
+        public int AIChip         { get; private set; } = 0;
 
         public IReadOnlyList<PlayerSkill> CurSkills { get; private set; }
 
@@ -79,10 +83,24 @@ namespace Mgr
 
                 MaxSkillCardCount = levelData.MaxCard;
                 BossChip = levelData.BossChip;
+                TableLevel = levelData.TableLevel;
                 
+                ParseAIData(levelData);
                 ParseCarryCard(levelData);
                 ParsePlayerSkill(levelData);
                 ParseSpecialCondition(levelData);
+            }
+        }
+
+        private void ParseAIData(LevelData levelData)
+        {
+            if (levelData.BossChip>100)
+            {
+                AIChip = (int)levelData.BossChip;
+            }
+            else
+            {
+                AIChip = (int)(levelData.BossChip * Money);
             }
         }
 
@@ -101,7 +119,7 @@ namespace Mgr
                             ShuffleRole    = -1;
                             CurShuffleRole = -1;
                             break;
-                        default:                           throw new ArgumentOutOfRangeException();
+                        default: throw new ArgumentOutOfRangeException();
                     }
                 }
                 
@@ -144,10 +162,27 @@ namespace Mgr
         }
 
         #endregion
+        
+        #region 技能相关
+
+        public PlayerSkill GuessOrRemember = PlayerSkill.None;
+        #endregion
 
         #region 数据变更方法
 
-        public void NextDealRole()
+        // 关卡结束重置
+        public void Reset(NotifyMsg notifyMsg)
+        {
+            MaxSkillCardCount = 0;
+            BossChip          = 0;
+            ShuffleRole       = 0;
+            CurShuffleRole    = -1;
+            CurSkills         = null;
+            CurLevelInitCard  = null;
+            GuessOrRemember   = PlayerSkill.None;
+        }
+
+        public void NextShuffleRole()
         {
             if (ShuffleRole != 0)
             {

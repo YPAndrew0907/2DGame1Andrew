@@ -1,22 +1,24 @@
 using XYZFrameWork.Base;
+using TMPro;
 using UnityEngine.UI;
+using UnityEngine;
 using AttachMachine;
 using Base;
-using TMPro;
-using UnityEngine;
 namespace UI
 {
 	public class GameSceneUI : BaseViewMono, IMachineMaster,
-	                           IGuessOrRememberUIElement,
+	                           ISkillUI,
 	                           IShuffleUIState,
 	                           IDealCardUIState,
-	                           IBetUIState,
+	                           IBetUI,
 	                           IPlayerInfoUIState,
-	                           ISkillCardsUIState
+	                           IGameEndUIState
 	{
 		//AUTO-GENERATE
 		private BetUI             _monoBetPanel;
+		private GameWinUI         _monoWinUI;
 		private ShuffleUI         _monoShuffleUI;
+		private GameLossUI        _monoLossUI;
 		private LevelInfoUI       _monoLevelInfo;
 		private DealCardAIUI      _monoDealCardAI;
 		private SkillCardsUI      _monoSkillCards;
@@ -26,7 +28,9 @@ namespace UI
 		protected override void FindUI()
 		{
 			_monoBetPanel        = transform.Find("mono_BetPanel").GetComponent<UI.BetUI>();
+			_monoWinUI           = transform.Find("mono_WinUI").GetComponent<UI.GameWinUI>();
 			_monoShuffleUI       = transform.Find("mono_ShuffleUI").GetComponent<UI.ShuffleUI>();
+			_monoLossUI          = transform.Find("mono_LossUI").GetComponent<UI.GameLossUI>();
 			_monoLevelInfo       = transform.Find("mono_levelInfo").GetComponent<UI.LevelInfoUI>();
 			_monoDealCardAI      = transform.Find("mono_DealCardAI").GetComponent<UI.DealCardAIUI>();
 			_monoSkillCards      = transform.Find("mono_SkillCards").GetComponent<UI.SkillCardsUI>();
@@ -42,10 +46,12 @@ namespace UI
 		{
 			base.OnAwake();
 			_xAttachMachine = new XAttachMachine(this);
-			_xAttachMachine.RegisterState(new GuessOrRememberState());
+			_xAttachMachine.RegisterState(new SkillUIState());
 			_xAttachMachine.RegisterState(new ShuffleUIState());
 			_xAttachMachine.RegisterState(new DealCardUIState());
-			_xAttachMachine.StartMachine(ShuffleUIState.StateIDStr);
+
+			// 进入押注状态
+			_xAttachMachine.StartMachine(BetUIState.StateIDStr);
 		}
 
         #region UI元素
@@ -57,7 +63,11 @@ namespace UI
 		public BetUI             BetUI                => _monoBetPanel;
 		public LevelInfoUI       LevelInfoUI          => _monoLevelInfo;
 		public SkillCardsUI      SkillCardsUI         => _monoSkillCards;
+		public GameLossUI        GameLossUI           => _monoLossUI;
+		public GameWinUI         GameWinUI            => _monoWinUI;
 
         #endregion
+
+		public XAttachMachine AttachMachine => _xAttachMachine;
 	}
 }

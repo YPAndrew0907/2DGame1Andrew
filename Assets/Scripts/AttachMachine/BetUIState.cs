@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using Mgr;
+using Obj;
 using UI;
 using UnityEngine;
 
@@ -8,28 +10,43 @@ namespace AttachMachine
     {
         public override string      StateID => StateIDStr;
         public const string         StateIDStr = "BetUIState";
+        private IBetUI              _betUI;
         public override void        OnCreate(GameSceneUI sceneUI)
         {
-            throw new System.NotImplementedException();
+            _betUI = sceneUI;
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            throw new System.NotImplementedException();
+            if (EnoughMoney())
+            {
+                _betUI.BetUI.ShowBetUI();
+            }
+            else
+            {
+                yield return OnExitAsync(null);
+            }
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            throw new System.NotImplementedException();
+            _betUI.AttachMachine.StartMachine(GameEndUIState.CurStateID);
+            yield break;
         }
 
         public override void        OnUpdate(float deltaTime)
         {
-            throw new System.NotImplementedException();
+            
+        }
+        
+        private bool EnoughMoney()
+        {
+            var money= DataMgr.Instance.Money;
+            return money >= DataMgr.Instance.CurMinBetMoney;
         }
     }
 
-    public interface IBetUIState
+    public interface IBetUI:IBaseAttachUI
     {
         public BetUI BetUI { get; }
     }

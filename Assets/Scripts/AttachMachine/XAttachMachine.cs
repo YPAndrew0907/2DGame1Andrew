@@ -54,11 +54,11 @@ namespace AttachMachine
         {
             if (_nodes.TryGetValue(initialStateID,out var initialState))
             {
-                initialState.OnExitAsync(null);
+                initialState.OnEnterAsync(null);
                 return;
             }
             
-            Debug.LogError($"依附节点 {initialStateID} 未注册");
+            Debug.LogError($"节点 {initialStateID} 未注册");
         }
         
         private void Update()

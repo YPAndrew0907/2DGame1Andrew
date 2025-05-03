@@ -41,12 +41,15 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenProShortcuts.cs" />
+    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTextMeshPro.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnRequestCard.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\XAttachMachine.cs" />
     <Compile Include="Assets\Scripts\Cfg\UICfg.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyMsg.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardDecks\SimpleCurvedCardDeck.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMonoSingleton.cs" />
+    <Compile Include="Assets\Scripts\Obj\ESpecialCondition.cs" />
     <Compile Include="Assets\Scripts\StateMachine\IStateNode.cs" />
     <Compile Include="Assets\Scripts\Cfg\GameCfg.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnNext.cs" />
@@ -56,63 +59,63 @@
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnStart.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameEnd.cs" />
     <Compile Include="Assets\Scripts\Mgr\ResMgr.cs" />
-    <Compile Include="Assets\Scripts\UI\GameUIState.cs" />
-    <Compile Include="Assets\Scripts\UI\CardItem.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\PlayerInfoUIState.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\IBaseAttachUI.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics2D.cs" />
+    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenAnimation.cs" />
+    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTk2d.cs" />
+    <Compile Include="Assets\Scripts\UI\Common\CardItem.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardDecks\PieCardDeck.cs" />
-    <Compile Include="Assets\Scripts\AttachMachine\GuessOrRememberState.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\BetUIState.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\SkillUIState.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillCardsUI.cs" />
     <Compile Include="Assets\Scripts\Mgr\NotifyParamMgr.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnDeal.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\Scripts\Base\BaseSingle.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Scripts\UI\GameSceneUI.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardDecks\CardDeckInterface.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\ShuffleUIState.cs" />
     <Compile Include="Assets\Scripts\Mgr\DataMgr.cs" />
+    <Compile Include="Assets\Scripts\UI\LevelInfoUI.cs" />
     <Compile Include="Assets\Scripts\Obj\CardValue.cs" />
     <Compile Include="Assets\Scripts\Base\BindableData.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnAI.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameStart.cs" />
+    <Compile Include="Assets\Scripts\UI\ShuffleUI.cs" />
     <Compile Include="Assets\Scripts\Cfg\LogTxt.cs" />
     <Compile Include="Assets\Scripts\Mgr\NotifyMgr.cs" />
     <Compile Include="Assets\Scripts\Mgr\GameCtrl.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardTooltip.cs" />
-    <Compile Include="Assets\Scripts\UI\CardHeap.cs" />
-    <Compile Include="Assets\Scripts\Cfg\LevelData.cs" />
+    <Compile Include="Assets\Scripts\UI\Common\CardHeap.cs" />
+    <Compile Include="Assets\Scripts\Obj\LevelData.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\IAttachNode.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnEnd.cs" />
     <Compile Include="Assets\Scripts\Base\BaseAutoMonoSingle.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\DealCardUIState.cs" />
     <Compile Include="Assets\Scripts\Mgr\RoundMgr.cs" />
     <Compile Include="Assets\Scripts\Mgr\CoroutineMgr.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\BaseGameUIState.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillUI\GuessOrRememberUI.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
     <Compile Include="Assets\CardSelect\Scripts\Sample.cs" />
+    <Compile Include="Assets\Scripts\UI\DealCardPlayerUI.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
     <Compile Include="Assets\Scripts\UI\HomeUI.cs" />
+    <Compile Include="Assets\Scripts\UI\BetUI.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyParam.cs" />
+    <Compile Include="Assets\Scripts\UI\DealCardAIUI.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyDefine.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
     <Compile Include="Assets\Scripts\StateMachine\XStateMachine.cs" />
     <Compile Include="Assets\Scripts\Base\BaseViewMono.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMono.cs" />
-    <Compile Include="Assets\Scripts\UI\ShuffleUI.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics2D.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenAnimation.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTextMeshPro.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTk2d.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenProShortcuts.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
-    <Compile Include="Assets\Scripts\AttachMachine\DealCardUIState.cs" />
-    <Compile Include="Assets\Scripts\AttachMachine\BetUIState.cs" />
-    <Compile Include="Assets\Scripts\UI\BetUI.cs" />
-    <Compile Include="Assets\Scripts\UI\GuessOrRememberUI.cs" />
-    <Compile Include="Assets\Scripts\UI\DealCardAIUI.cs" />
-    <Compile Include="Assets\Scripts\UI\DealCardPlayerUI.cs" />
-    <Compile Include="Assets\Scripts\UI\LevelInfoUI.cs" />
-    <Compile Include="Assets\Scripts\AttachMachine\PlayerInfoUIState.cs" />
-    <Compile Include="Assets\Scripts\UI\SkillCardsUI.cs" />
-    <Compile Include="Assets\Scripts\AttachMachine\SkillCardsUIState.cs" />
-    <Compile Include="Assets\Scripts\Obj\ESpecialCondition.cs" />
+    <Compile Include="Assets\Scripts\Obj\EnumObj.cs" />
+    <Compile Include="Assets\Scripts\UI\GameWinUI.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\GameEndUIState.cs" />
+    <Compile Include="Assets\Scripts\UI\GameLossUI.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
@@ -389,20 +392,20 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>P:\UnityEditor\2021.3.44f1c1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.visualscripting@1.9.4\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="DemiLib">
       <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DemiLib\Core\DemiLib.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTween\DOTween.dll</HintPath>
     </Reference>
-    <Reference Include="DOTweenPro">
-      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTweenPro\DOTweenPro.dll</HintPath>
+    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
+      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.visualscripting@1.9.4\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenPro">
+      <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTweenPro\DOTweenPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>P:\UnityEditor\2021.3.44f1c1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

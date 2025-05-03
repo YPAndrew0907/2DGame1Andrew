@@ -41,8 +41,9 @@ namespace AttachMachine
         }
         
     }
-    public interface IDealCardUIState
+    public interface IDealCardUIState:IBaseAttachUI
     {
+        public ShuffleUI ShuffleUI { get;  }
         public DealCardAIUI DealCardAIUI { get;  }
         public DealCardPlayerUI DealCardPlayerUI { get;}
     }

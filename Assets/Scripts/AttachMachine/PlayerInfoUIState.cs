@@ -4,12 +4,13 @@ using UI;
 
 namespace AttachMachine
 {
-    public class PlayerInfoUIState: BaseGameUIState
+    public class PlayerInfoUIState : BaseGameUIState
     {
         private         IPlayerInfoUIState _playerInfoUI;
         public override string             StateID => StateIDStr;
         public const    string             StateIDStr = "PlayerInfoUIState";
-        public override void        OnCreate(GameSceneUI sceneUI)
+
+        public override void OnCreate(GameSceneUI sceneUI)
         {
             if (sceneUI is IPlayerInfoUIState playerInfoUI)
             {
@@ -30,13 +31,13 @@ namespace AttachMachine
             yield break;
         }
 
-        public override void        OnUpdate(float deltaTime)
+        public override void OnUpdate(float deltaTime)
         {
             
         }
     }
 
-    public interface IPlayerInfoUIState
+    public interface IPlayerInfoUIState : IBaseAttachUI
     {
         public LevelInfoUI LevelInfoUI { get; }
     }

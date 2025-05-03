@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Cfg
+namespace Obj
 {
     public class LevelData : ScriptableObject
     {
@@ -19,14 +18,16 @@ namespace Cfg
     public enum PlayerSkill
     {
         None,
+        NoInit= 1 << 1,
         // 集中观察 或 记忆 
-        WatchAndRemember,
-        // 神速伸缩
-        SwitchCard,
+        Guess = 1 << 2,
+        Remember = 1 << 3,
+        GuessOrRemember = Guess | Remember | NoInit,
+        // 神速伸缩。开局带一张牌，自己回合可以进行更换。
+        SwitchCard = 1 << 4,
         // 自然谎言
-        Lie,
+        Lie = 1 << 5,
         // 灵活之指
-        HideCard,
-        
+        StealAndInsert = 1 << 6,
     }
 }

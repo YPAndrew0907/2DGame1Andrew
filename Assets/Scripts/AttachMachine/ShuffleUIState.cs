@@ -20,7 +20,7 @@ namespace AttachMachine
         {
             if (sceneUI is IShuffleUIState uiState)
             {
-                _shuffleUIState = sceneUI as IShuffleUIState;
+                _shuffleUIState = sceneUI;
             }
             
         }
@@ -38,8 +38,9 @@ namespace AttachMachine
         public override IEnumerator OnExitAsync(object payload)
         {
             NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_END);
-            DataMgr.Instance.NextDealRole();
-            yield break;
+            DataMgr.Instance.NextShuffleRole();
+            yield return null;
+            _shuffleUIState.AttachMachine.StartMachine(DealCardUIState.StateIDStr);
         }
 
         public override void OnUpdate(float deltaTime)
@@ -47,7 +48,7 @@ namespace AttachMachine
             
         }
     }
-    public interface IShuffleUIState
+    public interface IShuffleUIState:IBaseAttachUI
     {
         public ShuffleUI ShuffleUI { get;  }
     }
