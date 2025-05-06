@@ -1,11 +1,6 @@
 ﻿using System.Collections;
-using System.Runtime.Serialization;
-using System.Threading;
 using Mgr;
-using TMPro;
 using UI;
-using UnityEngine;
-using XYZFrameWork;
 
 namespace AttachMachine
 {
@@ -16,13 +11,12 @@ namespace AttachMachine
         public  override string StateID => StateIDStr;
         public const string      StateIDStr = "ShuffleUIState";
 
-        public override void OnCreate(GameSceneUI sceneUI)
+        public override void OnCreate(IMachineMaster sceneUI)
         {
             if (sceneUI is IShuffleUIState uiState)
             {
-                _shuffleUIState = sceneUI;
+                _shuffleUIState = uiState;
             }
-            
         }
         
         public override IEnumerator OnEnterAsync(object payload)

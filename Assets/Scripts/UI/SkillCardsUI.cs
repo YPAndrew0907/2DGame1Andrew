@@ -14,13 +14,13 @@ namespace UI
     {
 		//AUTO-GENERATE
 		private Button _btnCheckSelect;
-		private CardHeap _monoSkillCardheap;
+		private CardHeap _monoSkillCardHeap;
 		private CardHeap _monoTotalCardHeap;
 
 		protected override void FindUI()
 		{
 			   _btnCheckSelect = transform.Find("btn_CheckSelect").GetComponent<UnityEngine.UI.Button>();
-			_monoSkillCardheap = transform.Find("mono_SkillCardheap").GetComponent<UI.CardHeap>();
+			_monoSkillCardHeap = transform.Find("mono_SkillCardHeap").GetComponent<UI.CardHeap>();
 			_monoTotalCardHeap = transform.Find("mono_TotalCardHeap").GetComponent<UI.CardHeap>();
 		}
 
@@ -34,9 +34,13 @@ namespace UI
 		private List<CardObj> termSelectCard;
 		
 		public int SkillCardCount => _skillCardList.Count;
+		
+		
+		
 		public void InitSkillCard(int maxCardCount)
 		{
 			MaxCardCount = maxCardCount;
+			_monoTotalCardHeap.gameObject.SetActive(false);
 			if (maxCardCount<=0)
 			{
 				gameObject.SetActive(false);
@@ -48,7 +52,7 @@ namespace UI
 		}
 		public void RefreshSkillCard()
 		{
-			_monoSkillCardheap.SetCard(_skillCardList.ToArray());
+			_monoSkillCardHeap.SetCard(_skillCardList.ToArray());
 		}
 		
 		public bool AddSkillCard(CardObj[] cardObj)
@@ -83,13 +87,12 @@ namespace UI
 				 }
 			 }
 		}
-
 		public void CheckSelect()
 		{
 			if (termSelectCard.Count > 0)
 			{
-				_monoSkillCardheap.ClearCard();
-				_monoSkillCardheap.AddCard(termSelectCard.ToArray());
+				_monoSkillCardHeap.ClearCard();
+				_monoSkillCardHeap.AddCard(termSelectCard.ToArray());
 				_monoTotalCardHeap.gameObject.SetActive(false);
 				NotifyMgr.Instance.SendEvent(NotifyDefine.SKILL_CARD_SELECT_END, termSelectCard.ToArray());
 			}

@@ -11,21 +11,19 @@ namespace AttachMachine
         public override string      StateID => StateIDStr;
         public const string         StateIDStr = "BetUIState";
         private IBetUI              _betUI;
-        public override void        OnCreate(GameSceneUI sceneUI)
+        public override void   OnCreate(IMachineMaster sceneUI)
         {
-            _betUI = sceneUI;
+            if (sceneUI is IBetUI ui)
+            {
+                _betUI = ui;
+            }
+            _betUI.BetUI.InitBetUI();
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            if (EnoughMoney())
-            {
-                _betUI.BetUI.ShowBetUI();
-            }
-            else
-            {
-                yield return OnExitAsync(null);
-            }
+            _betUI.BetUI.ShowBetUI();
+            yield break;
         }
 
         public override IEnumerator OnExitAsync(object payload)

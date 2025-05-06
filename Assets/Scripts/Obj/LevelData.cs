@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Obj
 {
@@ -13,8 +14,27 @@ namespace Obj
         public string SpecialCondition { get; private set; }
 
         public LevelData() { }
-    }
+        
+        public static Dictionary<PlayerSkill, string> SpecialConditionDesc = new()
+        {
+            { Obj.PlayerSkill.GuessOrRemember ,"集中观察/记忆"},
+            { Obj.PlayerSkill.SwitchCard,"灵活之指"},
+            { Obj.PlayerSkill.StealAndInsert,"灵活之指"},
+            { Obj.PlayerSkill.Lie,"自然谎言"},
+        };
 
+        public static List<string> GetSkillDesc(IEnumerable<PlayerSkill> skills)
+        {
+            var str = new List<string>();
+            foreach (var skill in skills)
+            {
+                str.Add(SpecialConditionDesc[skill]);
+            }
+            return str;
+        }
+    }
+    
+   
     public enum PlayerSkill
     {
         None,

@@ -26,6 +26,7 @@
     public static readonly int SHUFFLE_END             = EventDefine.eventId;
     public static readonly int SKILL_CARD_SELECT_START = EventDefine.eventId;
     public static readonly int SKILL_CARD_SELECT_END   = EventDefine.eventId;
+    public static readonly int MONEY_CHANGE            = EventDefine.eventId;
 
     #endregion
 }

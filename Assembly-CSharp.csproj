@@ -51,6 +51,7 @@
     <Compile Include="Assets\Scripts\Base\BaseMonoSingleton.cs" />
     <Compile Include="Assets\Scripts\Obj\ESpecialCondition.cs" />
     <Compile Include="Assets\Scripts\StateMachine\IStateNode.cs" />
+    <Compile Include="Assets\Scripts\UI\GameLossUI.cs" />
     <Compile Include="Assets\Scripts\Cfg\GameCfg.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnNext.cs" />
     <Compile Include="Assets\CardSelect\Scripts\Card.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Assets\Scripts\AttachMachine\ShuffleUIState.cs" />
     <Compile Include="Assets\Scripts\Mgr\DataMgr.cs" />
     <Compile Include="Assets\Scripts\UI\LevelInfoUI.cs" />
+    <Compile Include="Assets\Scripts\Obj\EnumObj.cs" />
     <Compile Include="Assets\Scripts\Obj\CardValue.cs" />
     <Compile Include="Assets\Scripts\Base\BindableData.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnAI.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Assets\CardSelect\Scripts\CardTooltip.cs" />
     <Compile Include="Assets\Scripts\UI\Common\CardHeap.cs" />
     <Compile Include="Assets\Scripts\Obj\LevelData.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\GameEndUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\IAttachNode.cs" />
     <Compile Include="Assets\Scripts\StateMachine\MachineNode\GameTurnEnd.cs" />
     <Compile Include="Assets\Scripts\Base\BaseAutoMonoSingle.cs" />
@@ -109,13 +112,13 @@
     <Compile Include="Assets\Scripts\UI\DealCardAIUI.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyDefine.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
+    <Compile Include="Assets\Scripts\UI\GameWinUI.cs" />
     <Compile Include="Assets\Scripts\StateMachine\XStateMachine.cs" />
     <Compile Include="Assets\Scripts\Base\BaseViewMono.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMono.cs" />
-    <Compile Include="Assets\Scripts\Obj\EnumObj.cs" />
-    <Compile Include="Assets\Scripts\UI\GameWinUI.cs" />
-    <Compile Include="Assets\Scripts\AttachMachine\GameEndUIState.cs" />
-    <Compile Include="Assets\Scripts\UI\GameLossUI.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\HomeUIState.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\AskCardUIState.cs" />
+    <Compile Include="Assets\Scripts\UI\AskCardUI.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using Cfg;
 using Mgr;
 using Obj;
 using UI;
-using UnityEngine;
-
 namespace AttachMachine
 {
     public class SkillUIState : BaseGameUIState
@@ -15,15 +11,15 @@ namespace AttachMachine
         public override string    StateID => SkillUIStateID;
         public const    string    SkillUIStateID = "SkillUIState";
         public          List<PlayerSkill> Skill   { get; private set; }
-        private         ISkillUI  _ui;
+        private         ISkillUI  _skillUI;
         
-        public override void OnCreate(GameSceneUI sceneUI)
+        public override void OnCreate(IMachineMaster sceneUI)
         {
             if (sceneUI is ISkillUI uiElement)
             {
-                _ui = uiElement;
+                _skillUI = uiElement;
                 
-                _ui.SkillCardsUI.InitSkillCard(0);
+                _skillUI.SkillCardsUI.InitSkillCard(0);
                 List<PlayerSkill> skillList = new List<PlayerSkill>();
                 var skills = DataMgr.Instance.CurSkills;
                 foreach (var skill in skills)
@@ -48,9 +44,9 @@ namespace AttachMachine
         {
             if (Skill.Contains(PlayerSkill.GuessOrRemember))
             {
-                if (_ui.GuessOrRememberPanel.CheckSelect())
+                if (_skillUI.GuessOrRememberPanel.CheckSelect())
                 {
-                    _ui.GuessOrRememberPanel.ShowSelectPanel();
+                    _skillUI.GuessOrRememberPanel.ShowSelectPanel();
                 }
             }
             yield break;
@@ -74,7 +70,7 @@ namespace AttachMachine
 
         public void SelectCards()
         {
-            _ui.SkillCardsUI.InitSkillCard(0);
+            _skillUI.SkillCardsUI.InitSkillCard(0);
             NotifyMgr.Instance.SendEvent(NotifyDefine.SKILL_CARD_SELECT_START);
         }
     }

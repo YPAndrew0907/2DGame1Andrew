@@ -39,6 +39,7 @@ namespace UI
 
 		public void OnStartClick()
 		{
+			NotifyMgr.Instance.SendEvent(NotifyDefine.GAME_READY, DataMgr.Instance.CurLevel);
 			SceneManager.LoadScene("Game", LoadSceneMode.Single);
 		}
 

@@ -12,9 +12,15 @@ namespace AttachMachine
         public override string      StateID => CurStateID;
         public const string         CurStateID = "GameEndUIState";
         private IGameEndUIState     _gameEndUI;
-        public override void        OnCreate(GameSceneUI sceneUI)
+        public override void        OnCreate(IMachineMaster sceneUI)
         {
-            _gameEndUI = sceneUI;
+            if (sceneUI is IGameEndUIState ui)
+            {
+                _gameEndUI = ui;
+                _gameEndUI.GameLossUI.Init();
+                _gameEndUI.GameWinUI.Init();
+            }
+            
         }
 
         public override IEnumerator OnEnterAsync(object payload)

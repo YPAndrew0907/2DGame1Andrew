@@ -17,6 +17,10 @@ namespace UI
 
 
 		//AUTO-GENERATE-END
-        
+
+		public void Init()
+		{
+			gameObject.SetActive(false);
+		}
     }
 }

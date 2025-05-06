@@ -7,20 +7,22 @@ using UnityEngine;
 
 namespace AttachMachine
 {
-    // 发牌状态（AI）
+    // 发牌状态
     public class DealCardUIState : BaseGameUIState
     {
         IDealCardUIState      _dealCardUIState;
         public  override string StateID => StateIDStr;
         public const     string StateIDStr = "DealCardUIState";
 
-        public override void OnCreate(GameSceneUI sceneUI)
+        public override void OnCreate(IMachineMaster sceneUI)
         {
-            if (sceneUI is IShuffleUIState uiState)
+            if ( sceneUI is IDealCardUIState ui)
             {
-                _dealCardUIState = sceneUI as IDealCardUIState;
+                _dealCardUIState = ui;
             }
-            
+
+            _dealCardUIState.DealCardPlayerUI.Init();
+            _dealCardUIState.DealCardAIUI.Init();
         }
         
         public override IEnumerator OnEnterAsync(object payload)

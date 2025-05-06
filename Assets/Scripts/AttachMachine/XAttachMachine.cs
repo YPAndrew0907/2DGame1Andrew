@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
+using UI;
+
 namespace AttachMachine
 {
     public class XAttachMachine
     {
-        private  MonoBehaviour _owner;
+        private  IMachineMaster _owner;
         
         // 运行时数据
         private          Dictionary<string, IAttachNode> _nodes = new Dictionary<string, IAttachNode>();
@@ -18,13 +20,11 @@ namespace AttachMachine
         // 调试配置
         [Header("Debug Settings")]
         private bool _enableDebugLog = true; 
-        private float _minTransitionInterval = 0.1f;
-        private float _lastTransitionTime;
 
         // 公开属性
         public IReadOnlyList<string> StateHistory => _stateHistory.AsReadOnly();
 
-        public XAttachMachine(MonoBehaviour owner)
+        public XAttachMachine(IMachineMaster owner)
         {
             _owner = owner;
         }
@@ -43,6 +43,7 @@ namespace AttachMachine
                 return;
             }
 
+            state.OnCreate(_owner);
             _nodes.Add(stateID, state);
             LogDebug($"注册状态：{stateID}");
         }
@@ -81,5 +82,9 @@ namespace AttachMachine
             if (_enableDebugLog)
                 Debug.Log($"[XStateMachine] {message}");
         }
+    }
+    public interface IMachineMaster
+    {
+        void StopAllCoroutines();
     }
 }

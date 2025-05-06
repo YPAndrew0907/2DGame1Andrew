@@ -15,7 +15,7 @@ namespace AttachMachine
         /// </summary>
         string StateID { get; }
 
-        void OnCreate(GameSceneUI sceneUI);
+        void OnCreate(IMachineMaster sceneUI);
         /// <summary>
         /// 异步进入状态
         /// </summary>
@@ -30,9 +30,5 @@ namespace AttachMachine
         /// 状态更新
         /// </summary>
         public void OnUpdate(float deltaTime);
-    }
-    public interface IMachineMaster
-    {
-    
     }
 }

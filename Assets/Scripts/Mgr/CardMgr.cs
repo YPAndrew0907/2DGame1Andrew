@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cfg;
 using Obj;
 using Unity.VisualScripting.Dependencies.NCalc;
 using XYZFrameWork.Base;
@@ -10,8 +11,8 @@ namespace Mgr
 {
     public class CardMgr: BaseSingle<CardMgr>
     {
-        public readonly IReadOnlyList<CardObj> Cards = new CardObj[52]; // 所有的牌
-        private readonly CardObj[]                 _cards = new CardObj[52]; // 所有的牌
+        public readonly  IReadOnlyList<CardObj> Cards  = new CardObj[GameCfg.MaxCardNum]; // 所有的牌
+        private readonly CardObj[]              _cards = new CardObj[GameCfg.MaxCardNum]; // 所有的牌
         
         public CardObj[] AICards     { get; private set; }
         public CardObj[] PlayerCards { get; private set; }
@@ -20,11 +21,12 @@ namespace Mgr
         
         public CardMgr()
         {
-            for (int i = 0; i < 52; i+=4)
+            for (int i = 0; i < GameCfg.MaxCardNum; i+=8)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 4; j+=2)
                 {
                     _cards[i + j] = new CardObj((CardValue)i, (CardSuit)j);
+                    _cards[i + j + 1] = new CardObj((CardValue)i, (CardSuit)j);
                 }
             }
         }

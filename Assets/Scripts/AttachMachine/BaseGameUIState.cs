@@ -7,7 +7,7 @@ namespace AttachMachine
     public abstract class BaseGameUIState : IAttachNode
     {
         public abstract string      StateID { get; }
-        public abstract void        OnCreate(GameSceneUI sceneUI);
+        public abstract void        OnCreate(IMachineMaster sceneUI);
         public abstract IEnumerator OnEnterAsync(object payload);
         public abstract IEnumerator OnExitAsync(object payload);
         public abstract void        OnUpdate(float deltaTime);

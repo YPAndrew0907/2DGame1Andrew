@@ -33,10 +33,15 @@ namespace Mgr
         public int CurLevel=> _curLevel;
 
         private int _money = 0;
-        public int Money=> _money;
-        
-        
-        
+        public  int Money
+        {
+            get => _money;
+            private set
+            {
+                _money = value;
+                NotifyMgr.Instance.SendEvent(NotifyDefine.MONEY_CHANGE,_money);
+            }
+        }
 
         #region 当前关卡信息
 
@@ -60,6 +65,13 @@ namespace Mgr
         public int AIChip         { get; private set; } = 0;
 
         public IReadOnlyList<PlayerSkill> CurSkills { get; private set; }
+        public List<string> CurSkillDesc
+        {
+            get
+            {
+                return LevelData.GetSkillDesc(CurSkills);
+            }
+        }
 
         public IReadOnlyList<CardObj> CurLevelInitCard { get; private set; }
 
@@ -205,6 +217,10 @@ namespace Mgr
             PlayerPrefs.SetInt(MoneyStr,_money);
         }
 
+        public void AddMoney(int money)
+        {
+            Money += money;
+        }
         #endregion
         
         

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using XYZFrameWork.Base;
 using TMPro;
 using UnityEngine.UI;
@@ -27,6 +28,8 @@ namespace UI
 
 
 		//AUTO-GENERATE-END
+		
+		
 		public void SetLevel(int level)
 		{
 			_txtLevel.text = $"赌局信息：Level{level}" ;
@@ -34,22 +37,47 @@ namespace UI
 		
 		public void SetMoney(int money)
 		{
-			if (money <= 0)return;
+			if (money <= 0)
+			{
+				_goMoney.SetActive(false);
+				_txtMoney.text = "";
+			}
 			else
 			{
 				_txtMoney.text = money.ToString();
 			}
 		}
-		public void SetSkillName(string skillName)
+		public void SetSkillName(List<string> skillNames)
 		{
-			if (string.IsNullOrEmpty(skillName))
+			if (skillNames is not {Count : > 0 })
 			{
 				_goSkill.SetActive(false);
+				_txtSkillName.text = "";
+				
 			}
 			else
 			{
-				_txtSkillName.text = skillName;
+				var str = "";
+				foreach (var termStr in skillNames)
+				{
+					str += termStr;
+				}
+
+				_txtSkillName.text = str;
 			}
+		}
+
+		public void Init()
+		{
+			gameObject.SetActive(false);
+		}
+
+		public void ShowUI(int level,int money,List<string> skillName)
+		{
+			SetLevel(level);
+			SetMoney(money);
+			SetSkillName(skillName);
+			gameObject.SetActive(true);
 		}
     }
 }

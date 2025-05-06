@@ -15,10 +15,14 @@ namespace UI
     {
 		//AUTO-GENERATE
 		private CardHeap _monoCards2;
+		private CanvasGroup _cgAni;
+		private TextMeshProUGUI _txtTitle;
 
 		protected override void FindUI()
 		{
-			_monoCards2 = transform.Find("mono_Cards2").GetComponent<CardHeap>();
+			_monoCards2 = transform.Find("mono_Cards2").GetComponent<UI.CardHeap>();
+			     _cgAni = transform.Find("cg_ani").GetComponent<UnityEngine.CanvasGroup>();
+			  _txtTitle = transform.Find("cg_ani/txt_title").GetComponent<TMPro.TextMeshProUGUI>();
 		}
 
 
@@ -62,7 +66,6 @@ namespace UI
 			yield return new WaitForSeconds(0.32f);
 			shuffleAni.blocksRaycasts = false;
 		}
-
 		// 需要外部调用的部分。
 		public IEnumerator StartShuffle(int shuffleRole)
 		{
