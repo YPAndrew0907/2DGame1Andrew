@@ -1,62 +1,66 @@
-using System;
-using XYZFrameWork.Base;
-using TMPro;
-using UnityEngine.UI;
-using UnityEngine;
 using Base;
 using Mgr;
 using Unity.Mathematics;
-
 namespace UI
 {
     // 押注UI
     public class BetUI : BaseViewMono
     {
-		//AUTO-GENERATE
-		private Button _btnPlus;
-		private Button _btnReduce;
-		private TextMeshProUGUI _txtChipNum;
-		private TextMeshProUGUI _txtPlus;
-		private TextMeshProUGUI _txtReduce;
+    	//AUTO-GENERATE
+    	private UnityEngine.UI.Button _btnCheckBet;
+    	private UnityEngine.UI.Button BtnCheckBet 
+    			=> _btnCheckBet ??= transform.Find("go_Bg/BetPanel/btn_CheckBet").GetComponent<UnityEngine.UI.Button>();
 
-		protected override void FindUI()
-		{
-			   _btnPlus = transform.Find("BetPanel/btn_Plus").GetComponent<UnityEngine.UI.Button>();
-			 _btnReduce = transform.Find("BetPanel/btn_Reduce").GetComponent<UnityEngine.UI.Button>();
-			_txtChipNum = transform.Find("BetPanel/txt_ChipNum").GetComponent<TMPro.TextMeshProUGUI>();
-			   _txtPlus = transform.Find("BetPanel/btn_Plus/txt_Plus").GetComponent<TMPro.TextMeshProUGUI>();
-			 _txtReduce = transform.Find("BetPanel/btn_Reduce/txt_Reduce").GetComponent<TMPro.TextMeshProUGUI>();
-		}
+    	private UnityEngine.UI.Button _btnPlus;
+    	private UnityEngine.UI.Button BtnPlus 
+    			=> _btnPlus ??= transform.Find("go_Bg/BetPanel/btn_Plus").GetComponent<UnityEngine.UI.Button>();
 
+    	private UnityEngine.UI.Button _btnReduce;
+    	private UnityEngine.UI.Button BtnReduce 
+    			=> _btnReduce ??= transform.Find("go_Bg/BetPanel/btn_Reduce").GetComponent<UnityEngine.UI.Button>();
 
-		//AUTO-GENERATE-END
+    	private UnityEngine.GameObject _goBg;
+    	private UnityEngine.GameObject GoBg 
+    			=> _goBg ??= transform.Find("go_Bg").gameObject;
+
+    	private TMPro.TextMeshProUGUI _txtChipNum;
+    	private TMPro.TextMeshProUGUI TxtChipNum 
+    			=> _txtChipNum ??= transform.Find("go_Bg/BetPanel/txt_ChipNum").GetComponent<TMPro.TextMeshProUGUI>();
+
+    	private TMPro.TextMeshProUGUI _txtPlus;
+    	private TMPro.TextMeshProUGUI TxtPlus 
+    			=> _txtPlus ??= transform.Find("go_Bg/BetPanel/btn_Plus/txt_Plus").GetComponent<TMPro.TextMeshProUGUI>();
+
+    	private TMPro.TextMeshProUGUI _txtReduce;
+    	private TMPro.TextMeshProUGUI TxtReduce 
+    			=> _txtReduce ??= transform.Find("go_Bg/BetPanel/btn_Reduce/txt_Reduce").GetComponent<TMPro.TextMeshProUGUI>();
+
+    	//AUTO-GENERATE-END
 		
 		private int _curChipNum;
 		private int _minChipNum;
 		private int _maxChipNum;
 		private int _intervalChip;
 		private int _ownMaxChipNum;
-
 		public void ShowBetUI()
 		{
 			_intervalChip    = DataMgr.Instance.TableLevel;
-			_minChipNum      = DataMgr.Instance.CurMinBetMoney;
-			_maxChipNum      = DataMgr.Instance.CurMaxBetMoney;
+			_minChipNum      = DataMgr.Instance.CurMinBetChip;
+			_maxChipNum      = DataMgr.Instance.CurMaxBetChip;
 			_ownMaxChipNum   = DataMgr.Instance.Money;
 			_curChipNum      = _minChipNum;
-			_txtPlus.text    = "+" + _intervalChip;
-			_txtReduce.text  = "-" + _intervalChip;
-			_txtChipNum.text = _curChipNum.ToString();
-			gameObject.SetActive(true);
+			TxtPlus.text    = "+" + _intervalChip;
+			TxtReduce.text  = "-" + _intervalChip;
+			TxtChipNum.text = _curChipNum.ToString();
+			GoBg.SetActive(true);
 		}
-
-		public void InitBetUI()
+		public void Init()
         {
-	        _btnReduce.onClick.AddListener(OnReduceClick);
-	        _btnPlus.onClick.AddListener(OnPlusClick);
-	        gameObject.SetActive(false);
+	        BtnReduce.onClick.AddListener(OnReduceClick);
+	        BtnPlus.onClick.AddListener(OnPlusClick);
+	        BtnCheckBet.onClick.AddListener(OnCheckBet);
+	        GoBg.SetActive(false);
         }
-
         private void OnReduceClick()
         {
 	        var chipNum = _curChipNum - _intervalChip;
@@ -65,7 +69,6 @@ namespace UI
 	        _curChipNum = chipNum;
 	        ChipNumChange();
         }
-
         private void OnPlusClick()
         {
 	        var chipNum = _curChipNum + _intervalChip;
@@ -74,16 +77,22 @@ namespace UI
 	        _curChipNum = chipNum;
 	        ChipNumChange();
         }
-
+        private void OnCheckBet()
+        {
+	        if (DataMgr.Instance.Money< _curChipNum)
+		        return;
+	        
+	        NotifyMgr.Instance.SendEvent(NotifyDefine.BET_CHIP,_curChipNum);
+        }
+        
         private void ChipNumChange()
         {
-	        _txtChipNum.text = _curChipNum.ToString();
+	        TxtChipNum.text = _curChipNum.ToString();
         }
-
-        public void OnDestroy()
+        
+        public void Hide()
         {
-	        _btnPlus.onClick.RemoveListener(OnPlusClick);
-	        _btnReduce.onClick.RemoveListener(OnReduceClick);
+	        GoBg.SetActive(false);
         }
     }
 }

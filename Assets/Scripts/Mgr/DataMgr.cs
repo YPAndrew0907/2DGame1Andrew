@@ -4,7 +4,9 @@ using System.Linq;
 using Cfg;
 using Newtonsoft.Json;
 using Obj;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using XYZFrameWork;
 using XYZFrameWork.Base;
 using Random = UnityEngine.Random;
@@ -17,16 +19,16 @@ namespace Mgr
         {
             _curLevel = PlayerPrefs.GetInt(CurLevelStr, 1);
             _money = PlayerPrefs.GetInt(MoneyStr, 200);
-            NotifyMgr.Register(NotifyDefine.GAME_END,SaveGameInfo);
-            NotifyMgr.Register(NotifyDefine.GAME_END,Reset);
             NotifyMgr.Register(NotifyDefine.GAME_READY,LoadLevelInfo);
+            NotifyMgr.Register(NotifyDefine.GAME_END,SaveGameInfo);
+            NotifyMgr.Register(NotifyDefine.NEXT_ROUND,NextRound);
         }
-
-        
         
         ~DataMgr()
         {
+            NotifyMgr.UnRegister(NotifyDefine.GAME_READY,LoadLevelInfo);
             NotifyMgr.UnRegister(NotifyDefine.GAME_END,SaveGameInfo);
+            NotifyMgr.UnRegister(NotifyDefine.NEXT_ROUND,NextRound);
         }
 
         private int _curLevel = 1;
@@ -43,6 +45,16 @@ namespace Mgr
             }
         }
 
+        #region 对局数据
+
+        public bool PlayerIsContinue { get; set; }  // 玩家是否还在要牌
+        public bool AIIsContinue     { get; set; } // 对面是否还在要牌
+
+        public  PlayerType CurPlayerType => _curPlayerType; // 当前要牌的人。
+        private PlayerType _curPlayerType;
+
+        #endregion
+
         #region 当前关卡信息
 
         private Dictionary<int,LevelData>  LevelDataDict { get; set; }= new();
@@ -55,31 +67,34 @@ namespace Mgr
         // 如果 小于1 表示倍数
         public float BossChip { get; private set; }
         
-        // 由谁发牌。-1 对方，0 随机，1 玩家。
-        public int ShuffleRole    { get; private set; }
-        // 当前发牌人员。 -1 表示需要随机。
-        public int CurShuffleRole { get; private set; } = -1;
-        public int TableLevel     { get; private set; } = 0;
-        public int CurMinBetMoney    => 5 * TableLevel;
-        public int CurMaxBetMoney    => 50 * TableLevel;
-        public int AIChip         { get; private set; } = 0;
+        // 当前洗牌人员。 None 表示需要随机决定。
+        public PlayerType CurShuffleRole { get; private set; } = PlayerType.None;
+        public int        TableLevel     { get; private set; } = 0;
+        public int        CurMinBetChip  => 5 * TableLevel;
+        public int        CurMaxBetChip  => 50 * TableLevel;
+        public int        CurBetChip     { get; private set; }
+        public int        AIChip         { get; private set; } = 0;
+        public string     AIName         { get; private set; }
 
-        public IReadOnlyList<PlayerSkill> CurSkills { get; private set; }
-        public List<string> CurSkillDesc
-        {
-            get
-            {
-                return LevelData.GetSkillDesc(CurSkills);
-            }
-        }
+        public string PlayerName => "You";
 
-        public IReadOnlyList<CardObj> CurLevelInitCard { get; private set; }
+        // 游戏轮次，五次一洗牌。 -1 未开始 
+        public int TurnTimes { get; private set; }
+ 
+        public          IReadOnlyList<PlayerSkill> CurSkills    { get; private set; }
+        public          List<string>               CurSkillDesc => LevelData.GetSkillDesc(CurSkills);
+        public readonly List<CardObj>              LastRoundPlayerCards = new();
+        public readonly List<CardObj>              LastRoundAICards     = new();
+        public readonly List<CardObj>              AICards              = new();
+        public readonly List<CardObj>              PlayerCards          = new();
+
+        public IReadOnlyList<CardObj> CurLevelInitCarryCard { get; private set; }
 
         public void LoadLevelInfo(NotifyMsg notifyMsg) 
         {
             if (notifyMsg.Param is NormalParam param)
             {
-                LevelData levelData;
+                Reset();
                 if (LevelDataDict.Count == 0)
                 {
                     var json = Resources.Load<TextAsset>("LevelData");
@@ -87,7 +102,7 @@ namespace Mgr
                     LevelDataDict = levelDatas.ToDictionary(x => x.Level);
                 }
 
-                if (!LevelDataDict.TryGetValue(param.IntValue, out levelData))
+                if (!LevelDataDict.TryGetValue(param.IntValue, out var levelData))
                 {
                     Debug.LogError("关卡数据不存在");
                     return;
@@ -101,7 +116,17 @@ namespace Mgr
                 ParseCarryCard(levelData);
                 ParsePlayerSkill(levelData);
                 ParseSpecialCondition(levelData);
+                
+                // 初始化 要牌玩家
+                NextPlayerAskCard();
+                NextShuffleRole();
             }
+        }
+
+        private void NextRound(NotifyMsg obj)
+        {
+            PlayerIsContinue = true;
+            AIIsContinue     = true;
         }
 
         private void ParseAIData(LevelData levelData)
@@ -114,32 +139,37 @@ namespace Mgr
             {
                 AIChip = (int)(levelData.BossChip * Money);
             }
+
+            AIName = levelData.LevelAIName;
         }
 
         private void ParseSpecialCondition(LevelData levelData)
         {
-            var SCs = levelData.SpecialCondition.Split("|");
+            if (levelData.SpecialCondition == null) return;
+
+            var scs = levelData.SpecialCondition.Split("|");
             
-            foreach (var SC in SCs)
+            foreach (var specialCondition in scs)
             {
-                if (!string.IsNullOrEmpty(SC))
+                if (!string.IsNullOrEmpty(specialCondition))
                 {
-                    var sc = Enum.Parse<SpecialCondition>(SC);
+                    var sc = Enum.Parse<SpecialCondition>(specialCondition);
                     switch (sc)
                     {
                         case SpecialCondition.BossShuffle:
-                            ShuffleRole    = -1;
-                            CurShuffleRole = -1;
+                            // 默认会先执行 NextShuffle 方法，再取值，所以对方洗牌就设置player
+                            CurShuffleRole = PlayerType.Player; 
                             break;
                         default: throw new ArgumentOutOfRangeException();
                     }
                 }
-                
             }
         }
 
         private void ParsePlayerSkill(LevelData levelData)
         {
+            if (levelData.PlayerSkill == null) return;
+
             var skillList = new List<PlayerSkill>();
             var skillStr = levelData.PlayerSkill.Split('|');
             foreach (var str in skillStr)
@@ -152,7 +182,10 @@ namespace Mgr
 
         private void ParseCarryCard(LevelData levelData)
         {
+            if (levelData.CarryCard == null) return;
+            
             // 解析 携带的纸牌信息
+            // 牌面值起头，花色结尾。-1 表示随机 如 A_-1 ，随机花色 A。两张就是 两个A_-1
             List<CardObj> list = new List<CardObj>();
             foreach (var str in levelData.CarryCard)
             {
@@ -170,45 +203,113 @@ namespace Mgr
                 }
                 list.Add(new CardObj(cardV,cardS));
             }
-            CurLevelInitCard = list;
+            CurLevelInitCarryCard = list;
         }
-
+        
         #endregion
         
         #region 技能相关
 
+        // GuessOrRemember 的初始化
         public PlayerSkill GuessOrRemember = PlayerSkill.None;
         #endregion
 
+        #region 数据获取
+
+        public int CurAICardNum => TotalCardNum(AICards);
+
+        public int CurPlayer => TotalCardNum(PlayerCards);
+
+        private int TotalCardNum(List<CardObj> list)
+        {
+            if (list is not {Count:>0})
+            {
+                return 0;
+            }
+            
+            int i = 0;
+            foreach (var card in AICards)
+            {
+                i += (int)card.Value + 1;
+            }
+
+            return i;
+        }
+
+        #endregion
+        
         #region 数据变更方法
 
         // 关卡结束重置
-        public void Reset(NotifyMsg notifyMsg)
+        private void Reset()
         {
-            MaxSkillCardCount = 0;
-            BossChip          = 0;
-            ShuffleRole       = 0;
-            CurShuffleRole    = -1;
-            CurSkills         = null;
-            CurLevelInitCard  = null;
-            GuessOrRemember   = PlayerSkill.None;
+            MaxSkillCardCount     = 0;
+            BossChip              = 0;
+            AIIsContinue          = true;
+            PlayerIsContinue      = true;
+            CurShuffleRole        = PlayerType.None;
+            CurSkills             = null;
+            CurLevelInitCarryCard = null;
+            GuessOrRemember       = PlayerSkill.None;
+            
+            AddCardToAIOrPlayer(null);
         }
 
+        public void NextLevel()
+        {
+            _curLevel++;
+            _curLevel = math.clamp( _curLevel,1, LevelDataDict.Count);
+        }
+
+        public void LastLevel()
+        {
+            _curLevel--;
+            _curLevel = math.clamp( _curLevel,1, LevelDataDict.Count);
+        }
+
+        public void TurnCounter(bool reset = false)
+        {
+            if(reset) TurnTimes = 0;
+            else TurnTimes++;
+        }
+        
         public void NextShuffleRole()
         {
-            if (ShuffleRole != 0)
+            if (CurShuffleRole == PlayerType.None)
             {
-                return;
-            }
-
-            if (CurShuffleRole == 0)
-            {
-                CurShuffleRole = Random.Range(-1, 1)>=0? 1 : -1;
+                CurShuffleRole = Random.Range(-1, 1) >= 0? PlayerType.Player : PlayerType.AI;
             }
             else
             {
-                CurShuffleRole *= -1;
+                if (CurShuffleRole == PlayerType.Player)
+                    CurShuffleRole = PlayerType.AI;
+                if (CurShuffleRole == PlayerType.AI)
+                    CurShuffleRole = PlayerType.Player;
             }
+        }
+        
+        public PlayerType NextPlayerAskCard()
+        {
+            switch (_curPlayerType)
+            {
+                case PlayerType.Public:
+                    // 随机一下
+                    if (AIIsContinue && PlayerIsContinue)
+                        _curPlayerType = Random.Range(0f, 1.0f) > 0.5f ? PlayerType.Player : PlayerType.AI;
+                    else if (AIIsContinue)
+                        _curPlayerType = PlayerType.AI;
+                    else if (PlayerIsContinue)
+                        _curPlayerType = PlayerType.Player;
+                    break;
+                case PlayerType.Player:
+                    _curPlayerType = AIIsContinue ? PlayerType.AI : PlayerIsContinue? PlayerType.Player: PlayerType.Public;
+                    break;
+                case PlayerType.AI:  
+                    _curPlayerType = PlayerIsContinue ? PlayerType.Player : AIIsContinue? PlayerType.AI: PlayerType.Public;
+                    break;
+                default:                throw new ArgumentOutOfRangeException();
+            }
+            return _curPlayerType;
         }
         
         public void SaveGameInfo(NotifyMsg notifyMsg)
@@ -217,12 +318,70 @@ namespace Mgr
             PlayerPrefs.SetInt(MoneyStr,_money);
         }
 
-        public void AddMoney(int money)
+        public void PayChip(bool  playerIsWin)
         {
-            Money += money;
+            if (playerIsWin)
+            {
+                BossChip -= CurBetChip;
+                Money    += CurBetChip;
+            }
+            else
+            {
+                BossChip += CurBetChip;
+                Money    -= CurBetChip;
+            }
+        }
+
+        public void AddCardToAIOrPlayer(CardObj card)
+        {
+            if (card == null )
+            {
+                PlayerCards?.Clear();
+                AICards?.Clear();
+                return;
+            }
+                
+            switch (card.Owner)
+            {
+                case PlayerType.Player: 
+                    PlayerCards.Add(card);
+                    break;
+                case PlayerType.AI:     
+                    AICards.Add(card);
+                    break;
+                default:
+                    Debug.LogError(LogTxt.PARAM_ERROR);
+                    break;
+            }
+        }
+        
+        public void BetChip(int money)
+        {
+            CurBetChip = money;
+        }
+
+        public void ClearPlayerCards()
+        {
+            LastRoundPlayerCards.Clear();
+            LastRoundPlayerCards.AddRange(PlayerCards);
+            PlayerCards.Clear();
+            LastRoundAICards.Clear();
+            LastRoundAICards.AddRange(AICards);
+            AICards.Clear();
         }
         #endregion
+
+        #region check
+
+        public bool PlayerEnough => _money > CurMinBetChip;
+        public bool BossEnough   => BossChip > CurMinBetChip;
         
+        public bool WillShuffle()
+        {
+            return TurnTimes is <= 0 or >= 5;
+        }
+        
+        #endregion
         
         private const string CurLevelStr = "CurLevel";
         private const string MoneyStr = "MoneyStr";

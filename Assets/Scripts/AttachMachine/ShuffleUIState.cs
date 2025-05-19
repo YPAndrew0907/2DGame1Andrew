@@ -1,40 +1,66 @@
 ﻿using System.Collections;
 using Mgr;
+using Obj;
 using UI;
 
 namespace AttachMachine
 {
-    // 洗牌动画
     public class ShuffleUIState : BaseGameUIState
     {
-        IShuffleUIState        _shuffleUIState;
-        public  override string StateID => StateIDStr;
-        public const string      StateIDStr = "ShuffleUIState";
+        private         IShuffleUIState _shuffleUIState;
+        public override string          StateID => StateIDStr;
+        public const    string          StateIDStr = "ShuffleUIState";
 
         public override void OnCreate(IMachineMaster sceneUI)
         {
-            if (sceneUI is IShuffleUIState uiState)
+            if (sceneUI is IShuffleUIState ui)
             {
-                _shuffleUIState = uiState;
+                _shuffleUIState = ui;
+                DataMgr.Instance.NextShuffleRole();
             }
         }
-        
+
         public override IEnumerator OnEnterAsync(object payload)
         {
-            NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_START);
-            CardMgr.Instance.Shuffle();
-            var dealRole = DataMgr.Instance.CurShuffleRole;
-
-            yield return _shuffleUIState.ShuffleUI.StartShuffle(dealRole);
-            yield return OnExitAsync(null);
+            if (DataMgr.Instance.WillShuffle())
+            {
+                NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_START);
+                CardMgr.Instance.Shuffle();
+                DataMgr.Instance.TurnCounter(true);
+                var shuffleRole = DataMgr.Instance.CurShuffleRole;
+                yield return _shuffleUIState.ShuffleUIState.StartShuffle(shuffleRole);
+                yield return OnExitAsync(0);
+            }
+            else
+            {
+                yield return OnExitAsync(null);
+            }
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_END);
-            DataMgr.Instance.NextShuffleRole();
-            yield return null;
-            _shuffleUIState.AttachMachine.StartMachine(DealCardUIState.StateIDStr);
+            // 是否洗牌
+            if (payload != null)
+            {
+                NotifyMgr.Instance.SendEvent(NotifyDefine.SHUFFLE_END);
+                DataMgr.Instance.NextShuffleRole();
+            }
+
+            var cards = CardMgr.Instance.GetCards(4);
+
+            // 首次发牌
+            cards[0].IsFaceUp = true;
+            cards[1].IsFaceUp = true;
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (i % 2 != 0)
+                    cards[i].Owner = PlayerType.Player;
+                else
+                    cards[i].Owner = PlayerType.AI;
+            }
+            
+            yield return _shuffleUIState.AttachMachine.EnterState(DealCardUIState.StateIDStr, cards);
         }
 
         public override void OnUpdate(float deltaTime)
@@ -42,8 +68,8 @@ namespace AttachMachine
             
         }
     }
-    public interface IShuffleUIState:IBaseAttachUI
+    public interface IShuffleUIState: IBaseAttachUI
     {
-        public ShuffleUI ShuffleUI { get;  }
+        public TotalCardHeapUI ShuffleUIState { get;  }
     }
 }

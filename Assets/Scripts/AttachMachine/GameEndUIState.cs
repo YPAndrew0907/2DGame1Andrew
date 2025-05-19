@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Mgr;
 using Obj;
 using UI;
@@ -9,10 +10,13 @@ namespace AttachMachine
 {
     public class GameEndUIState: BaseGameUIState
     {
-        public override string      StateID => CurStateID;
-        public const string         CurStateID = "GameEndUIState";
-        private IGameEndUIState     _gameEndUI;
-        public override void        OnCreate(IMachineMaster sceneUI)
+        public override string          StateID => StateIDStr;
+        public const    string          StateIDStr = "GameEndUIState";
+        private         IGameEndUIState _gameEndUI;
+
+        private GameEndCode _curCode;
+
+        public override void OnCreate(IMachineMaster sceneUI)
         {
             if (sceneUI is IGameEndUIState ui)
             {
@@ -20,23 +24,20 @@ namespace AttachMachine
                 _gameEndUI.GameLossUI.Init();
                 _gameEndUI.GameWinUI.Init();
             }
-            
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            NotifyMgr.Instance.RegisterEvent(NotifyDefine.GAME_END_BACK_HOME, GameEndBackHome);
-            
-            if (payload is NormalParam param)
+            if (payload is GameEndCode endCode)
             {
-                var code = (GameEndCode)param.IntValue;
-                switch (code)
+                switch (endCode)
                 {
+                    case GameEndCode.GiveUp:
                     case GameEndCode.Lose:
-                        _gameEndUI.GameLossUI.ShowUI();
+                        _gameEndUI.GameLossUI.Show(endCode);
                         break;
                     case GameEndCode.Win:
-                        _gameEndUI.GameWinUI.ShowUI();
+                        _gameEndUI.GameWinUI.Show(endCode);
                         break;
                 }
             }
@@ -45,20 +46,21 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            
+            switch (_curCode)
+            {
+                case GameEndCode.Win: 
+                    _gameEndUI.GameWinUI.Hide();
+                    break;
+                case GameEndCode.Lose: 
+                    _gameEndUI.GameLossUI.Hide();
+                    break;
+            }
             yield break;
         }
 
         public override void  OnUpdate(float deltaTime)
         {
             
-        }
-
-        private void GameEndBackHome(NotifyMsg msg)
-        {
-            NotifyMgr.Instance.UnRegisterEvent(NotifyDefine.GAME_END_BACK_HOME, GameEndBackHome);
-
-            CoroutineMgr.Instance.StartCoroutine(OnExitAsync(null));
         }
     }
 

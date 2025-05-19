@@ -98,7 +98,7 @@ namespace XYZFrameWork
             return param;
         }
 
-        private static INotifyParam CreateCustomParam(object value)
+        public static INotifyParam CreateCustomParam(object value)
         {
             var param = Instance.PopEventParam<CustomParam>();
             param.SetValue(value);

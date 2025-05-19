@@ -4,57 +4,79 @@ using Cfg;
 using Mgr;
 using Obj;
 using UI;
+using XYZFrameWork;
+
 namespace AttachMachine
 {
     public class SkillUIState : BaseGameUIState
     {
-        public override string    StateID => SkillUIStateID;
-        public const    string    SkillUIStateID = "SkillUIState";
+        public override string            StateID => StateIDStr;
+        public const    string            StateIDStr = "SkillUIState";
         public          List<PlayerSkill> Skill   { get; private set; }
-        private         ISkillUI  _skillUI;
+        private         ISkillUI          _skillUI;
         
         public override void OnCreate(IMachineMaster sceneUI)
         {
             if (sceneUI is ISkillUI uiElement)
             {
                 _skillUI = uiElement;
-                
-                _skillUI.SkillCardsUI.InitSkillCard(0);
-                List<PlayerSkill> skillList = new List<PlayerSkill>();
-                var skills = DataMgr.Instance.CurSkills;
-                foreach (var skill in skills)
-                {
-                    switch (skill)
-                    {
-                        case PlayerSkill.Guess:
-                        case PlayerSkill.Remember:
-                        case PlayerSkill.SwitchCard:
-                        case PlayerSkill.Lie:
-                        case PlayerSkill.GuessOrRemember:
-                        case PlayerSkill.StealAndInsert:
-                            skillList.Add(skill);
-                            break;
-                    }
-                }
-                Skill = skillList;
+                _skillUI.SkillCardsUI.Init();
+                _skillUI.GuessOrRememberUI.Init();
+                NotifyMgr.Register(NotifyDefine.SKILL_CARD_SELECT,OnSelectSkillCards);
             }
+        }
+
+        public override void OnActive()
+        {
+            base.OnActive();
+            _skillUI.SkillCardsUI.Hide();
+            _skillUI.GuessOrRememberUI.Hide();
+        }
+
+        public override void OnInActive()
+        {
+            base.OnInActive();
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            if (Skill.Contains(PlayerSkill.GuessOrRemember))
+            List<PlayerSkill> skillList = new List<PlayerSkill>();
+            if (DataMgr.Instance.CurSkills == null)
             {
-                if (_skillUI.GuessOrRememberPanel.CheckSelect())
+                yield break;
+            }
+            var skills = DataMgr.Instance.CurSkills;
+            foreach (var skill in skills)
+            {
+                switch (skill)
                 {
-                    _skillUI.GuessOrRememberPanel.ShowSelectPanel();
+                    case PlayerSkill.Guess:
+                    case PlayerSkill.Remember:
+                    case PlayerSkill.SwitchCard:
+                    case PlayerSkill.Lie:
+                    case PlayerSkill.GuessOrRemember:
+                    case PlayerSkill.StealAndInsert:
+                        skillList.Add(skill);
+                        break;
                 }
             }
-            yield break;
+            Skill = skillList;
+            
+            if (Skill.Contains(PlayerSkill.GuessOrRemember))
+            {
+                if (_skillUI.GuessOrRememberUI.CheckSelect())
+                {
+                    _skillUI.GuessOrRememberUI.ShowSelectPanel();
+                }
+            }
+            
+            _skillUI.SkillCardsUI.Show(DataMgr.Instance.MaxSkillCardCount);
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
             
+            _skillUI.SkillCardsUI.Hide();
             yield break;
         }
 
@@ -62,23 +84,21 @@ namespace AttachMachine
         {
             
         }
-
-        public void OnShuffleEnd(object payload)
+        
+        public void OnSelectSkillCards(NotifyMsg obj)
         {
-            
-        }
-
-        public void SelectCards()
-        {
-            _skillUI.SkillCardsUI.InitSkillCard(0);
-            NotifyMgr.Instance.SendEvent(NotifyDefine.SKILL_CARD_SELECT_START);
+            if (obj.Param is CustomParam param)
+            {
+                var list = param.Value as List<CardObj>;
+                _skillUI.SkillCardsUI.SetSkillCard(list);
+            }
         }
     }
 
-    public interface ISkillUI:IBaseAttachUI
+    public interface ISkillUI: IBaseAttachUI
     {
         // 选择哪个技能
-        public GuessOrRememberUI GuessOrRememberPanel { get; }
+        public GuessOrRememberUI GuessOrRememberUI { get; }
         
         public SkillCardsUI SkillCardsUI { get; }
     }

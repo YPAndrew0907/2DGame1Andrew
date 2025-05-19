@@ -11,5 +11,18 @@ namespace AttachMachine
         public abstract IEnumerator OnEnterAsync(object payload);
         public abstract IEnumerator OnExitAsync(object payload);
         public abstract void        OnUpdate(float deltaTime);
+        private         bool        _active;
+
+        public virtual void OnActive()
+        {
+            if (_active)return;
+            _active = true;
+        }
+
+        public virtual void OnInActive()
+        {
+            if (!_active) return;
+            _active = false;
+        }
     }
 }

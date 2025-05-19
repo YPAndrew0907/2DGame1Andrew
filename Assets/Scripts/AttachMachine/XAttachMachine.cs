@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
+using Mgr;
 using UI;
+using Unity.VisualScripting;
+using XYZFrameWork;
 
 namespace AttachMachine
 {
@@ -45,24 +48,67 @@ namespace AttachMachine
 
             state.OnCreate(_owner);
             _nodes.Add(stateID, state);
-            LogDebug($"注册状态：{stateID}");
         }
 
         /// <summary>
         /// 启动状态机
         /// </summary>
         public void StartMachine(string initialStateID)
+        { 
+           CoroutineMgr.Instance.StartCoroutine( EnterState(initialStateID));
+        }
+
+        public IEnumerator EnterState(string stateId, object payload = null)
         {
-            if (_nodes.TryGetValue(initialStateID,out var initialState))
+            if (_nodes.TryGetValue(stateId, out var initialState))
             {
-                initialState.OnEnterAsync(null);
-                return;
+                Debug.Log($"【进状态】 :{stateId}");
+                yield return initialState.OnEnterAsync(payload);
+                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ENTER_STATE, stateId);
+                yield break;
             }
-            
-            Debug.LogError($"节点 {initialStateID} 未注册");
+
+            Debug.LogError($"【未注册】： {stateId}");
+        }
+
+        public IEnumerator SwitchState(string exitState, string enterState, object payload = null)
+        {
+            yield return  ExitState(exitState);
+            Debug.Log($"【切状态】： {exitState}-->{enterState}");
+            yield return EnterState(enterState,payload);
         }
         
-        private void Update()
+        public IEnumerator ExitState(string stateId)
+        {
+            if (_nodes.TryGetValue(stateId, out var initialState))
+            {
+                CoroutineMgr.Instance.StartCoroutine(initialState.OnExitAsync(null));
+                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_EXIT_STATE, stateId);
+                yield break;
+            }
+            
+            Debug.LogError($"【未注册】： {stateId}");
+        }
+
+        public void ActiveAll()
+        {
+            foreach (var node in _nodes)
+            {
+                node.Value.OnActive();
+                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ACTIVE_STATE, node.Key);
+            }
+        }
+
+        public void InActiveAll()
+        {
+            foreach (var node in _nodes)
+            {
+                node.Value.OnInActive();
+                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ACTIVE_STATE, node.Key);
+            }
+        }
+
+        public void Update()
         {
             foreach (var (key,node) in _nodes)
             {
@@ -75,12 +121,6 @@ namespace AttachMachine
             _cts?.Cancel();
             _cts?.Dispose();
             _owner.StopAllCoroutines();
-        }
-
-        private void LogDebug(string message)
-        {
-            if (_enableDebugLog)
-                Debug.Log($"[XStateMachine] {message}");
         }
     }
     public interface IMachineMaster

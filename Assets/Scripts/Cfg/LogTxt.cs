@@ -28,14 +28,6 @@
 
         #endregion
 
-        #region Normal
-
-        public const string LOAD_ASSET_SUCCESS = "加载资源成功";
-        public const string LOAD_ASSET_START   = "开始加载资源";
-
-
-        #endregion
-
         #region Warning
 
         public const string REPEAT_ADD_WARNING = "重复添加";

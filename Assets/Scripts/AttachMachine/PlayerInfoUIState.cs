@@ -17,14 +17,39 @@ namespace AttachMachine
             {
                 _playerInfoUI = playerInfoUI;
                 _playerInfoUI.LevelInfoUI.Init();
-                NotifyMgr.Instance.RegisterEvent(NotifyDefine.GAME_START, OnGameStart);
                 NotifyMgr.Instance.RegisterEvent(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
             }
         }
 
-        private void OnGameStart(NotifyMsg obj)
+        public override void OnActive()
         {
+            base.OnActive();
+            _playerInfoUI.LevelInfoUI.SetLevel(DataMgr.Instance.CurLevel);
+            _playerInfoUI.LevelInfoUI.SetMoney(DataMgr.Instance.Money);
+            _playerInfoUI.LevelInfoUI.SetSkillName(null);
             _playerInfoUI.LevelInfoUI.ShowUI(DataMgr.Instance.CurLevel,DataMgr.Instance.Money, DataMgr.Instance.CurSkillDesc);
+        }
+
+        public override void OnInActive()
+        {
+            base.OnInActive();
+            _playerInfoUI.LevelInfoUI.Hide();
+        }
+
+        public override IEnumerator OnEnterAsync(object payload)
+        {
+            yield break;
+        }
+
+        public override IEnumerator OnExitAsync(object payload)
+        {
+            NotifyMgr.Instance.UnRegisterEvent(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
+            yield break;
+        }
+
+        public override void OnUpdate(float deltaTime)
+        {
+            
         }
 
         private void OnMoneyChange(NotifyMsg obj)
@@ -35,25 +60,6 @@ namespace AttachMachine
             }
         }
 
-        public override IEnumerator OnEnterAsync(object payload)
-        {
-            _playerInfoUI.LevelInfoUI.SetLevel(DataMgr.Instance.CurLevel);
-            _playerInfoUI.LevelInfoUI.SetMoney(DataMgr.Instance.Money);
-            _playerInfoUI.LevelInfoUI.SetSkillName(null);
-            yield break;
-        }
-
-        public override IEnumerator OnExitAsync(object payload)
-        {
-            NotifyMgr.Instance.UnRegisterEvent(NotifyDefine.GAME_START, OnGameStart);
-            NotifyMgr.Instance.UnRegisterEvent(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
-            yield break;
-        }
-
-        public override void OnUpdate(float deltaTime)
-        {
-            
-        }
     }
 
     public interface IPlayerInfoUIState : IBaseAttachUI

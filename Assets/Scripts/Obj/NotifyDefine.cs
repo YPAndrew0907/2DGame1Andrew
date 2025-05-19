@@ -24,9 +24,25 @@
 
     public static readonly int SHUFFLE_START           = EventDefine.eventId;
     public static readonly int SHUFFLE_END             = EventDefine.eventId;
+    
     public static readonly int SKILL_CARD_SELECT_START = EventDefine.eventId;
+    public static readonly int SKILL_CARD_SELECT       = EventDefine.eventId;
     public static readonly int SKILL_CARD_SELECT_END   = EventDefine.eventId;
+    
     public static readonly int MONEY_CHANGE            = EventDefine.eventId;
+    public static readonly int ASK_CARD                = EventDefine.eventId;
+
+    public static readonly int DEAL_CARD  = EventDefine.eventId;
+    
+    public static readonly int BET_CHIP   = EventDefine.eventId;
+    public static readonly int NEXT_ROUND = EventDefine.eventId;
+    #endregion
+
+    #region  XAttachMachine
+
+    public static readonly int X_ATTACH_MACHINE_ACTIVE_STATE = EventDefine.eventId;
+    public static readonly int X_ATTACH_MACHINE_ENTER_STATE  = EventDefine.eventId;
+    public static readonly int X_ATTACH_MACHINE_EXIT_STATE   = EventDefine.eventId;
 
     #endregion
 }

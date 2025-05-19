@@ -16,6 +16,16 @@ namespace AttachMachine
         string StateID { get; }
 
         void OnCreate(IMachineMaster sceneUI);
+
+        /// <summary>
+        /// 激活状态
+        /// </summary>
+        public abstract void OnActive();
+
+        /// <summary>
+        /// 失活状态
+        /// </summary>
+        public abstract void OnInActive();
         /// <summary>
         /// 异步进入状态
         /// </summary>

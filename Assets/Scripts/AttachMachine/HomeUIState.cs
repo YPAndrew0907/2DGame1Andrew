@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+using Mgr;
 using UI;
+using XYZFrameWork;
 
 namespace AttachMachine
 {
@@ -8,25 +10,29 @@ namespace AttachMachine
         public override string StateID => StateIDStr;
         public const    string StateIDStr = "HomeUIState";
         private         IHomeUIState  _homeUIState;
-        public override void        OnCreate(IMachineMaster sceneUI)
+
+        public override void OnCreate(IMachineMaster sceneUI)
         {
             if (sceneUI is IHomeUIState ui)
             {
                 _homeUIState = ui;
+                _homeUIState.HomeUI.Init();
             }
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            throw new System.NotImplementedException();
+            _homeUIState.HomeUI.ShowUI();
+            yield break;
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            throw new System.NotImplementedException();
+            _homeUIState.HomeUI.HideUI();
+            yield break;
         }
 
-        public override void        OnUpdate(float deltaTime)
+        public override void OnUpdate(float deltaTime)
         {
         }
     }

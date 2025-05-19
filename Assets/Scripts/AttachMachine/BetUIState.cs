@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using Mgr;
-using Obj;
 using UI;
-using UnityEngine;
+using XYZFrameWork;
 
 namespace AttachMachine
 {
@@ -17,7 +16,8 @@ namespace AttachMachine
             {
                 _betUI = ui;
             }
-            _betUI.BetUI.InitBetUI();
+            _betUI.BetUI.Init();
+            NotifyMgr.Register(NotifyDefine.BET_CHIP,OnBetChip);
         }
 
         public override IEnumerator OnEnterAsync(object payload)
@@ -28,19 +28,22 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _betUI.AttachMachine.StartMachine(GameEndUIState.CurStateID);
-            yield break;
+            _betUI.BetUI.Hide();
+            yield return _betUI.AttachMachine.EnterState(ShuffleUIState.StateIDStr);
         }
 
-        public override void        OnUpdate(float deltaTime)
+        public override void OnUpdate(float deltaTime)
         {
-            
+
         }
-        
-        private bool EnoughMoney()
+
+        private void OnBetChip(NotifyMsg obj)
         {
-            var money= DataMgr.Instance.Money;
-            return money >= DataMgr.Instance.CurMinBetMoney;
+            if (obj.Param is NormalParam param)
+            {
+                DataMgr.Instance.BetChip(param.IntValue);
+                CoroutineMgr.Instance.StartCoroutine(OnExitAsync(null));
+            }
         }
     }
 

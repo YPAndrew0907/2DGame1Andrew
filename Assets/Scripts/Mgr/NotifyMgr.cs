@@ -68,11 +68,11 @@ namespace Mgr
         /// <param name="param">只能是 int, long, float, double, INotifyValue, ArrayList, </param>
         public void SendEvent(int eventId, params object[] param)
         {
-            var eventMsg = NotifyMgr.CreateEventMsg(eventId);
+            var eventMsg = CreateEventMsg(eventId);
 
             if (param.Length == 0)
             {
-                NotifyMgr.SendEvent(eventMsg);
+                SendEvent(eventMsg);
                 return;
             }
 
@@ -80,7 +80,7 @@ namespace Mgr
             if (param.Length == 1)
             {
                 // 单个的类， 只能用 == 不能用IsAssignableFrom 或者 is 判断符
-                if (firstType == typeof(object))
+                if (!firstType.IsValueType && firstType != typeof(string))
                 {
                     var paramObj = NotifyParamMgr.CreateNotifyParam<CustomParam>();
                     paramObj.SetValue(param[0]);
@@ -100,6 +100,8 @@ namespace Mgr
                         paramObj.SetValue((double)param[0]);
                     else if (firstType == typeof(string))
                         paramObj.SetValue((string)param[0]);
+                    else if (firstType == typeof(bool))
+                        paramObj.SetValue((bool)param[0]);
                     else
                         Debug.LogError(LogTxt.PARAM_ERROR);
                 }
@@ -111,7 +113,7 @@ namespace Mgr
                 eventMsg.Param = paramObj;
             }
 
-            NotifyMgr.SendEvent(eventMsg);
+            SendEvent(eventMsg);
         }
 
         public void RegisterEvent(int eventId, Action<NotifyMsg> onEvent)

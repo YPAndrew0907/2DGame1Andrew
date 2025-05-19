@@ -8,51 +8,57 @@ namespace UI
 {
     public class LevelInfoUI : BaseViewMono
     {
-		//AUTO-GENERATE
-		private GameObject _goMoney;
-		private GameObject _goSkill;
-		private TextMeshProUGUI _txtLevel;
-		private TextMeshProUGUI _txtMoney;
-		private TextMeshProUGUI _txtSkillName;
+    	//AUTO-GENERATE
+    	private UnityEngine.GameObject _goBg;
+    	private UnityEngine.GameObject GoBg 
+    			=> _goBg ??= transform.Find("go_bg").gameObject;
 
-		protected override void FindUI()
-		{
-			     _goMoney = transform.Find("skillAndMoney/go_money").gameObject;
-			     _goMoney = transform.Find("skillAndMoney/go_money").GetComponent<UnityEngine.GameObject>();
-			     _goSkill = transform.Find("skillAndMoney/go_skill").gameObject;
-			     _goSkill = transform.Find("skillAndMoney/go_skill").GetComponent<UnityEngine.GameObject>();
-			    _txtLevel = transform.Find("txt_level").GetComponent<TMPro.TextMeshProUGUI>();
-			    _txtMoney = transform.Find("skillAndMoney/go_money/txt_money").GetComponent<TMPro.TextMeshProUGUI>();
-			_txtSkillName = transform.Find("skillAndMoney/go_skill/txt_skillName").GetComponent<TMPro.TextMeshProUGUI>();
-		}
+    	private UnityEngine.GameObject _goMoney;
+    	private UnityEngine.GameObject GoMoney 
+    			=> _goMoney ??= transform.Find("go_bg/skillAndMoney/go_money").gameObject;
 
+    	private UnityEngine.GameObject _goSkill;
+    	private UnityEngine.GameObject GoSkill 
+    			=> _goSkill ??= transform.Find("go_bg/skillAndMoney/go_skill").gameObject;
 
-		//AUTO-GENERATE-END
+    	private TMPro.TextMeshProUGUI _txtLevel;
+    	private TMPro.TextMeshProUGUI TxtLevel 
+    			=> _txtLevel ??= transform.Find("go_bg/txt_level").GetComponent<TMPro.TextMeshProUGUI>();
+
+    	private TMPro.TextMeshProUGUI _txtMoney;
+    	private TMPro.TextMeshProUGUI TxtMoney 
+    			=> _txtMoney ??= transform.Find("go_bg/skillAndMoney/go_money/txt_money").GetComponent<TMPro.TextMeshProUGUI>();
+
+    	private TMPro.TextMeshProUGUI _txtSkillName;
+    	private TMPro.TextMeshProUGUI TxtSkillName 
+    			=> _txtSkillName ??= transform.Find("go_bg/skillAndMoney/go_skill/txt_skillName").GetComponent<TMPro.TextMeshProUGUI>();
+
+    	//AUTO-GENERATE-END
 		
 		
 		public void SetLevel(int level)
 		{
-			_txtLevel.text = $"赌局信息：Level{level}" ;
+			TxtLevel.text = $"赌局信息：Level{level}" ;
 		}
 		
 		public void SetMoney(int money)
 		{
 			if (money <= 0)
 			{
-				_goMoney.SetActive(false);
-				_txtMoney.text = "";
+				GoMoney.SetActive(false);
+				TxtMoney.text = "";
 			}
 			else
 			{
-				_txtMoney.text = money.ToString();
+				TxtMoney.text = money.ToString();
 			}
 		}
 		public void SetSkillName(List<string> skillNames)
 		{
 			if (skillNames is not {Count : > 0 })
 			{
-				_goSkill.SetActive(false);
-				_txtSkillName.text = "";
+				GoSkill.SetActive(false);
+				TxtSkillName.text = "";
 				
 			}
 			else
@@ -62,22 +68,23 @@ namespace UI
 				{
 					str += termStr;
 				}
-
-				_txtSkillName.text = str;
+				TxtSkillName.text = str;
 			}
 		}
-
 		public void Init()
 		{
-			gameObject.SetActive(false);
+			GoBg.SetActive(false);
 		}
-
+		public void Hide()
+		{
+			GoBg.SetActive(false);
+		}
 		public void ShowUI(int level,int money,List<string> skillName)
 		{
 			SetLevel(level);
 			SetMoney(money);
 			SetSkillName(skillName);
-			gameObject.SetActive(true);
+			GoBg.SetActive(true);
 		}
     }
 }
