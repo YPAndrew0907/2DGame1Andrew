@@ -21,15 +21,16 @@ namespace AttachMachine
             {
                 _uiState = ui;
                 _uiState.CompareCardUI.Init();
-                
-                NotifyMgr.Register(NotifyDefine.NEXT_ROUND, OnNextRound);
+
+                NotifyMgr.RegisterNotify(NotifyDefine.NEXT_ROUND, OnNextRound);
+                NotifyMgr.RegisterNotify(NotifyDefine.GAME_END_GIVEUP, OnGameGiveUp);
             }
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
             List<KeyValuePair<string, List<CardObj>>> records;
-            if (payload != null && payload is PlayerType playerType)
+            if (payload is PlayerType playerType)
             {
                 // 出千而结束
                 switch (playerType)
@@ -74,19 +75,18 @@ namespace AttachMachine
             {
                 if (DataMgr.Instance.BossEnough && DataMgr.Instance.PlayerEnough)
                 {
-                    yield return _uiState.AttachMachine.EnterState(BetUIState.StateIDStr);
+                    yield return XAttachMachine.EnterState(BetUIState.StateIDStr);
                 }
                 else
                 {
-                    yield return _uiState.AttachMachine.EnterState(GameEndUIState.StateIDStr,
+                    yield return XAttachMachine.EnterState(GameEndUIState.StateIDStr,
                         DataMgr.Instance.PlayerEnough ? GameEndCode.Win : GameEndCode.Lose);
                 }
             }
             else
             {
-                yield return _uiState.AttachMachine.EnterState(GameEndUIState.StateIDStr, GameEndCode.GiveUp);
+                yield return XAttachMachine.EnterState(GameEndUIState.StateIDStr, GameEndCode.GiveUp);
             }
-            
         }
 
         public override void OnUpdate(float deltaTime)
@@ -96,12 +96,12 @@ namespace AttachMachine
 
         private void OnNextRound(NotifyMsg obj)
         {
-            CoroutineMgr.Instance.StartCoroutine(OnExitAsync(null));
+            XAttachMachine.ExitState(StateIDStr);
         }
 
-        private void OnBackHome(NotifyMsg obj)
+        private void OnGameGiveUp(NotifyMsg obj)
         {
-            CoroutineMgr.Instance.StartCoroutine(OnExitAsync(null));
+            XAttachMachine.ExitState(StateIDStr, 1);
         }
     }
 

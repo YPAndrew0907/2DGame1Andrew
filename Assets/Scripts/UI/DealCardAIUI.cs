@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Base;
 using DG.Tweening;
 using Mgr;
 using Obj;
+using Unity.Mathematics;
+using Random = UnityEngine.Random;
+
 namespace UI
 {
     public class DealCardAIUI : BaseViewMono
@@ -21,15 +25,18 @@ namespace UI
     	private UnityEngine.GameObject GoDealDes 
     			=> _goDealDes ??= transform.Find("go_bg/go_DealDes").gameObject;
 
-    	private TMPro.TextMeshProUGUI _txtTotalNum;
-    	private TMPro.TextMeshProUGUI TxtTotalNum 
-    			=> _txtTotalNum ??= transform.Find("go_bg/txt_totalNum").GetComponent<TMPro.TextMeshProUGUI>();
+    	private UnityEngine.GameObject _goRangeNum;
+    	private UnityEngine.GameObject GoRangeNum 
+    			=> _goRangeNum ??= transform.Find("go_bg/go_txt_RangeNum").gameObject;
+
+    	private TMPro.TextMeshProUGUI _txtRangeNum;
+    	private TMPro.TextMeshProUGUI TxtRangeNum 
+    			=> _txtRangeNum ??= transform.Find("go_bg/go_txt_RangeNum").GetComponent<TMPro.TextMeshProUGUI>();
 
     	//AUTO-GENERATE-END
 		public void Init()
 		{
 			GoBg.SetActive(false);
-			MonoAICardHeap.SetCard(null,CardMgr.IsCardShowAICardList);
 		}
 		public void DealToDes(GameObject card)
 		{
@@ -42,7 +49,16 @@ namespace UI
 		public void Show()
 		{
 			GoBg.SetActive(true);
+			MonoAICardHeap.SetCard(null,CardMgr.IsCardShowAICardList);
+			TxtRangeNum.text = String.Empty;
+			GoRangeNum.SetActive(false);
 		}
+
+		public void ShowRangeTxt()
+		{
+			GoRangeNum.SetActive(true);
+		}
+		
 		public void Hide()
 		{
 			GoBg.SetActive(false);
@@ -50,11 +66,15 @@ namespace UI
 			MonoAICardHeap.ClearCard();
 			MonoAICardHeap.RefreshCard();
 		}
+
 		public void ReceiveCard(CardObj card, Vector3 pos)
 		{
 			MonoAICardHeap.AddCard(card);
 			MonoAICardHeap.RefreshCard();
-			TxtTotalNum.text = MonoAICardHeap.CardNum().ToString();
+			var realValue = MonoAICardHeap.CardNum();
+			var min       = math.max(0, realValue - Random.Range(3, 5));
+			var max       = realValue + Random.Range(3, 5);
+			TxtRangeNum.text = $"{min} ~ {max}";
 		}
 
 		public List<CardObj> RemoveToPublic()
@@ -63,12 +83,10 @@ namespace UI
 			MonoAICardHeap.RefreshCard();
 			return termList;
 		}
-
 		public void ClearCard()
 		{
 			MonoAICardHeap.ClearCard();
 		}
-
 		public int CardNum =>  MonoAICardHeap.CardNum();
     }
 }

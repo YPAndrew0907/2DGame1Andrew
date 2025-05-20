@@ -17,7 +17,7 @@ namespace AttachMachine
                 _betUI = ui;
             }
             _betUI.BetUI.Init();
-            NotifyMgr.Register(NotifyDefine.BET_CHIP,OnBetChip);
+            NotifyMgr.RegisterNotify(NotifyDefine.BET_CHIP,OnBetChip);
         }
 
         public override IEnumerator OnEnterAsync(object payload)
@@ -29,7 +29,7 @@ namespace AttachMachine
         public override IEnumerator OnExitAsync(object payload)
         {
             _betUI.BetUI.Hide();
-            yield return _betUI.AttachMachine.EnterState(ShuffleUIState.StateIDStr);
+            yield return XAttachMachine.EnterState(SkillUIState.StateIDStr);
         }
 
         public override void OnUpdate(float deltaTime)
@@ -42,7 +42,7 @@ namespace AttachMachine
             if (obj.Param is NormalParam param)
             {
                 DataMgr.Instance.BetChip(param.IntValue);
-                CoroutineMgr.Instance.StartCoroutine(OnExitAsync(null));
+                XAttachMachine.ExitState(StateIDStr);
             }
         }
     }

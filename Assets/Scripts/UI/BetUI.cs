@@ -82,7 +82,7 @@ namespace UI
 	        if (DataMgr.Instance.Money< _curChipNum)
 		        return;
 	        
-	        NotifyMgr.Instance.SendEvent(NotifyDefine.BET_CHIP,_curChipNum);
+	        NotifyMgr.SendEvent(NotifyDefine.BET_CHIP,_curChipNum);
         }
         
         private void ChipNumChange()

@@ -26,7 +26,8 @@ namespace AttachMachine
                 _dealCardUI = ui;
                 _dealCardUI.DealCardPlayerUI.Init();
                 _dealCardUI.DealCardAIUI.Init();
-                NotifyMgr.Register(NotifyDefine.NEXT_ROUND,OnNextRound);
+                NotifyMgr.RegisterNotify(NotifyDefine.NEXT_ROUND,OnNextRound);
+                NotifyMgr.RegisterNotify(NotifyDefine.SKILL_SELECT,OnSelectSkill);
             }
         }
 
@@ -46,25 +47,39 @@ namespace AttachMachine
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            if (payload is List<CardObj> list)
+            if (payload == null)
             {
-                yield return DealCards(list);
-                yield return OnExitAsync(null);
-                yield break;
-            }
-            if (payload is CardObj cardObj)
-            {
-                yield return DealCard(cardObj);
-                yield return OnExitAsync(null);
-                yield break;
-            }
+                // 一般发牌
+                var card = CardMgr.Instance.Deal();
+                card.Owner = DataMgr.Instance.LastPlayerType;
 
-            Debug.LogError(LogTxt.PARAM_ERROR);
+                yield return DealCard(card);
+                yield return XAttachMachine.ExitStateCor(StateIDStr);
+            }
+            else
+            {
+                // 首次发牌
+                var cards = CardMgr.Instance.GetCards(4);
+
+                cards[0].IsFirstCard = true;
+                cards[1].IsFirstCard = true;
+
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    if (i % 2 != 0)
+                        cards[i].Owner = PlayerType.Player;
+                    else
+                        cards[i].Owner = PlayerType.AI;
+                }
+
+                yield return DealCards(cards);
+                yield return XAttachMachine.ExitStateCor(StateIDStr);
+            }
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            yield return _dealCardUI.AttachMachine.EnterState(AskCardUIState.StateIDStr);
+            yield return XAttachMachine.EnterState(AskCardUIState.StateIDStr);
         }
 
         public override void OnUpdate(float deltaTime)
@@ -76,7 +91,7 @@ namespace AttachMachine
         {
             while (cardObjs.Count > 0)
             {
-                var card = cardObjs.Last();
+                var card = cardObjs.First();
                 cardObjs.Remove(card);
 
                 yield return DealCard(card);
@@ -85,9 +100,8 @@ namespace AttachMachine
 
         private IEnumerator DealCard(CardObj card)
         {
-            Debug.Log($"【获得牌】{card}");
-            NotifyMgr.Instance.SendEvent(NotifyDefine.DEAL_CARD,card);
-                
+            Debug.Log($"【获得牌】{card.Owner} --> {card}");
+            NotifyMgr.SendEvent(NotifyDefine.DEAL_CARD,card);
             DataMgr.Instance.AddCardToAIOrPlayer(card);
             if (card.Owner == PlayerType.Player)
             {
@@ -105,13 +119,25 @@ namespace AttachMachine
         {
             var playerCards = _dealCardUI.DealCardPlayerUI.RemoveToPublic();
             var aiCards     = _dealCardUI.DealCardAIUI.RemoveToPublic();
-            _dealCardUI.PlayedCardUI.AddCards(playerCards);
-            _dealCardUI.PlayedCardUI.AddCards(aiCards);
+
+            playerCards.AddRange(aiCards);
+            NotifyMgr.SendEvent(NotifyDefine.COLLECT_PLAYED_CARD, playerCards);
+        }
+
+        private void OnSelectSkill(NotifyMsg obj)
+        {
+            if (obj.Param is NormalParam param)
+            {
+                PlayerSkill skill = (PlayerSkill)param.IntValue;
+                if (skill == PlayerSkill.Guess)
+                {
+                    _dealCardUI.DealCardAIUI.ShowRangeTxt();
+                }
+            }
         }
     }
     public interface IDealCardUIState:IBaseAttachUI
     {
-        public PlayedCardUI     PlayedCardUI     { get; }
         public TotalCardHeapUI  TotalCardHeapUI  { get;  }
         public DealCardAIUI     DealCardAIUI     { get;  }
         public DealCardPlayerUI DealCardPlayerUI { get;}

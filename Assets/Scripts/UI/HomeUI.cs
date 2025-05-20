@@ -40,7 +40,7 @@ namespace UI
 	    }
 	    private void Refresh()
 	    {
-		    TxtLevel.text = "Level: " + DataMgr.Instance.CurLevel;
+		    TxtLevel.text = "Level: __" + DataMgr.Instance.CurLevel;
 	    } 
 	    public void ShowUI()
 	    {
@@ -58,8 +58,15 @@ namespace UI
 		}
 		private void OnStartClick()
 		{
-			GoBg.SetActive(false);
-			NotifyMgr.Instance.SendEvent(NotifyDefine.GAME_READY, DataMgr.Instance.CurLevel);
+			if (DataMgr.Instance.PlayerEnough)
+			{
+				NotifyMgr.SendEvent(NotifyDefine.GAME_READY, DataMgr.Instance.CurLevel);
+				GoBg.SetActive(false);
+			}
+			else
+			{
+				NotifyMgr.SendEvent(NotifyDefine.NOTICE,"筹码不够，无法开始游戏");
+			}
 		}
 		private void OnQuitClick()
 		{

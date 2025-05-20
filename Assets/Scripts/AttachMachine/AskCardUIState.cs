@@ -26,16 +26,16 @@ namespace AttachMachine
             {
                 _askCardUI = askCardUI;
                 _askCardUI.AskCardUI.Init();
-                NotifyMgr.Register(NotifyDefine.ASK_CARD,OnAskCard);
+                NotifyMgr.RegisterNotify(NotifyDefine.ASK_CARD,OnAskCard);
             }
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
             var curPlayer = DataMgr.Instance.CurPlayerType;
-            if (curPlayer == PlayerType.Public)
+            if (curPlayer == PlayerType.None)
             {
-                yield return OnExitAsync(null);
+                yield return XAttachMachine.ExitStateCor(StateIDStr);
             }
             else
             {
@@ -55,15 +55,12 @@ namespace AttachMachine
             Debug.Log($"切换到 {nextPlayer} 要牌");
             if (_isAskCard)
             {
-                var card = CardMgr.Instance.Deal();
-                card.Owner = curPlayer;
-             
-                yield return _askCardUI.AttachMachine.EnterState(DealCardUIState.StateIDStr, card);
+                yield return XAttachMachine.EnterState(DealCardUIState.StateIDStr);
             }
             else
             {
                 var anyIsContinue = DataMgr.Instance.AIIsContinue || DataMgr.Instance.PlayerIsContinue;
-                yield return _askCardUI.AttachMachine.EnterState(anyIsContinue ? StateIDStr : CompareCardUIState.StateIDStr);
+                yield return XAttachMachine.EnterState(anyIsContinue ? StateIDStr : CompareCardUIState.StateIDStr);
             }
         }
 
@@ -92,7 +89,7 @@ namespace AttachMachine
                     else
                         DataMgr.Instance.PlayerIsContinue = false;
                 }
-                CoroutineMgr.Instance.StartCoroutine(OnExitAsync(null));
+                XAttachMachine.ExitState(StateIDStr);
             }
         }
     }

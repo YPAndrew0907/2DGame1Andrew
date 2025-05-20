@@ -23,6 +23,7 @@ namespace AttachMachine
                 _gameEndUI = ui;
                 _gameEndUI.GameLossUI.Init();
                 _gameEndUI.GameWinUI.Init();
+                NotifyMgr.RegisterNotify(NotifyDefine.CLOSE_GAME_END_UI, OnCloseGameEndUI);
             }
         }
 
@@ -30,14 +31,16 @@ namespace AttachMachine
         {
             if (payload is GameEndCode endCode)
             {
+                _curCode = endCode;
+                var moneyDelta = DataMgr.Instance.Money - DataMgr.Instance.StartMoney;
                 switch (endCode)
                 {
                     case GameEndCode.GiveUp:
                     case GameEndCode.Lose:
-                        _gameEndUI.GameLossUI.Show(endCode);
+                        _gameEndUI.GameLossUI.Show(endCode,moneyDelta);
                         break;
                     case GameEndCode.Win:
-                        _gameEndUI.GameWinUI.Show(endCode);
+                        _gameEndUI.GameWinUI.Show(endCode,moneyDelta);
                         break;
                 }
             }
@@ -51,16 +54,26 @@ namespace AttachMachine
                 case GameEndCode.Win: 
                     _gameEndUI.GameWinUI.Hide();
                     break;
+                case GameEndCode.GiveUp:
                 case GameEndCode.Lose: 
                     _gameEndUI.GameLossUI.Hide();
                     break;
+                default:               throw new ArgumentOutOfRangeException(_curCode.ToString());
             }
+
+            _curCode = GameEndCode.None;
+            NotifyMgr.SendEvent(NotifyDefine.GAME_END_BACK_HOME);
             yield break;
         }
 
         public override void  OnUpdate(float deltaTime)
         {
             
+        }
+
+        private void OnCloseGameEndUI(NotifyMsg obj)
+        {
+            XAttachMachine.ExitState(StateIDStr, 1);
         }
     }
 

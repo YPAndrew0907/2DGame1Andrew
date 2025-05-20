@@ -43,12 +43,16 @@ namespace UI
 		public void Init()
 		{
 			GoBg.SetActive(false);
-			MonoCards2.SetCard(null,_=> false);
+			MonoCards2.SetCard(null, CardMgr.IsCardShowTotalCardList);
+			shuffleAni.alpha =0;
 		}
 		
 		public void Show()
 		{
 			GoBg.SetActive(true);
+			_remainCard = null;
+			MonoCards2.ClearCard();
+			MonoCards2.RefreshCard();
 		}
 		public void Hide()
 		{
@@ -63,16 +67,17 @@ namespace UI
 		public IEnumerator CorShuffleStart()
 		{
 			shuffleAni.alpha = 0;
-			shuffleAni.blocksRaycasts = true;
-			shuffleAni.DOFade(1, 0.3f);
-			yield return new WaitForSeconds(0.32f);
+			TxtTitle.text    = "开始洗牌";
+			shuffleAni.DOFade(1, 0.4f);
+			yield return new WaitForSeconds(0.5f);
+			TxtTitle.text    = "洗牌中";
+			yield return new WaitForSeconds(1.4f);
 		}
 		public IEnumerator CorShuffleEnd()
 		{
-			yield return new WaitForSeconds(0.1f);
-			shuffleAni.DOFade(0, 0.3f);
-			yield return new WaitForSeconds(0.32f);
-			shuffleAni.blocksRaycasts = false;
+			TxtTitle.text    = "洗牌结束";
+			shuffleAni.DOFade(0, .7f);
+			yield return new WaitForSeconds(.8f);
 		}
 		// 需要外部调用的部分。
 		public IEnumerator StartShuffle(PlayerType shuffleRole)
@@ -95,9 +100,12 @@ namespace UI
 
 		public void RefreshTotalCard(params CardObj[] cards)
 		{
-			foreach (var card in cards)
+			if (cards is {Length:>0})
 			{
-				_remainCard.Remove(card);
+				foreach (var card in cards)
+				{
+					_remainCard.Remove(card);
+				}
 			}
 			MonoCards2.SetCard(_remainCard,CardMgr.IsCardShowTotalCardList);
 			// 移除刚发的牌，然后刷新

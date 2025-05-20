@@ -42,7 +42,7 @@ namespace Mgr
             }
         }
 
-        public static void Register(long eventId, Action<NotifyMsg> action)
+        public static void RegisterNotify(long eventId, Action<NotifyMsg> action)
         {
             if (!Listener.TryGetValue(eventId, out var actions))
             {
@@ -53,20 +53,36 @@ namespace Mgr
             actions.Add(action);
         }
 
-        public static void UnRegister(long eventId, Action<NotifyMsg> action)
+        public static void UnRegisterNotify(long eventId, Action<NotifyMsg> action)
         {
             if (Listener.TryGetValue(eventId, out var actions))
             {
                 actions.Remove(action);
             }
         }
+        public static void RegisterNotify(Dictionary<int, Action<NotifyMsg>> eventDic)
+        {
+            foreach (var (eventId, action) in eventDic)
+            {
+                RegisterNotify(eventId, action);
+            }
+        }
 
+        public static void UnRegisterNotify(Dictionary<int, Action<NotifyMsg>> eventDic)
+        {
+            foreach (var (eventId, action) in eventDic)
+            {
+                UnRegisterNotify(eventId, action);
+            }
+        }
+
+        
         /// <summary>
         /// 
         /// </summary>
         /// <param name="eventId"></param>
         /// <param name="param">只能是 int, long, float, double, INotifyValue, ArrayList, </param>
-        public void SendEvent(int eventId, params object[] param)
+        public static void SendEvent(int eventId, params object[] param)
         {
             var eventMsg = CreateEventMsg(eventId);
 
@@ -115,35 +131,7 @@ namespace Mgr
 
             SendEvent(eventMsg);
         }
-
-        public void RegisterEvent(int eventId, Action<NotifyMsg> onEvent)
-        {
-            NotifyMgr.Register(eventId, onEvent);
-        }
-
-        public void UnRegisterEvent(int eventId, Action<NotifyMsg> onEvent)
-        {
-            NotifyMgr.UnRegister(eventId, onEvent);
-        }
-
-        public void RegisterEvent(Dictionary<int, Action<NotifyMsg>> eventDic)
-        {
-            foreach (var (eventId, action) in eventDic)
-            {
-                RegisterEvent(eventId, action);
-            }
-        }
-
-        public void UnRegisterEvent(Dictionary<int, Action<NotifyMsg>> eventDic)
-        {
-            foreach (var (eventId, action) in eventDic)
-            {
-                UnRegisterEvent(eventId, action);
-            }
-        }
-
-
-
+        
         public static NotifyMsg CreateEventMsg(int eventId)
         {
             return new NotifyMsg(eventId, Instance.EventUid);

@@ -13,8 +13,8 @@ namespace Mgr
     {
         public           IReadOnlyList<CardObj> Cards;                                    // 所有的牌
         private readonly CardObj[]              _cards = new CardObj[GameCfg.MaxCardNum]; // 所有的牌
-
-        private int _curCardIndex = 0;
+        // public static    List<CardObj>          RememberCardList { get; set; }
+        private          int                    _curCardIndex = 0;
         
         public CardMgr()
         {
@@ -29,6 +29,21 @@ namespace Mgr
 
             Cards = _cards;
             _curCardIndex = Cards.Count - 1;
+        }
+
+        public void ResetCards()
+        {
+            Array.Sort(_cards);
+            
+            _curCardIndex = _cards.Length -1;
+            foreach (var cardObj in _cards)
+            {
+                cardObj.IsRemembered = false;
+                cardObj.IsFirstCard  = false;
+                cardObj.IsShowRange  = false;
+                cardObj.Owner        = PlayerType.None;
+                cardObj.TimeTicks    = DateTime.Now.Ticks;
+            }
         }
         
         // 洗牌
@@ -73,13 +88,28 @@ namespace Mgr
 
             return result;
         }
+        public void RememberCard(List<CardObj> list)
+        {
+            foreach (var rCardObj in list)
+            {
+                rCardObj.IsRemembered = true;
+            }
+        } 
+        
         public static bool IsCardShowCompareResult(CardObj cardObj) => true;
+        public static bool IsCardShowSelectCard(CardObj cardObj) => true;
         public static bool IsCardShowSkillCardList(CardObj cardObj) => true;
-        public static bool IsCardShowTotalCardList(CardObj cardObj) => false;
+        public static bool IsCardShowTotalCardList(CardObj cardObj)
+        {
+            return cardObj.IsRemembered;
+        }
+
         public static bool IsCardShowPlayedCardList(CardObj cardObj) => true;
 
         public static bool IsCardShowPlayerCardList(CardObj cardObj) => true;
-        public static bool IsCardShowAICardList(CardObj cardObj) => cardObj.IsFaceUp;
-
+        public static bool IsCardShowAICardList(CardObj cardObj)
+        {
+            return cardObj.IsFirstCard || cardObj.IsRemembered;
+        }
     }
 }

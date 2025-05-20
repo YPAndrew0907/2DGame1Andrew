@@ -4,7 +4,7 @@ using UI;
 
 namespace AttachMachine
 {
-    public abstract class BaseGameUIState : IAttachNode
+    public abstract class BaseGameUIState : IAttachState
     {
         public abstract string      StateID { get; }
         public abstract void        OnCreate(IMachineMaster sceneUI);

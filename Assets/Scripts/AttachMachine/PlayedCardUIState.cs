@@ -1,4 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using Mgr;
+using Obj;
 using UI;
 using XYZFrameWork;
 
@@ -16,6 +19,16 @@ namespace AttachMachine
             {
                 _uiState = ui;
                 _uiState.PlayedCardUI.Init();
+                NotifyMgr.RegisterNotify(NotifyDefine.COLLECT_PLAYED_CARD,OnCollectPlayedCard);
+            }
+        }
+
+        private void OnCollectPlayedCard(NotifyMsg obj)
+        {
+            if (obj.Param is CustomParam param)
+            {
+                List<CardObj> list = param.Value as List<CardObj>;
+                _uiState.PlayedCardUI.AddCards(list);
             }
         }
 

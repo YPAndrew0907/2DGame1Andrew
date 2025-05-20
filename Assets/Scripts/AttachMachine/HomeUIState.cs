@@ -22,6 +22,7 @@ namespace AttachMachine
 
         public override IEnumerator OnEnterAsync(object payload)
         {
+            DataMgr.Instance.LoadCurLevelInfo();
             _homeUIState.HomeUI.ShowUI();
             yield break;
         }

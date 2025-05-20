@@ -28,10 +28,12 @@ namespace UI
         public void Init()
         {
 	        GoBg.SetActive(false);
+	        MonoCards2.SetCard(null, CardMgr.IsCardShowPlayedCardList);
         }
         public void Show()
         {
-	        MonoCards2.SetCard(null, CardMgr.IsCardShowPlayedCardList);
+	        MonoCards2.ClearCard();
+	        MonoCards2.RefreshCard();
 	        GoBg.SetActive(true);
         }
         public void Hide()

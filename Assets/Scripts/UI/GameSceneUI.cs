@@ -5,8 +5,7 @@ using XYZFrameWork;
 namespace UI
 {
 	public class GameSceneUI : BaseViewMono, IMachineMaster,
-	                           IHomeUIState, ITotalCardHeapUI, ISkillUI, IShuffleUIState, IDealCardUIState, IBetUI, IPlayerInfoUIState, IAskCardUIState, IPlayedCardUIState, ICompareCardUIState, IGameEndUIState,
-	                           AttachMachine.IMachineMaster
+	                           IHomeUIState, ITotalCardHeapUI, ISkillUI, IShuffleUIState, IDealCardUIState, IBetUI, IPlayerInfoUIState, IAskCardUIState, IPlayedCardUIState, ICompareCardUIState, IGameEndUIState,INoticeMsgState
 	{
 		//AUTO-GENERATE
 		private UI.AskCardUI _monoAskUI;
@@ -49,6 +48,10 @@ namespace UI
 		private UI.LevelInfoUI MonoLevelInfo 
 				=> _monoLevelInfo ??= transform.Find("mono_LevelInfo").GetComponent<UI.LevelInfoUI>();
 
+		private UI.NoticeMsgUI _monoNoticeMsgUI;
+		private UI.NoticeMsgUI MonoNoticeMsgUI 
+				=> _monoNoticeMsgUI ??= transform.Find("mono_NoticeMsgUI").GetComponent<UI.NoticeMsgUI>();
+
 		private UI.PlayedCardUI _monoPlayedCardUI;
 		private UI.PlayedCardUI MonoPlayedCardUI 
 				=> _monoPlayedCardUI ??= transform.Find("mono_PlayedCardUI").GetComponent<UI.PlayedCardUI>();
@@ -62,40 +65,41 @@ namespace UI
 				=> _monoTotalCardHeap ??= transform.Find("mono_TotalCardHeap").GetComponent<UI.TotalCardHeapUI>();
 
 		//AUTO-GENERATE-END
-		XAttachMachine _xAttachMachine;
 		protected void Awake()
 		{
-			_xAttachMachine = new XAttachMachine(this);
-			_xAttachMachine.RegisterState(new AskCardUIState());
-			_xAttachMachine.RegisterState(new BetUIState());
-			_xAttachMachine.RegisterState(new CompareCardUIState());
-			_xAttachMachine.RegisterState(new DealCardUIState());
-			_xAttachMachine.RegisterState(new GameEndUIState());
-			_xAttachMachine.RegisterState(new HomeUIState());
-			_xAttachMachine.RegisterState(new PlayerInfoUIState());
-			_xAttachMachine.RegisterState(new PlayedCardUIState());
-			_xAttachMachine.RegisterState(new SkillUIState());
-			_xAttachMachine.RegisterState(new ShuffleUIState());
-			_xAttachMachine.RegisterState(new TotalCardHeapUIState());
+			XAttachMachine.SetMaster(this);
+			XAttachMachine.RegisterState(new AskCardUIState());
+			XAttachMachine.RegisterState(new BetUIState());
+			XAttachMachine.RegisterState(new CompareCardUIState());
+			XAttachMachine.RegisterState(new DealCardUIState());
+			XAttachMachine.RegisterState(new GameEndUIState());
+			XAttachMachine.RegisterState(new HomeUIState());
+			XAttachMachine.RegisterState(new NoticeMsgUIState());
+			XAttachMachine.RegisterState(new PlayerInfoUIState());
+			XAttachMachine.RegisterState(new PlayedCardUIState());
+			XAttachMachine.RegisterState(new SkillUIState());
+			XAttachMachine.RegisterState(new ShuffleUIState());
+			XAttachMachine.RegisterState(new TotalCardHeapUIState());
 			// 进入首页状态
-			_xAttachMachine.StartMachine(HomeUIState.StateIDStr);
-			NotifyMgr.Register(NotifyDefine.GAME_READY, OnGameReady);
-			NotifyMgr.Register(NotifyDefine.GAME_END_BACK_HOME, OnGameEndBackHome);
+			
+			XAttachMachine.StartMachine(HomeUIState.StateIDStr);
+			NotifyMgr.RegisterNotify(NotifyDefine.GAME_READY, OnGameReady);
+			NotifyMgr.RegisterNotify(NotifyDefine.GAME_END_BACK_HOME, OnGameEndBackHome);
 		}
 		private void Update()
 		{
-			_xAttachMachine.Update();
+			XAttachMachine.Instance.Update();
 		}
 		private void OnGameReady(NotifyMsg obj)
 		{
-			_xAttachMachine.ActiveAll();
-			CoroutineMgr.Instance.StartCoroutine(_xAttachMachine.SwitchState(HomeUIState.StateIDStr,
+			XAttachMachine.ActiveAll();
+			CoroutineMgr.Instance.StartCoroutine(XAttachMachine.SwitchState(HomeUIState.StateIDStr,
 				BetUIState.StateIDStr));
 		}
 		private void OnGameEndBackHome(NotifyMsg obj)
 		{
-			_xAttachMachine.InActiveAll();
-			CoroutineMgr.Instance.StartCoroutine(_xAttachMachine.EnterState(HomeUIState.StateIDStr));
+			XAttachMachine.InActiveAll();
+			CoroutineMgr.Instance.StartCoroutine(XAttachMachine.EnterState(HomeUIState.StateIDStr));
 		}
         #region UI元素
 		public GuessOrRememberUI GuessOrRememberUI => MonoGuessOrRemember;
@@ -114,7 +118,7 @@ namespace UI
 		public PlayedCardUI      PlayedCardUI      => MonoPlayedCardUI;
 		public TotalCardHeapUI   ShuffleUIState    => TotalCardHeapUI;
 		public CompareCardUI     CompareCardUI     => MonoCompareCardUI;
+		public NoticeMsgUI       NoticeMsgUI       => MonoNoticeMsgUI;
         #endregion
-		public XAttachMachine AttachMachine => _xAttachMachine;
 	}
 }

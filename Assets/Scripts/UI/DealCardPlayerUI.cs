@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using XYZFrameWork.Base;
 using TMPro;
@@ -31,11 +32,12 @@ namespace UI
 		public void Init()
 		{
 			GoBg.SetActive(false);
-			MonoPlayerCardHeap.SetCard(null,CardMgr.IsCardShowPlayerCardList);
 		}
 		public void Show()
 		{
 			GoBg.SetActive(true);
+			MonoPlayerCardHeap.SetCard(null,CardMgr.IsCardShowPlayerCardList);
+			TxtTotalNum.text = String.Empty;
 		}
 		public void Hide()
 		{

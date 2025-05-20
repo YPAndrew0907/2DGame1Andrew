@@ -38,7 +38,7 @@ namespace UI
 		
 		public void SetLevel(int level)
 		{
-			TxtLevel.text = $"赌局信息：Level{level}" ;
+			TxtLevel.text = $"赌局信息：Level - {level}" ;
 		}
 		
 		public void SetMoney(int money)

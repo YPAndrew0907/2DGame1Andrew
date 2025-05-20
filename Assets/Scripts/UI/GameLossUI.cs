@@ -1,4 +1,6 @@
+using System;
 using Base;
+using Mgr;
 using Obj;
 namespace UI
 {
@@ -26,8 +28,31 @@ namespace UI
     			=> _txtTitle ??= transform.Find("go_bg/txt_Title").GetComponent<TMPro.TextMeshProUGUI>();
 
     	//AUTO-GENERATE-END
-        public void Show(GameEndCode endCode)
+
+	    private const string LossStr     = "闯关失败";
+	    private const string GiveUpStr     = "放弃闯关";
+	    private const string LossStrEarn = "停下了闯关得脚步，但是获得筹码{0}";
+	    private const string LossStrLoss = "停下了闯关得脚步，损失筹码{0}";
+        public void Show(GameEndCode endCode, int moneyDelta)
         {
+	        switch (endCode)
+	        {
+		        case GameEndCode.Lose:
+					TxtTitle.text = LossStr;
+			        break;
+		        case GameEndCode.GiveUp:
+			        TxtTitle.text = GiveUpStr;
+			        break;
+		        default:                 throw new ArgumentOutOfRangeException(nameof(endCode), endCode, null);
+	        }
+	        if (moneyDelta>0)
+	        {
+		        TxtInfo.text = string.Format(LossStrEarn, moneyDelta);
+	        }
+	        else
+	        {
+		        TxtInfo.text = string.Format(LossStrLoss, moneyDelta);
+	        }
             GoBg.SetActive(true);
         }
         public void Hide()
@@ -37,6 +62,13 @@ namespace UI
         public void Init()
         {
             Hide();
+            BtnBackHome.onClick.RemoveAllListeners();
+            BtnBackHome.onClick.AddListener(OnBackHome);
+        }
+
+        private void OnBackHome()
+        {
+	        NotifyMgr.SendEvent(NotifyDefine.CLOSE_GAME_END_UI);
         }
     }
 }

@@ -2,32 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
 using Mgr;
-using UI;
-using Unity.VisualScripting;
 using XYZFrameWork;
+using XYZFrameWork.Base;
 
 namespace AttachMachine
 {
-    public class XAttachMachine
+    public class XAttachMachine: BaseAutoMonoSingle<XAttachMachine>
     {
-        private  IMachineMaster _owner;
+        private static IMachineMaster _owner;
         
-        // 运行时数据
-        private          Dictionary<string, IAttachNode> _nodes = new Dictionary<string, IAttachNode>();
-        private          Coroutine                       _activeCoroutine;
-        private          CancellationTokenSource         _cts;
-        private readonly List<string>                    _stateHistory = new List<string>(20);
-
-        // 调试配置
-        [Header("Debug Settings")]
-        private bool _enableDebugLog = true; 
-
-        // 公开属性
-        public IReadOnlyList<string> StateHistory => _stateHistory.AsReadOnly();
-
-        public XAttachMachine(IMachineMaster owner)
+        private static readonly Dictionary<string, IAttachState> States = new();
+        private static readonly Dictionary<string, IAttachState> CurState = new();
+        
+        public static void SetMaster(IMachineMaster owner)
         {
             _owner = owner;
         }
@@ -35,96 +23,103 @@ namespace AttachMachine
         /// <summary>
         /// 注册节点
         /// </summary>
-        public void RegisterState(IAttachNode state)
+        public static void RegisterState(IAttachState state)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
 
             string stateID = state.StateID;
-            if (_nodes.ContainsKey(stateID))
+            if (States.ContainsKey(stateID))
             {
                 Debug.LogWarning($"状态 {stateID} 已存在，注册失败");
                 return;
             }
 
             state.OnCreate(_owner);
-            _nodes.Add(stateID, state);
+            States.Add(stateID, state);
+        }
+
+        public static IAttachState GetState(string stateId)
+        {
+            if (States.TryGetValue(stateId, out IAttachState attachState))
+            {
+                return attachState;
+            }
+
+            Debug.LogWarning($"状态 {stateId} 不存在，获取失败");
+            return null;
         }
 
         /// <summary>
         /// 启动状态机
         /// </summary>
-        public void StartMachine(string initialStateID)
-        { 
-           CoroutineMgr.Instance.StartCoroutine( EnterState(initialStateID));
+        public static void StartMachine(string initialStateID)
+        {
+            CoroutineMgr.Instance.StartCoroutine(EnterState(initialStateID));
         }
 
-        public IEnumerator EnterState(string stateId, object payload = null)
+        public static IEnumerator EnterState(string stateId, object payload = null)
         {
-            if (_nodes.TryGetValue(stateId, out var initialState))
+            if (States.TryGetValue(stateId, out var initialState))
             {
                 Debug.Log($"【进状态】 :{stateId}");
+                CurState.Add(stateId, initialState);
                 yield return initialState.OnEnterAsync(payload);
-                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ENTER_STATE, stateId);
+                NotifyMgr.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ENTER_STATE, stateId);
                 yield break;
             }
 
             Debug.LogError($"【未注册】： {stateId}");
         }
 
-        public IEnumerator SwitchState(string exitState, string enterState, object payload = null)
+        public static IEnumerator SwitchState(string exitState, string enterState, object payload = null)
         {
-            yield return  ExitState(exitState);
+            yield return  ExitStateCor(exitState);
             Debug.Log($"【切状态】： {exitState}-->{enterState}");
             yield return EnterState(enterState,payload);
         }
-        
-        public IEnumerator ExitState(string stateId)
+
+        public static void ExitState(string stateId, object payload = null)
         {
-            if (_nodes.TryGetValue(stateId, out var initialState))
+            CoroutineMgr.Instance.StartCoroutine(ExitStateCor(stateId, payload));
+        }
+        
+        public static IEnumerator ExitStateCor(string stateId, object payload = null)
+        {
+            if (States.TryGetValue(stateId, out var initialState))
             {
-                CoroutineMgr.Instance.StartCoroutine(initialState.OnExitAsync(null));
-                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_EXIT_STATE, stateId);
+                CurState.Remove(stateId);
+                yield return initialState.OnExitAsync(payload);
+                NotifyMgr.SendEvent(NotifyDefine.X_ATTACH_MACHINE_EXIT_STATE, stateId);
                 yield break;
             }
             
             Debug.LogError($"【未注册】： {stateId}");
         }
 
-        public void ActiveAll()
+        public static void ActiveAll()
         {
-            foreach (var node in _nodes)
+            foreach (var node in States)
             {
                 node.Value.OnActive();
-                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ACTIVE_STATE, node.Key);
+                NotifyMgr.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ACTIVE_STATE, node.Key);
             }
         }
 
-        public void InActiveAll()
+        public static void InActiveAll()
         {
-            foreach (var node in _nodes)
+            foreach (var node in States)
             {
                 node.Value.OnInActive();
-                NotifyMgr.Instance.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ACTIVE_STATE, node.Key);
+                NotifyMgr.SendEvent(NotifyDefine.X_ATTACH_MACHINE_ACTIVE_STATE, node.Key);
             }
         }
-
+        
         public void Update()
         {
-            foreach (var (key,node) in _nodes)
+            foreach (var (key,node) in States)
             {
                 node.OnUpdate(Time.deltaTime);
             }
         }
-
-        private void OnDestroy()
-        {
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _owner.StopAllCoroutines();
-        }
-    }
-    public interface IMachineMaster
-    {
-        void StopAllCoroutines();
     }
 }

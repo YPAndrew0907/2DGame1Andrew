@@ -2,6 +2,7 @@
 {
     public enum GameEndCode
     {
+        None,
         Win,
         Lose,
         GiveUp,
@@ -9,8 +10,8 @@
 
     public enum PlayerType
     {
-        None =-1,
-        Public,
+        None = 0,
+        Public, // 已使用的牌堆。
         Player,
         AI,
     }

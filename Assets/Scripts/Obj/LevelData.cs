@@ -48,10 +48,17 @@ namespace Obj
     {
         None,
         NoInit= 1 << 1,
-        // 集中观察 或 记忆 
+        
+        /// <summary>
+        /// 集中观察（猜测手牌大致范围）
+        /// </summary>
         Guess = 1 << 2,
+        /// <summary>
+        /// 记忆（洗牌时记忆几张牌的位置）
+        /// </summary>
         Remember = 1 << 3,
         GuessOrRemember = Guess | Remember | NoInit,
+        
         // 神速伸缩。开局带一张牌，自己回合可以进行更换。
         SwitchCard = 1 << 4,
         // 自然谎言

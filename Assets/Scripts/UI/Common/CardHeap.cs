@@ -82,7 +82,7 @@ namespace UI
 		}
 		public void RefreshCard()
 		{
-			_cardDataList.Sort(CompareByTicks); 
+			// _cardDataList.Sort(CompareByTicks); 
 			var delta = _cardGoList.Count - _cardDataList.Count;
 			var absDelta = math.abs(delta);
 			if (delta < 0)
@@ -104,13 +104,14 @@ namespace UI
 					_cardGoList[i].SetCard(null,_isCardShowFunc);
 				}
 			}
-			TxtTitleAndNum.text = string.Format(prefixTitle, _cardDataList.Count);
+
+			TxtTitleAndNum.text = prefixTitle.Contains("{") ? string.Format(prefixTitle, _cardDataList.Count) : string.Format(prefixTitle);
 		}
 
-		private int CompareByTicks(CardObj a,CardObj b)
-		{
-			return a.TimeTicks.CompareTo(b.TimeTicks);
-		}
+		// private int CompareByTicks(CardObj a,CardObj b)
+		// {
+		// 	return a.TimeTicks.CompareTo(b.TimeTicks);
+		// }
 		public List<CardObj> RemoveAll()
 		{
 			var termList = _cardDataList;
@@ -139,7 +140,9 @@ namespace UI
 			}
 			var go = Instantiate(cardItemPrefab,RectCards);
 			go.gameObject.SetActive(false);
-			var script= go.GetComponent<CardItem>();
+			var        script  = go.GetComponent<CardItem>();
+			
+			cardItemPrefab.CopyEventTrigger(script);// 拷贝触发事件。这个拷贝时因为序列化问题会丢失。
 			
 			if (obj != null)
 			{

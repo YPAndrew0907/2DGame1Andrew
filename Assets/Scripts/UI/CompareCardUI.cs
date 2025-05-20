@@ -11,9 +11,9 @@ namespace UI
     public class CompareCardUI : BaseViewMono
     {
     	//AUTO-GENERATE
-    	private UnityEngine.UI.Button _btnBackHome;
-    	private UnityEngine.UI.Button BtnBackHome 
-    			=> _btnBackHome ??= transform.Find("go_Bg/bg/btn_BackHome").GetComponent<UnityEngine.UI.Button>();
+    	private UnityEngine.UI.Button _btnGiveUp;
+    	private UnityEngine.UI.Button BtnGiveUp 
+    			=> _btnGiveUp ??= transform.Find("go_Bg/bg/btn_GiveUp").GetComponent<UnityEngine.UI.Button>();
 
     	private UnityEngine.UI.Button _btnNextRound;
     	private UnityEngine.UI.Button BtnNextRound 
@@ -84,37 +84,34 @@ namespace UI
 		    GoBg.SetActive(true);
 	    }
 	    public void Hide()
-        {
-            GoBg.SetActive(false);
-            TxtAIName.text     = String.Empty;
-            TxtAIName.text = String.Empty;
-            MonoAICards.ClearCard();
-            MonoAICards.RefreshCard();
-            
-            TxtPlayerName.text = String.Empty;
-            TxtPlayerCardNum.text = String.Empty;
-            MonoPlayerCards.ClearCard();
-            MonoPlayerCards.RefreshCard();
-        }
-	    
-        public void Init()
+	    {
+		    GoBg.SetActive(false);
+		    TxtAIName.text = String.Empty;
+		    TxtAIName.text = String.Empty;
+		    MonoAICards.ClearCard();
+		    MonoAICards.RefreshCard();
+		    TxtPlayerName.text    = String.Empty;
+		    TxtPlayerCardNum.text = String.Empty;
+		    MonoPlayerCards.ClearCard();
+		    MonoPlayerCards.RefreshCard();
+	    }
+	    public void Init()
         {
 	        Hide();
 	        BtnNextRound.onClick.RemoveAllListeners();
 	        BtnNextRound.onClick.AddListener(OnClickNextRound);
-	        BtnBackHome.onClick.RemoveAllListeners();
-	        BtnBackHome.onClick.AddListener(OnClickBackHome);
+	        BtnGiveUp.onClick.RemoveAllListeners();
+	        BtnGiveUp.onClick.AddListener(OnClickGiveUp);
         }
         // 填充玩家与ai对局数据。
         // 绑定按钮方法
         private void OnClickNextRound() 
         {
-			NotifyMgr.Instance.SendEvent(NotifyDefine.NEXT_ROUND);    
+			NotifyMgr.SendEvent(NotifyDefine.NEXT_ROUND);    
         }
-
-        private void OnClickBackHome()
+        private void OnClickGiveUp()
         {
-	        NotifyMgr.Instance.SendEvent(NotifyDefine.GAME_END_BACK_HOME);
+	        NotifyMgr.SendEvent(NotifyDefine.GAME_END_GIVEUP);
         }
     }
 }

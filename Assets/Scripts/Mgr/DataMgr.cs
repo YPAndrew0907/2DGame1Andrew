@@ -19,16 +19,15 @@ namespace Mgr
         {
             _curLevel = PlayerPrefs.GetInt(CurLevelStr, 1);
             _money = PlayerPrefs.GetInt(MoneyStr, 200);
-            NotifyMgr.Register(NotifyDefine.GAME_READY,LoadLevelInfo);
-            NotifyMgr.Register(NotifyDefine.GAME_END,SaveGameInfo);
-            NotifyMgr.Register(NotifyDefine.NEXT_ROUND,NextRound);
+            NotifyMgr.RegisterNotify(NotifyDefine.GAME_END,SaveGameInfo);
+            NotifyMgr.RegisterNotify(NotifyDefine.NEXT_ROUND,NextRound);
+            LoadLevelData();
         }
         
         ~DataMgr()
         {
-            NotifyMgr.UnRegister(NotifyDefine.GAME_READY,LoadLevelInfo);
-            NotifyMgr.UnRegister(NotifyDefine.GAME_END,SaveGameInfo);
-            NotifyMgr.UnRegister(NotifyDefine.NEXT_ROUND,NextRound);
+            NotifyMgr.UnRegisterNotify(NotifyDefine.GAME_END,SaveGameInfo);
+            NotifyMgr.UnRegisterNotify(NotifyDefine.NEXT_ROUND,NextRound);
         }
 
         private int _curLevel = 1;
@@ -41,7 +40,7 @@ namespace Mgr
             private set
             {
                 _money = value;
-                NotifyMgr.Instance.SendEvent(NotifyDefine.MONEY_CHANGE,_money);
+                NotifyMgr.SendEvent(NotifyDefine.MONEY_CHANGE,_money);
             }
         }
 
@@ -50,8 +49,9 @@ namespace Mgr
         public bool PlayerIsContinue { get; set; }  // 玩家是否还在要牌
         public bool AIIsContinue     { get; set; } // 对面是否还在要牌
 
-        public  PlayerType CurPlayerType => _curPlayerType; // 当前要牌的人。
-        private PlayerType _curPlayerType;
+        public  PlayerType LastPlayerType { get; private set; } = PlayerType.None;
+        public  PlayerType CurPlayerType  => _curPlayerType; // 当前要牌的人。
+        private PlayerType _curPlayerType = PlayerType.None;
 
         #endregion
 
@@ -61,11 +61,12 @@ namespace Mgr
         
         // 技能最大操控纸牌数量
         // -1 表示没有上限
-        public  int MaxSkillCardCount { get; private set;  }
+        public  int CollectCardCount { get; private set;  }
 
         // 当前关卡Boss筹码数量
         // 如果 小于1 表示倍数
-        public float BossChip { get; private set; }
+        public float BossChip          { get; private set; }
+        public int   RememberCardCount { get; private set; }
         
         // 当前洗牌人员。 None 表示需要随机决定。
         public PlayerType CurShuffleRole { get; private set; } = PlayerType.None;
@@ -75,6 +76,8 @@ namespace Mgr
         public int        CurBetChip     { get; private set; }
         public int        AIChip         { get; private set; } = 0;
         public string     AIName         { get; private set; }
+
+        public int StartMoney { get; private set; }
 
         public string PlayerName => "You";
 
@@ -88,39 +91,39 @@ namespace Mgr
         public readonly List<CardObj>              AICards              = new();
         public readonly List<CardObj>              PlayerCards          = new();
 
+
         public IReadOnlyList<CardObj> CurLevelInitCarryCard { get; private set; }
 
-        public void LoadLevelInfo(NotifyMsg notifyMsg) 
+        public void LoadCurLevelInfo()
         {
-            if (notifyMsg.Param is NormalParam param)
+            ResetInLevelData();
+            if (!LevelDataDict.TryGetValue(_curLevel, out var levelData))
             {
-                Reset();
-                if (LevelDataDict.Count == 0)
-                {
-                    var json = Resources.Load<TextAsset>("LevelData");
-                    var levelDatas = JsonConvert.DeserializeObject<List<LevelData>>(json.text);
-                    LevelDataDict = levelDatas.ToDictionary(x => x.Level);
-                }
-
-                if (!LevelDataDict.TryGetValue(param.IntValue, out var levelData))
-                {
-                    Debug.LogError("关卡数据不存在");
-                    return;
-                }
-
-                MaxSkillCardCount = levelData.MaxCard;
-                BossChip = levelData.BossChip;
-                TableLevel = levelData.TableLevel;
-                
-                ParseAIData(levelData);
-                ParseCarryCard(levelData);
-                ParsePlayerSkill(levelData);
-                ParseSpecialCondition(levelData);
-                
-                // 初始化 要牌玩家
-                NextPlayerAskCard();
-                NextShuffleRole();
+                Debug.LogError("关卡数据不存在");
+                return;
             }
+
+            CollectCardCount  = levelData.MaxCard < 0 ? int.MaxValue: levelData.MaxCard;
+            RememberCardCount = 3; // 默认记牌数量设置 3
+            BossChip          = levelData.BossChip;
+            TableLevel        = levelData.TableLevel;
+                
+            ParseAIData(levelData);
+            ParseCarryCard(levelData);
+            ParsePlayerSkill(levelData);
+            ParseSpecialCondition(levelData);
+                
+            // 初始化 要牌玩家
+            NextPlayerAskCard();
+            NextShuffleRole();
+            StartMoney = Money;
+        }
+
+        private void LoadLevelData()
+        {
+            var json       = Resources.Load<TextAsset>("LevelData");
+            var levelDatas = JsonConvert.DeserializeObject<List<LevelData>>(json.text);
+            LevelDataDict = levelDatas.ToDictionary(x => x.Level);
         }
 
         private void NextRound(NotifyMsg obj)
@@ -128,10 +131,9 @@ namespace Mgr
             PlayerIsContinue = true;
             AIIsContinue     = true;
         }
-
         private void ParseAIData(LevelData levelData)
         {
-            if (levelData.BossChip>100)
+            if (levelData.BossChip > 100)
             {
                 AIChip = (int)levelData.BossChip;
             }
@@ -142,7 +144,6 @@ namespace Mgr
 
             AIName = levelData.LevelAIName;
         }
-
         private void ParseSpecialCondition(LevelData levelData)
         {
             if (levelData.SpecialCondition == null) return;
@@ -165,18 +166,17 @@ namespace Mgr
                 }
             }
         }
-
         private void ParsePlayerSkill(LevelData levelData)
         {
-            if (levelData.PlayerSkill == null) return;
-
             var skillList = new List<PlayerSkill>();
-            var skillStr = levelData.PlayerSkill.Split('|');
-            foreach (var str in skillStr)
+            if (levelData.PlayerSkill != null)
             {
-                skillList.Add(Enum.Parse<PlayerSkill>(str));
+                var skillStr = levelData.PlayerSkill.Split('|');
+                foreach (var str in skillStr)
+                {
+                    skillList.Add(Enum.Parse<PlayerSkill>(str));
+                }
             }
-            
             CurSkills = skillList;
         }
 
@@ -210,8 +210,8 @@ namespace Mgr
         
         #region 技能相关
 
-        // GuessOrRemember 的初始化
-        public PlayerSkill GuessOrRemember = PlayerSkill.None;
+        // // GuessOrRemember 的初始化。 none表示没有这个技能。 ==GuessOrRemember，表示没初始化
+        // public PlayerSkill GuessOrRemember = PlayerSkill.None;
         #endregion
 
         #region 数据获取
@@ -241,38 +241,36 @@ namespace Mgr
         #region 数据变更方法
 
         // 关卡结束重置
-        private void Reset()
+        private void ResetInLevelData()
         {
-            MaxSkillCardCount     = 0;
+            CollectCardCount     = 0;
             BossChip              = 0;
             AIIsContinue          = true;
             PlayerIsContinue      = true;
             CurShuffleRole        = PlayerType.None;
             CurSkills             = null;
             CurLevelInitCarryCard = null;
-            GuessOrRemember       = PlayerSkill.None;
             
+            TurnCounter(true);
             AddCardToAIOrPlayer(null);
         }
-
         public void NextLevel()
         {
             _curLevel++;
             _curLevel = math.clamp( _curLevel,1, LevelDataDict.Count);
+            LoadCurLevelInfo();
         }
-
         public void LastLevel()
         {
             _curLevel--;
             _curLevel = math.clamp( _curLevel,1, LevelDataDict.Count);
+            LoadCurLevelInfo();
         }
-
         public void TurnCounter(bool reset = false)
         {
             if(reset) TurnTimes = 0;
             else TurnTimes++;
         }
-        
         public void NextShuffleRole()
         {
             if (CurShuffleRole == PlayerType.None)
@@ -287,12 +285,12 @@ namespace Mgr
                     CurShuffleRole = PlayerType.Player;
             }
         }
-        
         public PlayerType NextPlayerAskCard()
         {
+            LastPlayerType = _curPlayerType;
             switch (_curPlayerType)
             {
-                case PlayerType.Public:
+                case PlayerType.None:
                     // 随机一下
                     if (AIIsContinue && PlayerIsContinue)
                         _curPlayerType = Random.Range(0f, 1.0f) > 0.5f ? PlayerType.Player : PlayerType.AI;
@@ -302,16 +300,15 @@ namespace Mgr
                         _curPlayerType = PlayerType.Player;
                     break;
                 case PlayerType.Player:
-                    _curPlayerType = AIIsContinue ? PlayerType.AI : PlayerIsContinue? PlayerType.Player: PlayerType.Public;
+                    _curPlayerType = AIIsContinue ? PlayerType.AI : PlayerIsContinue? PlayerType.Player: PlayerType.None;
                     break;
                 case PlayerType.AI:  
-                    _curPlayerType = PlayerIsContinue ? PlayerType.Player : AIIsContinue? PlayerType.AI: PlayerType.Public;
+                    _curPlayerType = PlayerIsContinue ? PlayerType.Player : AIIsContinue? PlayerType.AI: PlayerType.None;
                     break;
                 default:                throw new ArgumentOutOfRangeException();
             }
             return _curPlayerType;
         }
-        
         public void SaveGameInfo(NotifyMsg notifyMsg)
         {
             PlayerPrefs.SetInt(CurLevelStr, 1);
@@ -354,6 +351,21 @@ namespace Mgr
                     break;
             }
         }
+
+        public void SkillSelect(PlayerSkill skill)
+        {
+            List<PlayerSkill> term = new List<PlayerSkill>();
+            foreach (var s in CurSkills)
+            {
+                if (!s.HasFlag(skill))
+                {
+                    term.Add(s);
+                }
+            }
+            term.Add(skill);
+
+            CurSkills = term;
+        }
         
         public void BetChip(int money)
         {
@@ -369,13 +381,14 @@ namespace Mgr
             LastRoundAICards.AddRange(AICards);
             AICards.Clear();
         }
+        
         #endregion
 
         #region check
 
-        public bool PlayerEnough => _money > CurMinBetChip;
-        public bool BossEnough   => BossChip > CurMinBetChip;
-        
+        public bool          PlayerEnough     => _money > CurMinBetChip;
+        public bool          BossEnough       => BossChip > CurMinBetChip;
+
         public bool WillShuffle()
         {
             return TurnTimes is <= 0 or >= 5;

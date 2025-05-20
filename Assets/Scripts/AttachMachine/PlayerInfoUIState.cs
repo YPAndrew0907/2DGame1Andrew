@@ -17,7 +17,7 @@ namespace AttachMachine
             {
                 _playerInfoUI = playerInfoUI;
                 _playerInfoUI.LevelInfoUI.Init();
-                NotifyMgr.Instance.RegisterEvent(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
+                NotifyMgr.RegisterNotify(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
             }
         }
 
@@ -43,7 +43,7 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            NotifyMgr.Instance.UnRegisterEvent(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
+            NotifyMgr.UnRegisterNotify(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
             yield break;
         }
 

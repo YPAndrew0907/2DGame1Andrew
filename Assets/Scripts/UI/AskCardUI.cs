@@ -66,11 +66,11 @@ namespace UI
         }
         private void OnClickAsk()
         {
-	        NotifyMgr.Instance.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(true));
+	        NotifyMgr.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(true));
         }
         private void OnClickCancel()
         {
-	        NotifyMgr.Instance.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(false));
+	        NotifyMgr.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(false));
         }
         
         public void Hide()
@@ -89,7 +89,7 @@ namespace UI
 	        yield return new WaitForSeconds(2);
 	        TxtTitle.text = _aiAskCard ? AIStr3 : AIStr2;
 	        yield return new WaitForSeconds(0.5f);
-	        NotifyMgr.Instance.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(_aiAskCard));
+	        NotifyMgr.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(_aiAskCard));
         }
     }
 }
