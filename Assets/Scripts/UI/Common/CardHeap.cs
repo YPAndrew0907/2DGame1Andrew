@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using Base;
 using Obj;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 namespace UI
 {
@@ -84,7 +82,7 @@ namespace UI
 		{
 			// _cardDataList.Sort(CompareByTicks); 
 			var delta = _cardGoList.Count - _cardDataList.Count;
-			var absDelta = math.abs(delta);
+			var absDelta = Math.Abs(delta);
 			if (delta < 0)
 			{
 				for (int i = absDelta; i >=0 ; i--)

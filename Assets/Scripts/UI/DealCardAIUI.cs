@@ -5,7 +5,6 @@ using Base;
 using DG.Tweening;
 using Mgr;
 using Obj;
-using Unity.Mathematics;
 using Random = UnityEngine.Random;
 
 namespace UI
@@ -72,7 +71,7 @@ namespace UI
 			MonoAICardHeap.AddCard(card);
 			MonoAICardHeap.RefreshCard();
 			var realValue = MonoAICardHeap.CardNum();
-			var min       = math.max(0, realValue - Random.Range(3, 5));
+			var min       = Math.Max(0, realValue - Random.Range(3, 5));
 			var max       = realValue + Random.Range(3, 5);
 			TxtRangeNum.text = $"{min} ~ {max}";
 		}

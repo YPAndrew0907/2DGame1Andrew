@@ -4,9 +4,7 @@ using System.Linq;
 using Cfg;
 using Newtonsoft.Json;
 using Obj;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using XYZFrameWork;
 using XYZFrameWork.Base;
 using Random = UnityEngine.Random;
@@ -257,13 +255,13 @@ namespace Mgr
         public void NextLevel()
         {
             _curLevel++;
-            _curLevel = math.clamp( _curLevel,1, LevelDataDict.Count);
+            _curLevel = Math.Clamp( _curLevel,1, LevelDataDict.Count);
             LoadCurLevelInfo();
         }
         public void LastLevel()
         {
             _curLevel--;
-            _curLevel = math.clamp( _curLevel,1, LevelDataDict.Count);
+            _curLevel = Math.Clamp( _curLevel,1, LevelDataDict.Count);
             LoadCurLevelInfo();
         }
         public void TurnCounter(bool reset = false)

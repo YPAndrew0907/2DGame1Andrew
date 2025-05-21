@@ -1,6 +1,6 @@
+using System;
 using Base;
 using Mgr;
-using Unity.Mathematics;
 namespace UI
 {
     // 押注UI
@@ -72,7 +72,7 @@ namespace UI
         private void OnPlusClick()
         {
 	        var chipNum = _curChipNum + _intervalChip;
-	        if (chipNum > math.min(_maxChipNum,_ownMaxChipNum))
+	        if (chipNum > Math.Min(_maxChipNum,_ownMaxChipNum))
 		        return;
 	        _curChipNum = chipNum;
 	        ChipNumChange();
