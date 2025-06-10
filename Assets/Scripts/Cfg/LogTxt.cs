@@ -7,8 +7,9 @@
 
         #region ERROR
 
-        public const string PARAM_ERROR    = "参数错误，请检查";
-        public const string NOT_EXIT_ERROR = "变量不存在，请检查";
+        public const string NOT_SET_INIT_VALUE_ERROR = "变量未设置初始值";
+        public const string NOT_EXIT_ERROR           = "变量不存在，请检查";
+        public const string PARAM_ERROR              = "参数错误，请检查";
 
         public const string TYPE_ERROR            = "类型错误，请检查";
         public const string PARAM_CREATE_ERROR    = "类型创建错误，请检查";

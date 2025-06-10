@@ -22,7 +22,7 @@ namespace AttachMachine
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            DataMgr.Instance.LoadCurLevelInfo();
+            LevelMgr.Instance.SetCurrentLevel(LevelMgr.Instance.CurrentLevel);
             _homeUIState.HomeUI.ShowUI();
             yield break;
         }
@@ -30,7 +30,21 @@ namespace AttachMachine
         public override IEnumerator OnExitAsync(object payload)
         {
             _homeUIState.HomeUI.HideUI();
-            yield break;
+            if (payload.Equals(SkillUpgradeUIState.StateIDStr))
+            {
+                yield return XAttachMachine.EnterState(SkillUpgradeUIState.StateIDStr);
+            }
+            else if (payload.Equals(BetUIState.StateIDStr))
+            {
+                // 初始化 要牌玩家
+                GameSessionMgr.Instance.NextPlayerAskCard();
+
+                XAttachMachine.ActiveAll();
+                
+                GameSessionMgr.Instance.InitSession(PlayerProfileMgr.Instance.Money, LevelMgr.Instance.BossChip,
+                    SkillMgr.Instance.UnLockSkillList(),LevelMgr.Instance.LevelBossSkill);
+                yield return XAttachMachine.EnterState(BetUIState.StateIDStr);
+            }
         }
 
         public override void OnUpdate(float deltaTime)

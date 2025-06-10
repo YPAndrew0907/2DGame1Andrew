@@ -31,7 +31,7 @@ namespace UI
     			=> _txtTitle ??= transform.Find("go_bg/cg_aniPanel/txt_title").GetComponent<TMPro.TextMeshProUGUI>();
 
     	//AUTO-GENERATE-END
-	    private List<CardObj> _remainCard;
+	    private List<CardObj> _remainCard = new();
 	    public  CanvasGroup   shuffleAni;
 		private void Update()
 		{
@@ -50,7 +50,7 @@ namespace UI
 		public void Show()
 		{
 			GoBg.SetActive(true);
-			_remainCard = null;
+			_remainCard.Clear();
 			MonoCards2.ClearCard();
 			MonoCards2.RefreshCard();
 		}
@@ -62,25 +62,10 @@ namespace UI
 		public void SetCard(List<CardObj> cardObjs)
 		{
 			_remainCard = cardObjs;
+			RefreshCardHeap();
 		}
 		
-		public IEnumerator CorShuffleStart()
-		{
-			shuffleAni.alpha = 0;
-			TxtTitle.text    = "开始洗牌";
-			shuffleAni.DOFade(1, 0.4f);
-			yield return new WaitForSeconds(0.5f);
-			TxtTitle.text    = "洗牌中";
-			yield return new WaitForSeconds(1.4f);
-		}
-		public IEnumerator CorShuffleEnd()
-		{
-			TxtTitle.text    = "洗牌结束";
-			shuffleAni.DOFade(0, .7f);
-			yield return new WaitForSeconds(.8f);
-		}
-		// 需要外部调用的部分。
-		public IEnumerator StartShuffle(PlayerType shuffleRole)
+		public IEnumerator CorShuffleStartAni(PlayerType shuffleRole)
 		{
 			switch (shuffleRole)
 			{
@@ -94,11 +79,21 @@ namespace UI
 					print("洗牌人员初始化错误");
 					break;
 			}
-			MonoCards2.SetCard(_remainCard, CardMgr.IsCardShowTotalCardList);
-			yield break;
+			shuffleAni.alpha = 0;
+			TxtTitle.text    = "开始洗牌";
+			shuffleAni.DOFade(1, 0.4f);
+			yield return new WaitForSeconds(0.5f);
+			TxtTitle.text    = "洗牌中";
+			yield return new WaitForSeconds(1.4f);
+		}
+		public IEnumerator CorShuffleEndAni()
+		{
+			TxtTitle.text    = "洗牌结束";
+			shuffleAni.DOFade(0, .7f);
+			yield return new WaitForSeconds(.8f);
 		}
 
-		public void RefreshTotalCard(params CardObj[] cards)
+		public void RemoveAndRefresh(params CardObj[] cards)
 		{
 			if (cards is {Length:>0})
 			{
@@ -107,6 +102,12 @@ namespace UI
 					_remainCard.Remove(card);
 				}
 			}
+
+			RefreshCardHeap();
+		}
+
+		private void RefreshCardHeap()
+		{
 			MonoCards2.SetCard(_remainCard,CardMgr.IsCardShowTotalCardList);
 			// 移除刚发的牌，然后刷新
 			MonoCards2.RefreshCard();

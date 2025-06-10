@@ -5,7 +5,10 @@ using XYZFrameWork;
 namespace UI
 {
 	public class GameSceneUI : BaseViewMono, IMachineMaster,
-	                           IHomeUIState, ITotalCardHeapUI, ISkillUI, IShuffleUIState, IDealCardUIState, IBetUI, IPlayerInfoUIState, IAskCardUIState, IPlayedCardUIState, ICompareCardUIState, IGameEndUIState,INoticeMsgState
+	                           IHomeUIState, ITotalCardHeapUI, ISkillUI, IShuffleUIState, IDealCardUIState, IBetUI,
+	                           IPlayerInfoUIState, IAskCardUIState, IPlayedCardUIState, ICompareCardUIState,
+	                           ISkillUpgradeUIState,
+	                           IGameEndUIState, INoticeMsgState
 	{
 		//AUTO-GENERATE
 		private UI.AskCardUI _monoAskUI;
@@ -36,10 +39,6 @@ namespace UI
 		private UI.GameWinUI MonoWinUI 
 				=> _monoWinUI ??= transform.Find("mono_WinUI").GetComponent<UI.GameWinUI>();
 
-		private UI.GuessOrRememberUI _monoGuessOrRemember;
-		private UI.GuessOrRememberUI MonoGuessOrRemember 
-				=> _monoGuessOrRemember ??= transform.Find("mono_GuessOrRemember").GetComponent<UI.GuessOrRememberUI>();
-
 		private UI.HomeUI _monoHomeUI;
 		private UI.HomeUI MonoHomeUI 
 				=> _monoHomeUI ??= transform.Find("mono_HomeUI").GetComponent<UI.HomeUI>();
@@ -56,9 +55,25 @@ namespace UI
 		private UI.PlayedCardUI MonoPlayedCardUI 
 				=> _monoPlayedCardUI ??= transform.Find("mono_PlayedCardUI").GetComponent<UI.PlayedCardUI>();
 
-		private UI.SkillCardsUI _monoSkillCards;
-		private UI.SkillCardsUI MonoSkillCards 
-				=> _monoSkillCards ??= transform.Find("mono_SkillCards").GetComponent<UI.SkillCardsUI>();
+		private UI.InsertAndReplaceUI _monoInsertAndReplace;
+		private UI.InsertAndReplaceUI MonoInsertAndReplace 
+				=> _monoInsertAndReplace ??= transform.Find("mono_InsertAndReplace").GetComponent<UI.InsertAndReplaceUI>();
+
+		private UI.SelectCardUI _monoSelectCardUI;
+		private UI.SelectCardUI MonoSelectCardUI 
+				=> _monoSelectCardUI ??= transform.Find("mono_SelectCardUI").GetComponent<UI.SelectCardUI>();
+
+		private UI.SelectSkillUI _monoSelectSkillUI;
+		private UI.SelectSkillUI MonoSelectSkillUI 
+				=> _monoSelectSkillUI ??= transform.Find("mono_SelectSkillUI").GetComponent<UI.SelectSkillUI>();
+
+		private UI.SkillsUI _monoSkillUI;
+		private UI.SkillsUI MonoSkillUI 
+				=> _monoSkillUI ??= transform.Find("mono_SkillUI").GetComponent<UI.SkillsUI>();
+
+		private UI.SkillUpgradeUI _monoSkillUpgradeUI;
+		private UI.SkillUpgradeUI MonoSkillUpgradeUI 
+				=> _monoSkillUpgradeUI ??= transform.Find("mono_SkillUpgradeUI").GetComponent<UI.SkillUpgradeUI>();
 
 		private UI.TotalCardHeapUI _monoTotalCardHeap;
 		private UI.TotalCardHeapUI MonoTotalCardHeap 
@@ -78,23 +93,23 @@ namespace UI
 			XAttachMachine.RegisterState(new PlayerInfoUIState());
 			XAttachMachine.RegisterState(new PlayedCardUIState());
 			XAttachMachine.RegisterState(new SkillUIState());
+			XAttachMachine.RegisterState(new SkillUpgradeUIState());
 			XAttachMachine.RegisterState(new ShuffleUIState());
 			XAttachMachine.RegisterState(new TotalCardHeapUIState());
 			// 进入首页状态
 			
-			XAttachMachine.StartMachine(HomeUIState.StateIDStr);
-			NotifyMgr.RegisterNotify(NotifyDefine.GAME_READY, OnGameReady);
 			NotifyMgr.RegisterNotify(NotifyDefine.GAME_END_BACK_HOME, OnGameEndBackHome);
+			_ = CardMgr.Instance;
+			_ = SkillMgr.Instance;
+			_ = LevelMgr.Instance;
+			_ = GameSessionMgr.Instance;
+			_ = PlayerProfileMgr.Instance;
+			
+			XAttachMachine.StartMachine(HomeUIState.StateIDStr);
 		}
 		private void Update()
 		{
 			XAttachMachine.Instance.Update();
-		}
-		private void OnGameReady(NotifyMsg obj)
-		{
-			XAttachMachine.ActiveAll();
-			CoroutineMgr.Instance.StartCoroutine(XAttachMachine.SwitchState(HomeUIState.StateIDStr,
-				BetUIState.StateIDStr));
 		}
 		private void OnGameEndBackHome(NotifyMsg obj)
 		{
@@ -102,23 +117,26 @@ namespace UI
 			CoroutineMgr.Instance.StartCoroutine(XAttachMachine.EnterState(HomeUIState.StateIDStr));
 		}
         #region UI元素
-		public GuessOrRememberUI GuessOrRememberUI => MonoGuessOrRemember;
-		public TotalCardHeapUI   TotalCardHeapUI   => MonoTotalCardHeap;
-		public DealCardAIUI      DealCardAIUI      => MonoDealCardAI;
-		public DealCardAIUI      AICardUI          => MonoDealCardAI;
-		public DealCardPlayerUI  DealCardPlayerUI  => MonoDealPlayerCard;
-		public DealCardPlayerUI  PlayerUI          => MonoDealPlayerCard;
-		public BetUI             BetUI             => MonoBetPanel;
-		public LevelInfoUI       LevelInfoUI       => MonoLevelInfo;
-		public SkillCardsUI      SkillCardsUI      => MonoSkillCards;
-		public GameLossUI        GameLossUI        => MonoLossUI;
-		public GameWinUI         GameWinUI         => MonoWinUI;
-		public HomeUI            HomeUI            => MonoHomeUI;
-		public AskCardUI         AskCardUI         => MonoAskUI;
-		public PlayedCardUI      PlayedCardUI      => MonoPlayedCardUI;
-		public TotalCardHeapUI   ShuffleUIState    => TotalCardHeapUI;
-		public CompareCardUI     CompareCardUI     => MonoCompareCardUI;
-		public NoticeMsgUI       NoticeMsgUI       => MonoNoticeMsgUI;
+		public InsertAndReplaceUI        InsertAndReplaceUI        => MonoInsertAndReplace;
+		public SelectCardUI     SelectCardUI     => MonoSelectCardUI;
+		public SelectSkillUI    SelectSkillUI    => MonoSelectSkillUI;
+		public TotalCardHeapUI  TotalCardHeapUI  => MonoTotalCardHeap;
+		public DealCardAIUI     DealCardAIUI     => MonoDealCardAI;
+		public DealCardAIUI     AICardUI         => MonoDealCardAI;
+		public DealCardPlayerUI DealCardPlayerUI => MonoDealPlayerCard;
+		public DealCardPlayerUI PlayerUI         => MonoDealPlayerCard;
+		public BetUI            BetUI            => MonoBetPanel;
+		public LevelInfoUI      LevelInfoUI      => MonoLevelInfo;
+		public SkillsUI         SkillsUI         => MonoSkillUI;
+		public GameLossUI       GameLossUI       => MonoLossUI;
+		public GameWinUI        GameWinUI        => MonoWinUI;
+		public HomeUI           HomeUI           => MonoHomeUI;
+		public AskCardUI        AskCardUI        => MonoAskUI;
+		public PlayedCardUI     PlayedCardUI     => MonoPlayedCardUI;
+		public TotalCardHeapUI  ShuffleUI        => TotalCardHeapUI;
+		public CompareCardUI    CompareCardUI    => MonoCompareCardUI;
+		public NoticeMsgUI      NoticeMsgUI      => MonoNoticeMsgUI;
+		public SkillUpgradeUI   SkillUpgradeUI   => MonoSkillUpgradeUI;
         #endregion
 	}
 }

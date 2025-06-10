@@ -41,7 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Editor\UIComponentManager.cs" />
+    <Compile Include="Assets\Scripts\Editor\UIComponentMgr.cs" />
     <Compile Include="Assets\Scripts\Editor\UIComponentBase.cs" />
     <Compile Include="Assets\Demigiant\DOTweenPro\Editor\DOTweenPreviewManager.cs" />
     <Compile Include="Assets\Scripts\Editor\MonoMethod.UI.cs" />
@@ -767,6 +767,9 @@
     <Reference Include="Unity.VisualScripting.State.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
     </Reference>
@@ -790,6 +793,9 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

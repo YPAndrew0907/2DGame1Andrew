@@ -1,4 +1,5 @@
  using System;
+ using UnityEditorInternal;
 
  public interface INotifyParam
     {
@@ -7,6 +8,9 @@
         void Release();
     }
 
+     /// <summary>
+     ///  可以一次设置多个值类型数据
+     /// </summary>
     public class NormalParam : INotifyParam
     {
         public long ParmaUid { get; set; }
@@ -38,25 +42,35 @@
         public void SetValue<T>(T value)
         {
             _init = true;
-            switch (value)
+
+            if (value is int i)
             {
-                case int i:
-                    _intValue = i;
-                    break;
-                case long l:
-                    _longValue = l;
-                    break;
-                case float f:
-                    _floatValue = f;
-                    break;
-                case double d:
-                    _doubleValue = d;
-                    break;
-                case string s:
-                    _str = s;
-                    break;
+                _intValue = i;
+            }
+            else if (value is long l)
+            {
+                _longValue = l;
+            }
+            else if (value is float f)
+            {
+                _floatValue = f;
+            }
+            else if (value is double d)
+            {
+                _doubleValue = d;
+            }
+            else if (value is string s)
+            {
+                _str = s;
+            }
+            else
+            {
+                // 类型不支持，重置_init
+                _init = false;
+                throw new ArgumentException($"不支持的参数类型：{typeof(T)}");
             }
         }
+
     }
 
     public class CustomParam : INotifyParam

@@ -26,7 +26,6 @@ namespace AttachMachine
                 _dealCardUI = ui;
                 _dealCardUI.DealCardPlayerUI.Init();
                 _dealCardUI.DealCardAIUI.Init();
-                NotifyMgr.RegisterNotify(NotifyDefine.NEXT_ROUND,OnNextRound);
                 NotifyMgr.RegisterNotify(NotifyDefine.SKILL_SELECT,OnSelectSkill);
             }
         }
@@ -51,7 +50,7 @@ namespace AttachMachine
             {
                 // 一般发牌
                 var card = CardMgr.Instance.Deal();
-                card.Owner = DataMgr.Instance.LastPlayerType;
+                card.Owner = GameSessionMgr.Instance.LastPlayerType;
 
                 yield return DealCard(card);
                 yield return XAttachMachine.ExitStateCor(StateIDStr);
@@ -102,7 +101,7 @@ namespace AttachMachine
         {
             Debug.Log($"【获得牌】{card.Owner} --> {card}");
             NotifyMgr.SendEvent(NotifyDefine.DEAL_CARD,card);
-            DataMgr.Instance.AddCardToAIOrPlayer(card);
+            GameSessionMgr.Instance.AddCard(card);
             if (card.Owner == PlayerType.Player)
             {
                 _dealCardUI.DealCardPlayerUI.ReceiveCard(card, _dealCardUI.TotalCardHeapUI.transform.position);
@@ -115,23 +114,18 @@ namespace AttachMachine
             yield return new WaitForSeconds(0.3f);
         }
 
-        private void OnNextRound(NotifyMsg obj)
-        {
-            var playerCards = _dealCardUI.DealCardPlayerUI.RemoveToPublic();
-            var aiCards     = _dealCardUI.DealCardAIUI.RemoveToPublic();
-
-            playerCards.AddRange(aiCards);
-            NotifyMgr.SendEvent(NotifyDefine.COLLECT_PLAYED_CARD, playerCards);
-        }
-
         private void OnSelectSkill(NotifyMsg obj)
         {
-            if (obj.Param is NormalParam param)
+            if (obj.Param is CustomParam param)
             {
-                PlayerSkill skill = (PlayerSkill)param.IntValue;
-                if (skill == PlayerSkill.Guess)
+                List<int>   paramList = param.Value as List<int>;
+                if (paramList != null)
                 {
-                    _dealCardUI.DealCardAIUI.ShowRangeTxt();
+                    PlayerSkill skill     = (PlayerSkill)paramList[1];
+                    if (paramList[0] ==  (int)PlayerType.Player && skill == PlayerSkill.Guess)
+                    {
+                        _dealCardUI.DealCardAIUI.ShowRangeTxt();
+                    }
                 }
             }
         }

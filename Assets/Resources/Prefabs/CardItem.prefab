@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 698019696484422551}
   - component: {fileID: 5393790863310906088}
   m_Layer: 5
-  m_Name: go_txt_Range
+  m_Name: go_txt_Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

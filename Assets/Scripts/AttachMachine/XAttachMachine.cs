@@ -70,8 +70,11 @@ namespace AttachMachine
 
             Debug.LogError($"【未注册】： {stateId}");
         }
-
-        public static IEnumerator SwitchState(string exitState, string enterState, object payload = null)
+        public static void SwitchState(string exitState, string enterState, object payload = null)
+        {
+            CoroutineMgr.Instance.StartCoroutine(SwitchStateCor(exitState, enterState, payload));
+        }
+        public static IEnumerator SwitchStateCor(string exitState, string enterState, object payload = null)
         {
             yield return  ExitStateCor(exitState);
             Debug.Log($"【切状态】： {exitState}-->{enterState}");

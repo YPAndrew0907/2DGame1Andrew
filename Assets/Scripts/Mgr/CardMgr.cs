@@ -40,7 +40,7 @@ namespace Mgr
             {
                 cardObj.IsRemembered = false;
                 cardObj.IsFirstCard  = false;
-                cardObj.IsShowRange  = false;
+                cardObj.IsCopy       = false;
                 cardObj.Owner        = PlayerType.None;
                 cardObj.TimeTicks    = DateTime.Now.Ticks;
             }
@@ -96,20 +96,98 @@ namespace Mgr
             }
         } 
         
-        public static bool IsCardShowCompareResult(CardObj cardObj) => true;
-        public static bool IsCardShowSelectCard(CardObj cardObj) => true;
-        public static bool IsCardShowSkillCardList(CardObj cardObj) => true;
-        public static bool IsCardShowTotalCardList(CardObj cardObj)
+        public static int TotalCardNum(IReadOnlyList<CardObj> list)
         {
-            return cardObj.IsRemembered;
+            if (list is not {Count:>0})
+            {
+                return 0;
+            }
+            
+            int i = 0;
+            foreach (var card in list)
+            {
+                i += (int)card.Value + 1;
+            }
+
+            return i;
         }
 
+        #region Filter
+
+        public List<CardObj> FilterCopy(List<CardObj> list)
+        {
+            return list.FindAll(item => item.IsCopy);
+        }
+
+        public List<CardObj> FilterRemember(List<CardObj> list)
+        {
+            return list.FindAll(item => item.IsRemembered);
+        }
+        
+
+        #endregion
+        
+        public static bool IsCardShowCompareResult(CardObj cardObj) => true;
+        public static bool IsCardShowSelectCard(CardObj cardObj)    => true;
+        public static bool IsCardShowSkillCardList(CardObj cardObj) => true;
+        public static bool IsCardShowTotalCardList(CardObj cardObj) => cardObj.IsRemembered;
         public static bool IsCardShowPlayedCardList(CardObj cardObj) => true;
 
         public static bool IsCardShowPlayerCardList(CardObj cardObj) => true;
-        public static bool IsCardShowAICardList(CardObj cardObj)
+        public static bool IsCardShowAICardList(CardObj cardObj)     => cardObj.IsFirstCard || cardObj.IsRemembered;
+
+        public List<CardObj> StealCard(List<int> indexList)
         {
-            return cardObj.IsFirstCard || cardObj.IsRemembered;
+            var result = new List<CardObj>();
+            // 排序从大到小，防止后面的index被交换错位
+            indexList.Sort();
+            indexList.Reverse();
+
+            foreach (var index in indexList)
+            {
+                // 如果索引超出当前可用范围，跳过
+                if (index > _curCardIndex || index < 0)
+                    continue;
+
+                // 拿出要偷的那张牌
+                var stealCard = _cards[index];
+                result.Add(stealCard);
+
+                // 和当前可用最后一张牌交换
+                if (index != _curCardIndex)
+                {
+                    var temp = _cards[_curCardIndex];
+                    _cards[_curCardIndex] = stealCard;
+                    _cards[index]         = temp;
+                }
+
+                // 当前可用牌数减少
+                _curCardIndex--;
+            }
+
+            // 最后 result 里面是从大到小顺序，按需求可以 reverse
+            result.Reverse();
+            return result;
         }
+        
+        public List<CardObj> CopyCard(List<int> indexList)
+        {
+            var result = new List<CardObj>();
+
+            foreach (var index in indexList)
+            {
+                if (index < 0 || index >= _cards.Length)
+                    continue;
+
+                var copy = _cards[index].DeepCopy();
+                copy.IsCopy = true;
+                // 通常拷贝后最好刷新时间戳，否则有的逻辑会因“时间相等”出现混乱
+                copy.TimeTicks = DateTime.Now.Ticks;
+                result.Add(copy);
+            }
+            return result;
+        }
+
+
     }
 }

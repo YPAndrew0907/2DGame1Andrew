@@ -2,24 +2,24 @@
   {
     "Level": 1,
     "TableLevel": 1,
-    "BossChip": 300,
-    "PlayerSkill": null,
+    "BossChip": 100,
+    "BossSkill": null,
     "CarryCard": null,
     "MaxCard": 0  
   },
   {
     "Level": 2,
     "TableLevel": 5,
-    "BossChip": 1000,
-    "PlayerSkill": "GuessOrRemember",
+    "BossChip": 200,
+    "BossSkill": "GuessOrRemember",
     "CarryCard": null,
     "MaxCard": 0
   },
   {
     "Level": 3,
     "TableLevel": 10,
-    "Boss Chip": 3000,
-    "PlayerSkill": "SwitchCard|Lie",
+    "Boss Chip": 300,
+    "BossSkill": "CopyAndSwitch|Lie",
     "CarryCard": ["A_-1","A_-1"],
     "MaxCard": 2
   },
@@ -27,7 +27,7 @@
     "Level": 4,
     "TableLevel": 30,
     "BossChip": 9000,
-    "PlayerSkill": "SwitchCard|StealAndInsert",
+    "BossSkill": "CopyAndSwitch|StealAndInsert",
     "CarryCard": ["A_-1"],
     "MaxCard": -1
   },
@@ -35,7 +35,7 @@
     "Level": 5,
     "TableLevel": 100,
     "BossChip": 3,
-    "PlayerSkill": "GuessOrRemember|StealAndInsert|SwitchCard|Lie",
+    "BossSkill": "GuessOrRemember|StealAndInsert|CopyAndSwitch|Lie",
     "CarryCard": ["A_-1","A_-1","Q_-1","Q_-1"],
     "MaxCard": -1,
     "SpecialCondition":"BossShuffle"

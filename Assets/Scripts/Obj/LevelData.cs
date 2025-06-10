@@ -7,7 +7,7 @@ namespace Obj
     {
         public int      Level            { get; set; }
         public float    BossChip         { get; set; }
-        public string   PlayerSkill      { get; set; }
+        public string   BossSkill        { get; set; }
         public int      TableLevel       { get; set; }
         public string[] CarryCard        { get; set; }
         public int      MaxCard          { get; set; }
@@ -21,49 +21,34 @@ namespace Obj
         private static readonly Dictionary<PlayerSkill, string> SpecialConditionDesc = new()
         {
             { Obj.PlayerSkill.GuessOrRemember, "集中观察/记忆" },
-            { Obj.PlayerSkill.SwitchCard, "灵活之指" },
+            { Obj.PlayerSkill.Guess, "集中观察" },
+            { Obj.PlayerSkill.Remember, "记忆"},
+            { Obj.PlayerSkill.CopyAndSwitch, "神速伸缩" },
             { Obj.PlayerSkill.StealAndInsert, "灵活之指" },
             { Obj.PlayerSkill.Lie, "自然谎言" },
+            { Obj.PlayerSkill.Copy, "神速伸缩" },
+            { Obj.PlayerSkill.Switch, "神速伸缩" }
         };
 
-        public static List<string> GetSkillDesc(IEnumerable<PlayerSkill> skills)
+        public static string GetSkillDesc(PlayerSkill skill)
         {
-            var str = new List<string>();
+            return SpecialConditionDesc.GetValueOrDefault(skill);
+        }
+        
+        public static List<string> GetSkillsDesc(IEnumerable<PlayerSkill> skills)
+        {
+            var uniqueDesc = new HashSet<string>();
             if (skills == null)
                 return null;
             foreach (var skill in skills)
             {
-                if (SpecialConditionDesc.ContainsKey(skill))
+                var termS = GetSkillDesc(skill);
+                if (!string.IsNullOrEmpty(termS))
                 {
-                    str.Add(SpecialConditionDesc[skill]);
-                }
+                    uniqueDesc.Add(termS);
+                } 
             }
-
-            return str;
+            return new List<string>(uniqueDesc);
         }
-    }
-
-
-    public enum PlayerSkill
-    {
-        None,
-        NoInit= 1 << 1,
-        
-        /// <summary>
-        /// 集中观察（猜测手牌大致范围）
-        /// </summary>
-        Guess = 1 << 2,
-        /// <summary>
-        /// 记忆（洗牌时记忆几张牌的位置）
-        /// </summary>
-        Remember = 1 << 3,
-        GuessOrRemember = Guess | Remember | NoInit,
-        
-        // 神速伸缩。开局带一张牌，自己回合可以进行更换。
-        SwitchCard = 1 << 4,
-        // 自然谎言
-        Lie = 1 << 5,
-        // 灵活之指
-        StealAndInsert = 1 << 6,
     }
 }

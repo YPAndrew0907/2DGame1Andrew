@@ -32,15 +32,23 @@ namespace AttachMachine
             if (payload is GameEndCode endCode)
             {
                 _curCode = endCode;
-                var moneyDelta = DataMgr.Instance.Money - DataMgr.Instance.StartMoney;
+                var moneyDelta = GameSessionMgr.Instance.PlayerChips - PlayerProfileMgr.Instance.Money;
+                PlayerProfileMgr.Instance.SetMoney(GameSessionMgr.Instance.PlayerChips);
+                PlayerProfileMgr.Instance.SaveProfile();
+
                 switch (endCode)
                 {
-                    case GameEndCode.GiveUp:
+                    case GameEndCode.GiveUp: 
+                        _gameEndUI.GameLossUI.Show(endCode,0);
+                        break;
                     case GameEndCode.Lose:
                         _gameEndUI.GameLossUI.Show(endCode,moneyDelta);
                         break;
                     case GameEndCode.Win:
-                        _gameEndUI.GameWinUI.Show(endCode,moneyDelta);
+                        SkillMgr.Instance.WinUnLockSkill(GameSessionMgr.Instance.CurBossSkills);
+                        LevelMgr.Instance.SetCurrentLevel(LevelMgr.Instance.CurrentLevel + 1);
+                        LevelMgr.Instance.SaveLevel();
+                        _gameEndUI.GameWinUI.Show(endCode,moneyDelta, GameSessionMgr.Instance.CurBossSkills);
                         break;
                 }
             }

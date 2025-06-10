@@ -17,17 +17,13 @@ namespace AttachMachine
             {
                 _playerInfoUI = playerInfoUI;
                 _playerInfoUI.LevelInfoUI.Init();
-                NotifyMgr.RegisterNotify(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
             }
         }
 
         public override void OnActive()
         {
             base.OnActive();
-            _playerInfoUI.LevelInfoUI.SetLevel(DataMgr.Instance.CurLevel);
-            _playerInfoUI.LevelInfoUI.SetMoney(DataMgr.Instance.Money);
-            _playerInfoUI.LevelInfoUI.SetSkillName(null);
-            _playerInfoUI.LevelInfoUI.ShowUI(DataMgr.Instance.CurLevel,DataMgr.Instance.Money, DataMgr.Instance.CurSkillDesc);
+            _playerInfoUI.LevelInfoUI.ShowUI(0,0,0);
         }
 
         public override void OnInActive()
@@ -43,21 +39,12 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            NotifyMgr.UnRegisterNotify(NotifyDefine.MONEY_CHANGE, OnMoneyChange);
             yield break;
         }
 
         public override void OnUpdate(float deltaTime)
         {
             
-        }
-
-        private void OnMoneyChange(NotifyMsg obj)
-        {
-            if (obj.Param is NormalParam money)
-            {
-                _playerInfoUI.LevelInfoUI.SetMoney(DataMgr.Instance.Money);
-            }
         }
 
     }

@@ -46,5 +46,11 @@ namespace UI
 	        MonoCards2.AddCard(list);
 	        MonoCards2.RefreshCard();
         }
+
+        public void ClearCards()
+        {
+	        MonoCards2.ClearCard();
+	        MonoCards2.RefreshCard();
+        }
     }
 }

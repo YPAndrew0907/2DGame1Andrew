@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AttachMachine;
 using Base;
 using Cfg;
 using Mgr;
@@ -59,28 +60,30 @@ namespace UI
 	    private const string WinStr = "<color=green>Win</color>";
 	    private const string LossStr = "<color=red>Loss</color>";
 	    private const string OutStr = "<color=red>Out</color>";
-	    public void Show(List<KeyValuePair<string, List<CardObj>>> data)
+	    public void Show(List<KeyValuePair<string, IReadOnlyList<CardObj>>> data)
 	    {
 		    if (data.Count < 2)
 		    {
 			    Debug.LogError(LogTxt.PARAM_ERROR);
 			    return;
 		    }
-		    var playerNum = data[0].Value?.Sum(item => (int)item.Value + 1) ?? 0;
-		    var aiNum = data[1].Value?.Sum(item => (int)item.Value + 1) ?? 0;
+		    var playerNum = CardMgr.TotalCardNum(data[0].Value);
+		    var aiNum     = CardMgr.TotalCardNum(data[1].Value);
 		    var playerWin = AIMgr.AIIsLoss(aiNum, playerNum);
-		    DataMgr.Instance.PayChip(playerWin);
+		    GameSessionMgr.Instance.PayChip(playerWin);
+		    
 		    TxtPlayerName.text    = data[0].Key;
 		    TxtPlayerResult.text  = data[0].Value != null ? playerWin ? WinStr : LossStr: OutStr;
 		    TxtPlayerCardNum.text = playerNum.ToString();
-		    
 		    MonoPlayerCards.SetCard(data[0].Value,CardMgr.IsCardShowCompareResult);
 		    MonoPlayerCards.RefreshCard();
+		    
 		    TxtAIName.text    = data[1].Key;
 		    TxtAIResult.text  = data[1].Value!= null? !playerWin ? WinStr : LossStr: OutStr;
 		    TxtAICardNum.text = aiNum.ToString();
 		    MonoAICards.SetCard(data[1].Value,CardMgr.IsCardShowCompareResult);
 		    MonoAICards.RefreshCard();
+		    
 		    GoBg.SetActive(true);
 	    }
 	    public void Hide()
@@ -107,7 +110,7 @@ namespace UI
         // 绑定按钮方法
         private void OnClickNextRound() 
         {
-			NotifyMgr.SendEvent(NotifyDefine.NEXT_ROUND);    
+			XAttachMachine.ExitState(CompareCardUIState.StateIDStr);   
         }
         private void OnClickGiveUp()
         {

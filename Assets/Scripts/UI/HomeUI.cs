@@ -1,3 +1,4 @@
+using AttachMachine;
 using Base;
 using Mgr;
 using XYZFrameWork;
@@ -16,11 +17,15 @@ namespace UI
 
     	private UnityEngine.UI.Button _btnQuit;
     	private UnityEngine.UI.Button BtnQuit 
-    			=> _btnQuit ??= transform.Find("go_bg/btn_quit").GetComponent<UnityEngine.UI.Button>();
+    			=> _btnQuit ??= transform.Find("go_bg/RightBtns/btn_quit").GetComponent<UnityEngine.UI.Button>();
+
+    	private UnityEngine.UI.Button _btnSkillList;
+    	private UnityEngine.UI.Button BtnSkillList 
+    			=> _btnSkillList ??= transform.Find("go_bg/RightBtns/btn_SkillList").GetComponent<UnityEngine.UI.Button>();
 
     	private UnityEngine.UI.Button _btnStart;
     	private UnityEngine.UI.Button BtnStart 
-    			=> _btnStart ??= transform.Find("go_bg/btn_Start").GetComponent<UnityEngine.UI.Button>();
+    			=> _btnStart ??= transform.Find("go_bg/RightBtns/btn_Start").GetComponent<UnityEngine.UI.Button>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
@@ -33,14 +38,17 @@ namespace UI
     	//AUTO-GENERATE-END
 	    public void Init()
 	    {
+		    // BtnLastLevel.gameObject.SetActive(false);
+		    // BtnNextLevel.gameObject.SetActive(false);
 		    BtnQuit.onClick.AddListener(OnQuitClick);
 		    BtnStart.onClick.AddListener(OnStartClick);
 		    BtnLastLevel.onClick.AddListener(OnLastLevelClick);
 		    BtnNextLevel.onClick.AddListener(OnNextLevelClick);
+		    BtnSkillList.onClick.AddListener(OnSkillListClick);
 	    }
 	    private void Refresh()
 	    {
-		    TxtLevel.text = "Level: __" + DataMgr.Instance.CurLevel;
+		    TxtLevel.text = "Level: __" + LevelMgr.Instance.CurrentLevel;
 	    } 
 	    public void ShowUI()
 	    {
@@ -53,15 +61,17 @@ namespace UI
 	    }
 		private void OnDestroy()
 		{
-			BtnQuit.onClick.RemoveListener(OnQuitClick);
-			BtnStart.onClick.RemoveListener(OnStartClick);
+			BtnQuit.onClick.RemoveAllListeners();
+			BtnStart.onClick.RemoveAllListeners();
+			BtnLastLevel.onClick.RemoveAllListeners();
+			BtnNextLevel.onClick.RemoveAllListeners();
+			BtnSkillList.onClick.RemoveAllListeners();
 		}
 		private void OnStartClick()
 		{
-			if (DataMgr.Instance.PlayerEnough)
+			if (PlayerProfileMgr.Instance.Money>= LevelMgr.Instance.CurMinBetChip)
 			{
-				NotifyMgr.SendEvent(NotifyDefine.GAME_READY, DataMgr.Instance.CurLevel);
-				GoBg.SetActive(false);
+				XAttachMachine.ExitState(HomeUIState.StateIDStr,BetUIState.StateIDStr);
 			}
 			else
 			{
@@ -77,15 +87,19 @@ namespace UI
 			#endif
 		}
 
+		private void OnSkillListClick()
+		{
+			XAttachMachine.ExitState(HomeUIState.StateIDStr, SkillUpgradeUIState.StateIDStr);
+		}
+		
 		private void OnLastLevelClick()
 		{
-			DataMgr.Instance.LastLevel();
+			LevelMgr.Instance.SetCurrentLevel(LevelMgr.Instance.CurrentLevel - 1);
 			Refresh();
 		}
-
 		private void OnNextLevelClick()
 		{
-			DataMgr.Instance.NextLevel();
+			LevelMgr.Instance.SetCurrentLevel(LevelMgr.Instance.CurrentLevel + 1);
 			Refresh();
 		}
     }

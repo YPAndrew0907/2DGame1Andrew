@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenProShortcuts.cs" />
     <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTextMeshPro.cs" />
+    <Compile Include="Assets\Scripts\Mgr\LevelMgr.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\XAttachMachine.cs" />
     <Compile Include="Assets\Scripts\Cfg\UICfg.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyMsg.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Assets\Scripts\Obj\ESpecialCondition.cs" />
     <Compile Include="Assets\Scripts\UI\GameLossUI.cs" />
     <Compile Include="Assets\Scripts\Cfg\GameCfg.cs" />
+    <Compile Include="Assets\Scripts\Mgr\SkillMgr.cs" />
     <Compile Include="Assets\CardSelect\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\Mgr\CardMgr.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardDecks\RingCardDeck.cs" />
@@ -63,29 +65,37 @@
     <Compile Include="Assets\Scripts\UI\Common\CardItem.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardDecks\PieCardDeck.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\BetUIState.cs" />
+    <Compile Include="Assets\Scripts\UI\Common\ItemSkillBtn.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillUpgradeUI.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillUI\SelectSkillUI.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\SkillUIState.cs" />
-    <Compile Include="Assets\Scripts\UI\SkillCardsUI.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillsUI.cs" />
     <Compile Include="Assets\Scripts\Mgr\NotifyParamMgr.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\Scripts\Base\BaseSingle.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillUI\InsertAndReplaceUI.cs" />
     <Compile Include="Assets\Scripts\UI\GameSceneUI.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardDecks\CardDeckInterface.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\TotalCardHeapUIState.cs" />
-    <Compile Include="Assets\Scripts\Mgr\DataMgr.cs" />
     <Compile Include="Assets\Scripts\Mgr\AIMgr.cs" />
     <Compile Include="Assets\Scripts\UI\LevelInfoUI.cs" />
     <Compile Include="Assets\Scripts\Obj\EnumObj.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\CompareCardUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\AskCardUIState.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillUI\SelectCardUI.cs" />
+    <Compile Include="Assets\Scripts\AttachMachine\SkillUpgradeUIState.cs" />
     <Compile Include="Assets\Scripts\Obj\CardValue.cs" />
     <Compile Include="Assets\Scripts\Base\BindableData.cs" />
+    <Compile Include="Assets\Scripts\Obj\SkillConfigRoot.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\HomeUIState.cs" />
+    <Compile Include="Assets\Scripts\Mgr\GameSessionMgr.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\ShuffleUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\IMachineMaster.cs" />
     <Compile Include="Assets\Scripts\UI\TotalCardHeapUI.cs" />
     <Compile Include="Assets\Scripts\Cfg\LogTxt.cs" />
     <Compile Include="Assets\Scripts\Mgr\NotifyMgr.cs" />
+    <Compile Include="Assets\Scripts\Obj\SkillConfig.cs" />
     <Compile Include="Assets\CardSelect\Scripts\CardTooltip.cs" />
     <Compile Include="Assets\Scripts\UI\Common\CardHeap.cs" />
     <Compile Include="Assets\Scripts\Obj\LevelData.cs" />
@@ -96,11 +106,12 @@
     <Compile Include="Assets\Scripts\Base\BaseAutoMonoSingle.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\DealCardUIState.cs" />
     <Compile Include="Assets\Scripts\Mgr\RoundMgr.cs" />
+    <Compile Include="Assets\Scripts\Obj\SelectCardData.cs" />
     <Compile Include="Assets\Scripts\Mgr\CoroutineMgr.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\BaseGameUIState.cs" />
     <Compile Include="Assets\Scripts\UI\AskCardUI.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\NoticeMsgUIState.cs" />
-    <Compile Include="Assets\Scripts\UI\SkillUI\GuessOrRememberUI.cs" />
+    <Compile Include="Assets\Scripts\Mgr\PlayerProfileMgr.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
     <Compile Include="Assets\CardSelect\Scripts\Sample.cs" />
@@ -115,11 +126,14 @@
     <Compile Include="Assets\Scripts\AttachMachine\PlayedCardUIState.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
     <Compile Include="Assets\Scripts\UI\GameWinUI.cs" />
+    <Compile Include="Assets\Scripts\UI\Common\SkillListItem.cs" />
+    <Compile Include="Assets\Scripts\Obj\PlayerSkill.cs" />
     <Compile Include="Assets\Scripts\Base\BaseViewMono.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMono.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Resources\SkillCfg.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Demigiant\readme_DOTweenPro.txt" />
@@ -144,6 +158,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\Resources\SkillData.json" />
     <Reference Include="UnityEngine">
       <HintPath>P:\UnityEditor\2021.3.27f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
@@ -801,6 +816,9 @@
     <Reference Include="Unity.VisualScripting.State.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
     </Reference>
@@ -824,6 +842,9 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

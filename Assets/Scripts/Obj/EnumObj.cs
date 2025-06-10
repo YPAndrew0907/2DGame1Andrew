@@ -6,6 +6,7 @@
         Win,
         Lose,
         GiveUp,
+        CheatingDiscovered 
     }
 
     public enum PlayerType

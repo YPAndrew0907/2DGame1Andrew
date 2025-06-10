@@ -1,0 +1,49 @@
+﻿{
+  "skills": [
+    {
+      "skillType": "CopyAndSwitch",
+      "name": "神速伸缩",
+      "baseHitRate": 0.4,
+      "baseParameter": 1,
+      "hitRateIncreasePerLevel": 0.1,
+      "parameterIncreasePerLevel": 1,
+      "desc": "以常人无法察觉的速度将身上藏着的牌与底牌进行互换。出千成功率为{0:P0}，每级提升{1:P0}。另外自己回合时可将收藏中{2}张底牌与手牌互换, 每级增加{3}张。"
+    },
+    {
+      "skillType": "GuessOrRemember",
+      "name": "观察/记忆二选一",
+      "baseHitRate": 0.2,
+      "baseParameter": 3,
+      "hitRateIncreasePerLevel": 0,
+      "parameterIncreasePerLevel": 1,
+      "desc": "开局只能选择集中观察或集中记忆其一。\n集中观察：通过观察对手微表情推测其手牌范围，起始准确率为 {0:P0}，每级提升{1:P0}。\n集中记忆：洗牌时可随机记住{2}张牌的位置，每级增加{3}张。"
+    },
+    {
+      "skillType": "Lie",
+      "name": "自然谎言",
+      "baseHitRate": 0.2,
+      "baseParameter": 0,
+      "hitRateIncreasePerLevel": 0.1,
+      "parameterIncreasePerLevel": 0,
+      "desc": "你能流畅撒谎且面不改色，当前成功率为{0:P0}，每级提升{1:P0}。"
+    },
+    {
+      "skillType": "StealAndInsert",
+      "name": "灵活之指",
+      "baseHitRate": 0.4,
+      "baseParameter": 1,
+      "hitRateIncreasePerLevel": 0.1,
+      "parameterIncreasePerLevel": 1,
+      "desc": "洗牌时可偷取牌堆或将收藏中的牌放入牌堆{0}张牌，每级增加{1}张。默认成功率为{2:P0}，每级提升{3:P0}。"
+    },
+    {
+      "skillType": "Detect",
+      "name": "识破",
+      "baseHitRate": 0.2,
+      "baseParameter": 0,
+      "hitRateIncreasePerLevel": 0.1,
+      "parameterIncreasePerLevel": 0,
+      "desc": "你能捕捉对手出千的蛛丝马迹，发现概率为{0:P0}，每级提升{1:P0}。"
+    }
+  ]
+}

@@ -84,13 +84,18 @@ namespace XYZFrameWork
             return Instance.PopEventParam<T>();
         }
 
+        public static INotifyParam CreateNotifyParam()    => CreateNormalParam();
         public static INotifyParam CreateNotifyParam(int value)    => CreateNormalParam(value);
         public static INotifyParam CreateNotifyParam(long value)   => CreateNormalParam(value);
         public static INotifyParam CreateNotifyParam(string value) => CreateNormalParam(value);
         public static INotifyParam CreateNotifyParam(float value)  => CreateNormalParam(value);
         public static INotifyParam CreateNotifyParam(double value) => CreateNormalParam(value);
         public static INotifyParam CreateNotifyParam(object value) => CreateCustomParam(value);
-
+        private static INotifyParam CreateNormalParam()
+        {
+            var param = Instance.PopEventParam<NormalParam>();
+            return param;
+        }
         private static INotifyParam CreateNormalParam<T>(T value)
         {
             var param = Instance.PopEventParam<NormalParam>();

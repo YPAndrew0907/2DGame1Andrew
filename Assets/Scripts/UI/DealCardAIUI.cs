@@ -6,7 +6,6 @@ using DG.Tweening;
 using Mgr;
 using Obj;
 using Random = UnityEngine.Random;
-
 namespace UI
 {
     public class DealCardAIUI : BaseViewMono
@@ -19,10 +18,6 @@ namespace UI
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
     			=> _goBg ??= transform.Find("go_bg").gameObject;
-
-    	private UnityEngine.GameObject _goDealDes;
-    	private UnityEngine.GameObject GoDealDes 
-    			=> _goDealDes ??= transform.Find("go_bg/go_DealDes").gameObject;
 
     	private UnityEngine.GameObject _goRangeNum;
     	private UnityEngine.GameObject GoRangeNum 
@@ -52,7 +47,6 @@ namespace UI
 			TxtRangeNum.text = String.Empty;
 			GoRangeNum.SetActive(false);
 		}
-
 		public void ShowRangeTxt()
 		{
 			GoRangeNum.SetActive(true);
@@ -65,7 +59,6 @@ namespace UI
 			MonoAICardHeap.ClearCard();
 			MonoAICardHeap.RefreshCard();
 		}
-
 		public void ReceiveCard(CardObj card, Vector3 pos)
 		{
 			MonoAICardHeap.AddCard(card);
@@ -75,12 +68,10 @@ namespace UI
 			var max       = realValue + Random.Range(3, 5);
 			TxtRangeNum.text = $"{min} ~ {max}";
 		}
-
-		public List<CardObj> RemoveToPublic()
+		public void RemoveToPublic()
 		{
-			var termList =  MonoAICardHeap.RemoveAll();
+			MonoAICardHeap.RemoveAll();
 			MonoAICardHeap.RefreshCard();
-			return termList;
 		}
 		public void ClearCard()
 		{

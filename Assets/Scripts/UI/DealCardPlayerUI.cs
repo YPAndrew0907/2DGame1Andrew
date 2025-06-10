@@ -20,10 +20,6 @@ namespace UI
     	private UnityEngine.GameObject GoBg 
     			=> _goBg ??= transform.Find("go_bg").gameObject;
 
-    	private UnityEngine.GameObject _goDealDes;
-    	private UnityEngine.GameObject GoDealDes 
-    			=> _goDealDes ??= transform.Find("go_bg/go_DealDes").gameObject;
-
     	private TMPro.TextMeshProUGUI _txtTotalNum;
     	private TMPro.TextMeshProUGUI TxtTotalNum 
     			=> _txtTotalNum ??= transform.Find("go_bg/txt_totalNum").GetComponent<TMPro.TextMeshProUGUI>();
@@ -51,12 +47,10 @@ namespace UI
 			MonoPlayerCardHeap.RefreshCard();
 			TxtTotalNum.text = MonoPlayerCardHeap.CardNum().ToString();
 		}
-		public List<CardObj> RemoveToPublic()
+		public void RemoveCurHandCards()
 		{
-			var termList =  MonoPlayerCardHeap.RemoveAll();
+			MonoPlayerCardHeap.RemoveAll();
 			MonoPlayerCardHeap.RefreshCard();
-			return termList;
 		}
-
     }
 }

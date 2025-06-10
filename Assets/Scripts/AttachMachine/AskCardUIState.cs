@@ -32,7 +32,7 @@ namespace AttachMachine
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            var curPlayer = DataMgr.Instance.CurPlayerType;
+            var curPlayer = GameSessionMgr.Instance.CurPlayerType;
             if (curPlayer == PlayerType.None)
             {
                 yield return XAttachMachine.ExitStateCor(StateIDStr);
@@ -40,8 +40,16 @@ namespace AttachMachine
             else
             {
                 var isAI      = curPlayer == PlayerType.AI;
-                var aiAskCard = AIMgr.AIAskCard(DataMgr.Instance.CurAICardNum);
-                _askCardUI.AskCardUI.ShowUI(isAI,aiAskCard);
+                _askCardUI.SkillsUI.ShowSkills(!isAI);
+                if (isAI)
+                {
+                    var aiAskCard = AIMgr.AIAskCard(GameSessionMgr.Instance.CurAICardTotalNum);
+                    _askCardUI.AskCardUI.ShowUI(true,aiAskCard);
+                }
+                else
+                {
+                    _askCardUI.AskCardUI.ShowUI(false);
+                }
             }
         }
 
@@ -49,17 +57,39 @@ namespace AttachMachine
         {
             _askCardUI.AskCardUI.Hide();
 
-            var curPlayer = DataMgr.Instance.CurPlayerType;
-            var nextPlayer     = DataMgr.Instance.NextPlayerAskCard();
+            var curPlayer = GameSessionMgr.Instance.CurPlayerType;
+            var nextPlayer     = GameSessionMgr.Instance.NextPlayerAskCard();
+            if (curPlayer == PlayerType.AI)
+            {
+                // AI换牌
+                var (rate, param) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
+                if (AIMgr.IsCanDoSkill(rate))
+                {
+                    var (curIndex,replaceIndex) = AIMgr.AIReplaceCard(GameSessionMgr.Instance.AICards, GameSessionMgr.Instance.BossSkillCards,param);
+                    if (replaceIndex is { Length: > 0 })
+                    {
+                        NotifyMgr.SendEvent(NotifyDefine.REPLACE_CARD,new ReplaceData()
+                        {
+                            IsAI         = true,
+                            CurIndex     = curIndex,
+                            ReplaceIndex = replaceIndex
+                        } );
+                    }
+                }
+                else
+                {
+                    Debug.Log($"【放技能】：释放技能失败，rate:{rate}");
+                }
+            }
             
-            Debug.Log($"切换到 {nextPlayer} 要牌");
+            Debug.Log($"【切要牌】 {nextPlayer} 要牌");
             if (_isAskCard)
             {
                 yield return XAttachMachine.EnterState(DealCardUIState.StateIDStr);
             }
             else
             {
-                var anyIsContinue = DataMgr.Instance.AIIsContinue || DataMgr.Instance.PlayerIsContinue;
+                var anyIsContinue = GameSessionMgr.Instance.AIIsContinue || GameSessionMgr.Instance.PlayerIsContinue;
                 yield return XAttachMachine.EnterState(anyIsContinue ? StateIDStr : CompareCardUIState.StateIDStr);
             }
         }
@@ -85,18 +115,26 @@ namespace AttachMachine
                 if (!_isAskCard)
                 {
                     if (_isAi)
-                        DataMgr.Instance.AIIsContinue = false;
+                        GameSessionMgr.Instance.AIIsContinue = false;
                     else
-                        DataMgr.Instance.PlayerIsContinue = false;
+                        GameSessionMgr.Instance.PlayerIsContinue = false;
                 }
                 XAttachMachine.ExitState(StateIDStr);
             }
         }
     }
 
+    public class ReplaceData
+    {
+        public bool  IsAI;
+        public int[] CurIndex;
+        public int[] ReplaceIndex;
+    }
+
     public interface IAskCardUIState : IBaseAttachUI
     {
         public AskCardUI AskCardUI { get; }
+        public SkillsUI  SkillsUI  { get; }
         
         public DealCardPlayerUI PlayerUI { get;  }
         public DealCardAIUI     AICardUI { get;  }

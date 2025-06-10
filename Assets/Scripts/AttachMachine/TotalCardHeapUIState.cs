@@ -56,7 +56,7 @@ namespace AttachMachine
             if (obj.Param is CustomParam param)
             {
                 CardObj card = param.Value as CardObj;
-                _totalCardHeapUIState.TotalCardHeapUI.RefreshTotalCard(card);
+                _totalCardHeapUIState.TotalCardHeapUI.RemoveAndRefresh(card);
             }
         }
     }

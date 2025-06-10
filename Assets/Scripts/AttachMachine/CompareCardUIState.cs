@@ -22,31 +22,31 @@ namespace AttachMachine
                 _uiState = ui;
                 _uiState.CompareCardUI.Init();
 
-                NotifyMgr.RegisterNotify(NotifyDefine.NEXT_ROUND, OnNextRound);
                 NotifyMgr.RegisterNotify(NotifyDefine.GAME_END_GIVEUP, OnGameGiveUp);
             }
         }
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            List<KeyValuePair<string, List<CardObj>>> records;
+            ClearHandCards();
+            List<KeyValuePair<string, IReadOnlyList<CardObj>>> records;
             if (payload is PlayerType playerType)
             {
                 // 出千而结束
                 switch (playerType)
                 {
-                    case PlayerType.Player: 
+                    case PlayerType.Player:
                         records = new()
                         {
-                            new KeyValuePair<string, List<CardObj>>(DataMgr.Instance.PlayerName, null),
-                            new KeyValuePair<string, List<CardObj>>(DataMgr.Instance.AIName, DataMgr.Instance.LastRoundAICards)
+                            new KeyValuePair<string, IReadOnlyList<CardObj>>("You", null),
+                            new KeyValuePair<string, IReadOnlyList<CardObj>>(LevelMgr.Instance.AIName, GameSessionMgr.Instance.LastRoundAICards)
                         };
                         break;
                     case PlayerType.AI:
                         records = new()
                         {
-                            new KeyValuePair<string, List<CardObj>>(DataMgr.Instance.PlayerName, DataMgr.Instance.LastRoundPlayerCards),
-                            new KeyValuePair<string, List<CardObj>>(DataMgr.Instance.AIName,null)
+                            new KeyValuePair<string, IReadOnlyList<CardObj>>("You", GameSessionMgr.Instance.LastRoundPlayerCards),
+                            new KeyValuePair<string, IReadOnlyList<CardObj>>(LevelMgr.Instance.AIName,null)
                         };
                         break;
                     default:             
@@ -55,32 +55,36 @@ namespace AttachMachine
             }
             else
             {
-                DataMgr.Instance.ClearPlayerCards();
                 records = new()
                 {
-                    new KeyValuePair<string, List<CardObj>>(DataMgr.Instance.PlayerName, DataMgr.Instance.LastRoundPlayerCards),
-                    new KeyValuePair<string, List<CardObj>>(DataMgr.Instance.AIName, DataMgr.Instance.LastRoundAICards)
+                    new KeyValuePair<string, IReadOnlyList<CardObj>>("You", GameSessionMgr.Instance.LastRoundPlayerCards),
+                    new KeyValuePair<string, IReadOnlyList<CardObj>>(LevelMgr.Instance.AIName, GameSessionMgr.Instance.LastRoundAICards)
                 };
             }
             
             _uiState.CompareCardUI.Show(records);
+            _uiState.LevelInfoUI.SetMoney(GameSessionMgr.Instance.PlayerChips);
+            
             yield break;
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
             _uiState.CompareCardUI.Hide();
-            DataMgr.Instance.TurnCounter();
+            GameSessionMgr.Instance.NextRound();
+            GameSessionMgr.Instance.SwitchShufflePlayer();
+            
+            
             if (payload == null)
             {
-                if (DataMgr.Instance.BossEnough && DataMgr.Instance.PlayerEnough)
+                if (GameSessionMgr.Instance.BossEnough && GameSessionMgr.Instance.PlayerEnough)
                 {
                     yield return XAttachMachine.EnterState(BetUIState.StateIDStr);
                 }
                 else
                 {
                     yield return XAttachMachine.EnterState(GameEndUIState.StateIDStr,
-                        DataMgr.Instance.PlayerEnough ? GameEndCode.Win : GameEndCode.Lose);
+                        GameSessionMgr.Instance.PlayerEnough ? GameEndCode.Win : GameEndCode.Lose);
                 }
             }
             else
@@ -94,19 +98,24 @@ namespace AttachMachine
             
         }
 
-        private void OnNextRound(NotifyMsg obj)
-        {
-            XAttachMachine.ExitState(StateIDStr);
-        }
-
         private void OnGameGiveUp(NotifyMsg obj)
         {
             XAttachMachine.ExitState(StateIDStr, 1);
+        }
+
+        private void ClearHandCards()
+        {
+            _uiState.DealCardPlayerUI.RemoveCurHandCards();
+            _uiState.DealCardAIUI.RemoveToPublic();
+            GameSessionMgr.Instance.StoreLastCard();
         }
     }
 
     public interface ICompareCardUIState : IBaseAttachUI
     {
-        public CompareCardUI CompareCardUI { get; }
+        public LevelInfoUI      LevelInfoUI      { get; }
+        public CompareCardUI    CompareCardUI    { get; }
+        public DealCardPlayerUI DealCardPlayerUI { get; }
+        public DealCardAIUI     DealCardAIUI     { get; }
     }
 }

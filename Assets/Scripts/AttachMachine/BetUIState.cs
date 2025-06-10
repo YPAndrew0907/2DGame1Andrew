@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using Mgr;
+using Obj;
 using UI;
+using Unity.Mathematics;
 using XYZFrameWork;
 
 namespace AttachMachine
@@ -22,7 +24,12 @@ namespace AttachMachine
 
         public override IEnumerator OnEnterAsync(object payload)
         {
-            _betUI.BetUI.ShowBetUI();
+            var originBet = math.clamp(GameSessionMgr.Instance.CurrentPlayerBet, LevelMgr.Instance.CurMinBetChip,
+                LevelMgr.Instance.CurMaxBetChip); 
+            _betUI.BetUI.ShowBetUI( originBet,
+                LevelMgr.Instance.TableLevel, LevelMgr.Instance.CurMinBetChip, LevelMgr.Instance.CurMaxBetChip, 
+                GameSessionMgr.Instance.PlayerChips);
+            _betUI.LevelInfoUI.ShowUI(LevelMgr.Instance.CurrentLevel,GameSessionMgr.Instance.PlayerChips, GameSessionMgr.Instance.CurrentPlayerBet);
             yield break;
         }
 
@@ -41,7 +48,13 @@ namespace AttachMachine
         {
             if (obj.Param is NormalParam param)
             {
-                DataMgr.Instance.BetChip(param.IntValue);
+                GameSessionMgr.Instance.SetBet(PlayerType.Player, param.IntValue);
+                var randomBet = AIMgr.RandomBet(GameSessionMgr.Instance.AIChips, LevelMgr.Instance.CurMinBetChip,
+                    LevelMgr.Instance.CurMaxBetChip);
+                GameSessionMgr.Instance.SetBet(PlayerType.AI, randomBet);
+                
+                _betUI.LevelInfoUI.SetCurBet(PlayerType.Player, param.IntValue);
+                _betUI.LevelInfoUI.SetCurBet(PlayerType.AI, randomBet);
                 XAttachMachine.ExitState(StateIDStr);
             }
         }
@@ -49,6 +62,7 @@ namespace AttachMachine
 
     public interface IBetUI:IBaseAttachUI
     {
-        public BetUI BetUI { get; }
+        public BetUI       BetUI       { get; }
+        public LevelInfoUI LevelInfoUI { get; }
     }
 }
