@@ -23,11 +23,17 @@ namespace Obj
             { Obj.PlayerSkill.GuessOrRemember, "集中观察/记忆" },
             { Obj.PlayerSkill.Guess, "集中观察" },
             { Obj.PlayerSkill.Remember, "记忆"},
+            
+           
             { Obj.PlayerSkill.CopyAndSwitch, "神速伸缩" },
-            { Obj.PlayerSkill.StealAndInsert, "灵活之指" },
-            { Obj.PlayerSkill.Lie, "自然谎言" },
             { Obj.PlayerSkill.Copy, "神速伸缩" },
-            { Obj.PlayerSkill.Switch, "神速伸缩" }
+            { Obj.PlayerSkill.Switch, "神速伸缩" },
+            
+            { Obj.PlayerSkill.StealAndInsert, "灵活之指" },
+            
+            { Obj.PlayerSkill.Lie, "自然谎言" },
+            
+            { Obj.PlayerSkill.Detect, "识破" }
         };
 
         public static string GetSkillDesc(PlayerSkill skill)

@@ -24,8 +24,9 @@ namespace AttachMachine
             {
                 _shuffleUIState = ui;
                 GameSessionMgr.Instance.NextShuffleRole();
-                NotifyMgr.RegisterNotify(NotifyDefine.SELECT_CARD_REMEMBER, OnRememberSelectCard);
-                NotifyMgr.RegisterNotify(NotifyDefine.SELECT_CARD_STEAL, OnStealSelectCard);
+                NotifyMgr.RegisterNotify(NotifyDefine.CARD_REMEMBER_SELECT, OnRememberSelectCard);
+                NotifyMgr.RegisterNotify(NotifyDefine.CARD_STEAL_INSERT, OnStealSelectCard);
+                NotifyMgr.RegisterNotify(NotifyDefine.CLOSE_PANEL, OnClosePanel);
             }
         }
 
@@ -45,36 +46,38 @@ namespace AttachMachine
                 CardMgr.Instance.ResetCards();
                 _shuffleUIState.PlayedCardUI.ClearCards();
                 
-
+                if (shuffleRole == PlayerType.Player
+                    && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.Remember))
+                {
+                    _shuffleUIState.SelectCardUI.Show("选择需要记忆的牌", NotifyDefine.CARD_REMEMBER_SELECT, 1);
+                    _rememberIsOpen = true;
+                    yield return new WaitUntil(() => !_rememberIsOpen);
+                    yield return new WaitForSeconds(1);
+                }
+                
                 if (shuffleRole == PlayerType.Player
                     && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.StealAndInsert))
                 {
-                    _shuffleUIState.SelectCardUI.Show("选择需要偷取的牌", NotifyDefine.SELECT_CARD_STEAL, 1);
+                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
+                    _shuffleUIState.InsertAndReplaceUI.Show(GameSessionMgr.Instance.PlayerSkillCards,
+                        CardMgr.Instance.CardsList, true, stealCount);
                     _stealIsOpen = true;
                     yield return new WaitUntil(() => !_stealIsOpen);
-                    yield return new WaitForSeconds(1);
+                    yield return new WaitForSeconds(0.5f);
                 }
                 else if (shuffleRole == PlayerType.AI
                          && GameSessionMgr.Instance.CurBossSkills.Contains(PlayerSkill.StealAndInsert))
                 {
                     var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
-                    var copyIndexList = AIMgr.AIRandomStealCard(CardMgr.Instance.Cards, (int)stealCount);
+                    var copyIndexList = AIMgr.AIRandomStealCard(CardMgr.Instance.Cards, stealCount);
                     var cardList      = CardMgr.Instance.StealCard(copyIndexList);
-                    NotifyMgr.SendEvent(NotifyDefine.SELECT_CARD_STEAL, new SelectCardData
+                    NotifyMgr.SendEvent(NotifyDefine.CARD_STEAL_INSERT, new OperationData
                     {
                         IsAI        = true,
                         SelectCards = cardList
                     });
                 }
-
-                if (shuffleRole == PlayerType.Player
-                    && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.Remember))
-                {
-                    _shuffleUIState.SelectCardUI.Show("选择需要记忆的牌", NotifyDefine.SELECT_CARD_REMEMBER, 1);
-                    _rememberIsOpen = true;
-                    yield return new WaitUntil(() => !_rememberIsOpen);
-                    yield return new WaitForSeconds(1);
-                }
+                
 
                 yield return _shuffleUIState.ShuffleUI.CorShuffleStartAni(shuffleRole);
 
@@ -96,7 +99,7 @@ namespace AttachMachine
             // 是否洗牌
             if (payload != null)
             {
-                CoroutineMgr.Instance.StartCoroutine(_shuffleUIState.ShuffleUI.CorShuffleEndAni());
+                yield return _shuffleUIState.ShuffleUI.CorShuffleEndAni();
                 GameSessionMgr.Instance.NextShuffleRole();
             }
 
@@ -110,12 +113,33 @@ namespace AttachMachine
 
         private void OnRememberSelectCard(NotifyMsg obj)
         {
-            _rememberIsOpen = false;
+            if (_rememberIsOpen)
+            {
+                _rememberIsOpen = false;
+            }
         }
 
         private void OnStealSelectCard(NotifyMsg obj)
         {
-            _stealIsOpen = false;
+            if (_stealIsOpen)
+            {
+                _stealIsOpen = false;
+            }
+        }
+        
+        private void OnClosePanel(NotifyMsg obj)
+        {
+            if (obj.Param is NormalParam { StrValue: StateIDStr })
+            {
+                if (_stealIsOpen)
+                {
+                    _stealIsOpen = false;
+                }
+                else if (_rememberIsOpen)
+                {
+                    _rememberIsOpen = false;
+                }
+            }
         }
     }
 

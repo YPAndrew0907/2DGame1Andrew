@@ -13,9 +13,9 @@ namespace UI
 	public class SkillsUI : BaseViewMono
 	{
 		//AUTO-GENERATE
-		private UI.CardHeap _monoSkillCardHeap;
-		private UI.CardHeap MonoSkillCardHeap 
-				=> _monoSkillCardHeap ??= transform.Find("go_Bg/go_mono_SkillCardHeap").GetComponent<UI.CardHeap>();
+		private UI.CardZone _monoSkillCardZone;
+		private UI.CardZone MonoSkillCardZone 
+				=> _monoSkillCardZone ??= transform.Find("go_Bg/go_mono_SkillCardHeap").GetComponent<UI.CardZone>();
 
 		private UnityEngine.GameObject _goBg;
 		private UnityEngine.GameObject GoBg 
@@ -53,16 +53,16 @@ namespace UI
 			GoBg.SetActive(false);
 			MonoItemSkill.gameObject.SetActive(false);
 			
-			MonoSkillCardHeap.SetCard(null, CardMgr.IsCardShowSkillCardList);
-			MonoSkillCardHeap.RefreshCard();
+			MonoSkillCardZone.SetCard(null, CardMgr.IsCardShowSkillCardList);
+			MonoSkillCardZone.RefreshCard();
 			_skillCardList = new List<CardObj>();
 			_addedBtn      = new List<ItemSkillBtn>();
 		}
 		public void Show(int maxCardCount,IEnumerable<PlayerSkill> skills)
 		{
 			_maxCardCount = maxCardCount;
-			MonoSkillCardHeap.ClearCard();
-			MonoSkillCardHeap.RefreshCard();
+			MonoSkillCardZone.ClearCard();
+			MonoSkillCardZone.RefreshCard();
 			GoSkillCardHeap.SetActive(_maxCardCount != 0);
 			SetSkills(skills);
 		}
@@ -72,7 +72,7 @@ namespace UI
 		}
 		private void RefreshSkillCard()
 		{
-			MonoSkillCardHeap.SetCard(_skillCardList.ToArray(),CardMgr.IsCardShowSkillCardList);
+			MonoSkillCardZone.SetCard(_skillCardList.ToArray(),CardMgr.IsCardShowSkillCardList);
 		}
 		public void SetSkills(IEnumerable<PlayerSkill> skills)
 		{
@@ -107,6 +107,11 @@ namespace UI
 					_addedBtn[j].gameObject.SetActive(false);
 				}
 			}
+
+			if (playerSkills.Count > 0)
+			{
+				GoBg.SetActive(true);
+			}
 		}
 		
 		public bool SetSkillCard(List<CardObj> cardObj)
@@ -128,10 +133,13 @@ namespace UI
 
 		public void ShowSkills(bool inMyRound)
 		{
+			var count = 0;
 			foreach (var (key, value) in _dictionary)
 			{
-				value.SetShow(inMyRound);
+				count+= value.SetShow(inMyRound);
 			}
+
+			GoBg.SetActive(count > 0);
 		}
 	}
 }

@@ -20,13 +20,13 @@ namespace UI
     	private UnityEngine.UI.Button BtnNextRound 
     			=> _btnNextRound ??= transform.Find("go_Bg/bg/btn_NextRound").GetComponent<UnityEngine.UI.Button>();
 
-    	private UI.CardHeap _monoAICards;
-    	private UI.CardHeap MonoAICards 
-    			=> _monoAICards ??= transform.Find("go_Bg/bg/AIScore/mono_AICards").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoAICards;
+    	private UI.CardZone MonoAICards 
+    			=> _monoAICards ??= transform.Find("go_Bg/bg/AIScore/mono_AICards").GetComponent<UI.CardZone>();
 
-    	private UI.CardHeap _monoPlayerCards;
-    	private UI.CardHeap MonoPlayerCards 
-    			=> _monoPlayerCards ??= transform.Find("go_Bg/bg/PlayerScore/mono_PlayerCards").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoPlayerCards;
+    	private UI.CardZone MonoPlayerCards 
+    			=> _monoPlayerCards ??= transform.Find("go_Bg/bg/PlayerScore/mono_PlayerCards").GetComponent<UI.CardZone>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
@@ -110,10 +110,12 @@ namespace UI
         // 绑定按钮方法
         private void OnClickNextRound() 
         {
+			Hide();
 			XAttachMachine.ExitState(CompareCardUIState.StateIDStr);   
         }
         private void OnClickGiveUp()
         {
+	        Hide();
 	        NotifyMgr.SendEvent(NotifyDefine.GAME_END_GIVEUP);
         }
     }

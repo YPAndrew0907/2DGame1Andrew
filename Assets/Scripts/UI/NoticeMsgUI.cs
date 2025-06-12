@@ -20,6 +20,7 @@ namespace UI
 
 	    public void Notice(string notice)
 	    {
+		    TxtNotice.DOKill(true);
 		    TxtNotice.text = notice;
 		    GoBg.SetActive(true);
 		    var curPos = transform.position;

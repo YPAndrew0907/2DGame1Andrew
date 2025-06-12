@@ -30,7 +30,6 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _uiState.SkillUpgradeUI.Hide();
             yield break;
         }
 

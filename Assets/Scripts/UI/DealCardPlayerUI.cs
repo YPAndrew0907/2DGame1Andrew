@@ -12,9 +12,9 @@ namespace UI
     public class DealCardPlayerUI : BaseViewMono
     {
     	//AUTO-GENERATE
-    	private UI.CardHeap _monoPlayerCardHeap;
-    	private UI.CardHeap MonoPlayerCardHeap 
-    			=> _monoPlayerCardHeap ??= transform.Find("go_bg/mono_PlayerCardHeap").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoPlayerCardZone;
+    	private UI.CardZone MonoPlayerCardZone 
+    			=> _monoPlayerCardZone ??= transform.Find("go_bg/mono_PlayerCardHeap").GetComponent<UI.CardZone>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
@@ -32,25 +32,25 @@ namespace UI
 		public void Show()
 		{
 			GoBg.SetActive(true);
-			MonoPlayerCardHeap.SetCard(null,CardMgr.IsCardShowPlayerCardList);
+			MonoPlayerCardZone.SetCard(null,CardMgr.IsCardShowPlayerCardList);
 			TxtTotalNum.text = String.Empty;
 		}
 		public void Hide()
 		{
 			GoBg.SetActive(false);
-			MonoPlayerCardHeap.ClearCard();
-			MonoPlayerCardHeap.RefreshCard();
+			MonoPlayerCardZone.ClearCard();
+			MonoPlayerCardZone.RefreshCard();
 		}
 		public void ReceiveCard(CardObj card, Vector3 pos)
 		{
-			MonoPlayerCardHeap.AddCard(card);
-			MonoPlayerCardHeap.RefreshCard();
-			TxtTotalNum.text = MonoPlayerCardHeap.CardNum().ToString();
+			MonoPlayerCardZone.AddCard(card);
+			MonoPlayerCardZone.RefreshCard();
+			TxtTotalNum.text = MonoPlayerCardZone.CardNum().ToString();
 		}
 		public void RemoveCurHandCards()
 		{
-			MonoPlayerCardHeap.RemoveAll();
-			MonoPlayerCardHeap.RefreshCard();
+			MonoPlayerCardZone.RemoveAll();
+			MonoPlayerCardZone.RefreshCard();
 		}
     }
 }

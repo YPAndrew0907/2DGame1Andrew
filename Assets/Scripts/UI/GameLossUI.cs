@@ -81,6 +81,7 @@ namespace UI
 
 		private void OnBackHome()
 		{
+			Hide();
 			NotifyMgr.SendEvent(NotifyDefine.CLOSE_GAME_END_UI);
 		}
 	}

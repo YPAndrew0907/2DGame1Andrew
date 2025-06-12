@@ -99,6 +99,7 @@ namespace UI
 			}
 
 			NotifyMgr.SendEvent(NotifyDefine.BET_CHIP, _curChipNum);
+			Hide();
 		}
 
 		private void ChipNumChange()

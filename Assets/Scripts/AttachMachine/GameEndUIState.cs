@@ -3,7 +3,6 @@ using System.Collections;
 using Mgr;
 using Obj;
 using UI;
-using Unity.VisualScripting;
 using XYZFrameWork;
 
 namespace AttachMachine
@@ -57,18 +56,6 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            switch (_curCode)
-            {
-                case GameEndCode.Win: 
-                    _gameEndUI.GameWinUI.Hide();
-                    break;
-                case GameEndCode.GiveUp:
-                case GameEndCode.Lose: 
-                    _gameEndUI.GameLossUI.Hide();
-                    break;
-                default:               throw new ArgumentOutOfRangeException(_curCode.ToString());
-            }
-
             _curCode = GameEndCode.None;
             NotifyMgr.SendEvent(NotifyDefine.GAME_END_BACK_HOME);
             yield break;

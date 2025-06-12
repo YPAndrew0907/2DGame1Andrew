@@ -6,11 +6,10 @@ using Obj;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using Random = UnityEngine.Random;
 
 namespace UI
 {
-    public class CardItem : BaseViewMono
+    public class CardItem : BaseCardItem
     {
         //AUTO-GENERATE
         private UnityEngine.EventSystems.EventTrigger _triggerCard;
@@ -34,15 +33,9 @@ namespace UI
             => _txtFlag ??= transform.Find("go_txt_Flag").GetComponent<TMPro.TextMeshProUGUI>();
 
         //AUTO-GENERATE-END
-        private const string DefaultName = "CardItem (Empty)";
-        public CardObj Value { get; private set; }
-        public bool isSelected;
-
-        private readonly Color _hideColor = new Color(0, 0, 0, 0);
-        private readonly Color _showColor = new Color(1, 1, 1, 1);
-        public void SetCard(CardObj cardValue, Func<CardObj, bool> isShow)
+           public override void SetCard(CardObj cardValue, Func<CardObj, bool> isShow)
         {
-            if (isSelected)
+            if (IsSelected)
             {
                 CancelSelect();
             }
@@ -50,6 +43,7 @@ namespace UI
             gameObject.name = Value != null ? Value.ToString() : DefaultName;
             RefreshCard(cardValue, isShow);
         }
+
         private void RefreshCard(CardObj cardValue, Func<CardObj, bool> isShow)
         {
             if (isShow == null)
@@ -81,28 +75,29 @@ namespace UI
                 transform.SetAsLastSibling();
             }
         }
-        public void HideImg()
+        public override void HideImg()
         {
-            ImgCard.color = _hideColor;
+            ImgCard.color = HideColor;
         }
-        public void ShowImg()
+        public override void ShowImg()
         {
-            ImgCard.color = _showColor;
+            ImgCard.color = ShowColor;
         }
-        public void CancelSelect()
+
+        public override void CancelSelect()
         {
-            isSelected = false;
+            IsSelected = false;
             OutCard.effectColor = Color.black;
             OutCard.effectDistance = new Vector2(1, -1);
         }
 
-        public void Selected()
+        public override void Selected()
         {
-            isSelected = true;
+            IsSelected = true;
             OutCard.effectColor = new Color(1, 1, 0.26f, 1);
             OutCard.effectDistance = new Vector2(3, -3);
         }
-        public void AddTriggerEvent(EventTriggerType type, UnityAction<BaseEventData> action)
+        public override void AddTriggerEvent(EventTriggerType type, UnityAction<BaseEventData> action)
         {
             var entry = TriggerCard.triggers.Find(item => item.eventID == type);
             if (entry == null)
@@ -119,7 +114,7 @@ namespace UI
                 entry.callback.AddListener(action);
             }
         }
-        public void AddTriggerEvent(EventTriggerType type, EventTrigger.TriggerEvent triggerEvent)
+        public override void AddTriggerEvent(EventTriggerType type, EventTrigger.TriggerEvent triggerEvent)
         {
             var entry = TriggerCard.triggers.Find(item => item.eventID == type);
             if (entry == null)
@@ -137,7 +132,7 @@ namespace UI
             }
         }
 
-        public void CopyEventTrigger(CardItem newCard)
+        public override void CopyEventTrigger(BaseCardItem newCard)
         {
             if (TriggerCard.triggers is { Count: > 0 })
             {

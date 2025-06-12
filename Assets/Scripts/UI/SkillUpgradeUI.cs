@@ -42,6 +42,7 @@ namespace UI
 	    }
 	    private void OnClickBackHome()
 	    {
+		    Hide();
 		    XAttachMachine.SwitchState(SkillUpgradeUIState.StateIDStr, HomeUIState.StateIDStr);
 	    }
 	    public void Show(IEnumerable<SkillConfig> skillCfgs)

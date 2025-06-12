@@ -136,6 +136,10 @@ namespace Mgr
                         list.Add(selectSkill);
                         hasFind = true;
                 }
+                else
+                {
+                    list.Add(skill);
+                }
             }
 
             if (player == PlayerType.Player)
@@ -160,7 +164,8 @@ namespace Mgr
         {
             if (CurShuffleRole == PlayerType.None)
             {
-                CurShuffleRole = Random.Range(-1, 1) >= 0 ? PlayerType.Player : PlayerType.AI;
+                // CurShuffleRole = Random.Range(-1, 1) >= 0 ? PlayerType.Player : PlayerType.AI;
+                CurShuffleRole = PlayerType.Player;
             }
             else
             {
@@ -202,8 +207,8 @@ namespace Mgr
         }
 
         // 下注判断等
-        public bool PlayerEnough => PlayerChips > LevelMgr.Instance.CurMinBetChip;
-        public bool BossEnough   => AIChips > LevelMgr.Instance.CurMinBetChip;
+        public bool PlayerEnough => PlayerChips >= LevelMgr.Instance.CurMinBetChip;
+        public bool BossEnough   => AIChips >= LevelMgr.Instance.CurMinBetChip;
 
         // 轮次/洗牌等
         public bool WillShuffle => RoundTimes  <= 0 || RoundTimes % 5 == 0;

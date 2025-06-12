@@ -52,9 +52,9 @@ namespace Mgr
             #if UNITY_EDITOR
             _skillLevels.TryAdd(PlayerSkill.CopyAndSwitch, 1);
             _skillLevels.TryAdd(PlayerSkill.StealAndInsert, 1);
-            _skillLevels.TryAdd(PlayerSkill.GuessOrRemember, 1);
-            _skillLevels.TryAdd(PlayerSkill.Lie, 1);
-            _skillLevels.TryAdd(PlayerSkill.Detect, 1);
+            // _skillLevels.TryAdd(PlayerSkill.GuessOrRemember, 1);
+            // _skillLevels.TryAdd(PlayerSkill.Lie, 1);
+            // _skillLevels.TryAdd(PlayerSkill.Detect, 1);
             
             #endif
             SkillCardCount = 0;

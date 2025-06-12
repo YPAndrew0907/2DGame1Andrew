@@ -30,6 +30,19 @@ namespace AttachMachine
             }
         }
 
+        public override void OnActive()
+        {
+            base.OnActive();
+            _askCardUI.AskCardUI.Hide();
+        }
+
+        public override void OnInActive()
+        {
+            base.OnInActive();
+            _askCardUI.AskCardUI.Hide();
+        }
+
+
         public override IEnumerator OnEnterAsync(object payload)
         {
             var curPlayer = GameSessionMgr.Instance.CurPlayerType;
@@ -55,8 +68,6 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _askCardUI.AskCardUI.Hide();
-
             var curPlayer = GameSessionMgr.Instance.CurPlayerType;
             var nextPlayer     = GameSessionMgr.Instance.NextPlayerAskCard();
             if (curPlayer == PlayerType.AI)

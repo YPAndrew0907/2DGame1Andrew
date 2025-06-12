@@ -35,7 +35,6 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _betUI.BetUI.Hide();
             yield return XAttachMachine.EnterState(SkillUIState.StateIDStr);
         }
 

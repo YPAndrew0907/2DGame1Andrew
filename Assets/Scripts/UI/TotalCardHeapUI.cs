@@ -14,9 +14,9 @@ namespace UI
     	private UnityEngine.CanvasGroup CgAniPanel 
     			=> _cgAniPanel ??= transform.Find("go_bg/cg_aniPanel").GetComponent<UnityEngine.CanvasGroup>();
 
-    	private UI.CardHeap _monoCards2;
-    	private UI.CardHeap MonoCards2 
-    			=> _monoCards2 ??= transform.Find("go_bg/scroll_mono_Cards2").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoCards2;
+    	private UI.CardZone MonoCards2 
+    			=> _monoCards2 ??= transform.Find("go_bg/scroll_mono_Cards2").GetComponent<UI.CardZone>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
@@ -70,13 +70,13 @@ namespace UI
 			switch (shuffleRole)
 			{
 				case PlayerType.AI:   
-					print("由对方洗牌");
+					print("【谁洗牌】由对方洗牌");
 					break;
 				case PlayerType.Player:  
-					print("由玩家洗牌");
+					print("【谁洗牌】由玩家洗牌");
 					break;
 				default: 
-					print("洗牌人员初始化错误");
+					print("【洗牌寄】洗牌人员初始化错误");
 					break;
 			}
 			shuffleAni.alpha = 0;

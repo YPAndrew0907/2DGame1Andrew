@@ -14,9 +14,9 @@ namespace UI
     	private UnityEngine.UI.Button BtnCheckSelect 
     			=> _btnCheckSelect ??= transform.Find("go_bg/btn_CheckSelect").GetComponent<UnityEngine.UI.Button>();
 
-    	private UI.CardHeap _monoSelectCardHeap;
-    	private UI.CardHeap MonoSelectCardHeap 
-    			=> _monoSelectCardHeap ??= transform.Find("go_bg/mono_SelectCardHeap").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoSelectCardZone;
+    	private UI.CardZone MonoSelectCardZone 
+    			=> _monoSelectCardZone ??= transform.Find("go_bg/mono_SelectCardHeap").GetComponent<UI.CardZone>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
@@ -24,7 +24,7 @@ namespace UI
 
     	//AUTO-GENERATE-END
         
-        public CardItem        cardItem;
+        public BaseCardItem        CardItemPrefab;
 		
         private int           _maxCardCount;
         private int           _selectCardId;
@@ -38,7 +38,7 @@ namespace UI
             BtnCheckSelect.onClick.RemoveAllListeners();
             BtnCheckSelect.onClick.AddListener(OnCheckSelect);
 			         
-            cardItem.AddTriggerEvent(EventTriggerType.PointerClick, SelectCard);
+            CardItemPrefab.AddTriggerEvent(EventTriggerType.PointerClick, SelectCard);
         }
         
         public void Show(string titleStr, int selectEventId, int maxSelectCount)
@@ -48,8 +48,8 @@ namespace UI
             _termSelectCard.Clear();
             _maxCardCount = maxSelectCount;
             
-            MonoSelectCardHeap.SetCard(CardMgr.Instance.Cards,CardMgr.IsCardShowSelectCard);
-            MonoSelectCardHeap.RefreshTitle(titleStr);
+            MonoSelectCardZone.SetCard(CardMgr.Instance.Cards, CardMgr.IsCardShowSelectCard);
+            MonoSelectCardZone.RefreshTitle(titleStr);
             GoBg.SetActive(true);
         }
         
@@ -62,12 +62,13 @@ namespace UI
         {
             if (_termSelectCard.Count > 0)
             {
-                NotifyMgr.SendEvent(_selectCardId,  new SelectCardData()
+                NotifyMgr.SendEvent(_selectCardId,  new OperationData()
                 {
                     IsAI = false,
                     SelectCards = _termSelectCard
                 });
                 _termSelectCard.Clear();
+                Hide();
             }
         }
         

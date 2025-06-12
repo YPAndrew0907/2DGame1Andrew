@@ -11,9 +11,9 @@ namespace UI
     public class DealCardAIUI : BaseViewMono
     {
     	//AUTO-GENERATE
-    	private UI.CardHeap _monoAICardHeap;
-    	private UI.CardHeap MonoAICardHeap 
-    			=> _monoAICardHeap ??= transform.Find("go_bg/mono_AICardHeap").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoAICardZone;
+    	private UI.CardZone MonoAICardZone 
+    			=> _monoAICardZone ??= transform.Find("go_bg/mono_AICardHeap").GetComponent<UI.CardZone>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
@@ -34,16 +34,16 @@ namespace UI
 		}
 		public void DealToDes(GameObject card)
 		{
-			card.transform.SetParent(MonoAICardHeap.transform,true);
+			card.transform.SetParent(MonoAICardZone.transform,true);
 			card.transform.DOMove(Vector3.zero, 1).OnComplete(() =>
 			{
-				MonoAICardHeap.RefreshCard();
+				MonoAICardZone.RefreshCard();
 			});
 		}
 		public void Show()
 		{
 			GoBg.SetActive(true);
-			MonoAICardHeap.SetCard(null,CardMgr.IsCardShowAICardList);
+			MonoAICardZone.SetCard(null,CardMgr.IsCardShowAICardList);
 			TxtRangeNum.text = String.Empty;
 			GoRangeNum.SetActive(false);
 		}
@@ -56,27 +56,27 @@ namespace UI
 		{
 			GoBg.SetActive(false);
 			
-			MonoAICardHeap.ClearCard();
-			MonoAICardHeap.RefreshCard();
+			MonoAICardZone.ClearCard();
+			MonoAICardZone.RefreshCard();
 		}
 		public void ReceiveCard(CardObj card, Vector3 pos)
 		{
-			MonoAICardHeap.AddCard(card);
-			MonoAICardHeap.RefreshCard();
-			var realValue = MonoAICardHeap.CardNum();
+			MonoAICardZone.AddCard(card);
+			MonoAICardZone.RefreshCard();
+			var realValue = MonoAICardZone.CardNum();
 			var min       = Math.Max(0, realValue - Random.Range(3, 5));
 			var max       = realValue + Random.Range(3, 5);
 			TxtRangeNum.text = $"{min} ~ {max}";
 		}
 		public void RemoveToPublic()
 		{
-			MonoAICardHeap.RemoveAll();
-			MonoAICardHeap.RefreshCard();
+			MonoAICardZone.RemoveAll();
+			MonoAICardZone.RefreshCard();
 		}
 		public void ClearCard()
 		{
-			MonoAICardHeap.ClearCard();
+			MonoAICardZone.ClearCard();
 		}
-		public int CardNum =>  MonoAICardHeap.CardNum();
+		public int CardNum =>  MonoAICardZone.CardNum();
     }
 }

@@ -42,12 +42,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Editor\UIComponentMgr.cs" />
+    <Compile Include="Assets\Scripts\Editor\MonoScriptEditor.Value.cs" />
+    <Compile Include="Assets\Demigiant\DOTweenPro\Editor\DOTweenAnimationInspector.cs" />
     <Compile Include="Assets\Scripts\Editor\UIComponentBase.cs" />
     <Compile Include="Assets\Demigiant\DOTweenPro\Editor\DOTweenPreviewManager.cs" />
     <Compile Include="Assets\Scripts\Editor\MonoMethod.UI.cs" />
     <Compile Include="Assets\Scripts\Editor\ComponentRuleObj.cs" />
-    <Compile Include="Assets\Scripts\Editor\MonoScriptEditor.Value.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\Editor\DOTweenAnimationInspector.cs" />
     <Compile Include="Assets\Scripts\Editor\MonoScriptEditor.Inject.cs" />
     <None Include="Assets\Demigiant\DemiLib\Core\Editor\DemiEditor.xml" />
     <Reference Include="UnityEngine">
@@ -308,17 +308,8 @@
     <Reference Include="UnityEditor.UWP.Extensions">
       <HintPath>P:\UnityEditor\2021.3.27f1\Editor\Data\PlaybackEngines\MetroSupport\UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Plastic.Newtonsoft.Json">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.collab-proxy@2.5.1\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="DemiLib">
       <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DemiLib\Core\DemiLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Plastic.Antlr3.Runtime">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.collab-proxy@2.5.1\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.YamlDotNet">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.visualscripting@1.9.4\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="DOTweenProEditor">
       <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTweenPro\Editor\DOTweenProEditor.dll</HintPath>
@@ -329,23 +320,8 @@
     <Reference Include="DemiEditor">
       <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DemiLib\Core\Editor\DemiEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.TextureAssets">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.visualscripting@1.9.4\Editor\VisualScripting.Core\EditorAssetResources\Unity.VisualScripting.TextureAssets.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.IonicZip">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.visualscripting@1.9.4\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
-    </Reference>
-    <Reference Include="log4netPlastic">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.collab-proxy@2.5.1\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
-    </Reference>
     <Reference Include="DOTween">
       <HintPath>P:\UnityProject\21Dot\Assets\Demigiant\DOTween\DOTween.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.visualscripting@1.9.4\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="unityplastic">
-      <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.collab-proxy@2.5.1\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>P:\UnityProject\21Dot\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
@@ -737,20 +713,8 @@
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Flow.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VSCode.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Shared.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
@@ -758,41 +722,20 @@
     <Reference Include="Unity.Timeline">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Core.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Core">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
       <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>

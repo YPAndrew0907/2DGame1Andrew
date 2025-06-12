@@ -67,10 +67,12 @@ namespace UI
         private void OnClickAsk()
         {
 	        NotifyMgr.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(true));
+	        Hide();
         }
         private void OnClickCancel()
         {
 	        NotifyMgr.SendEvent(NotifyDefine.ASK_CARD, AskCardParam(false));
+	        Hide();
         }
         
         public void Hide()

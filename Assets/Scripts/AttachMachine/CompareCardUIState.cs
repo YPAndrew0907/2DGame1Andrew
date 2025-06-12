@@ -70,7 +70,6 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _uiState.CompareCardUI.Hide();
             GameSessionMgr.Instance.NextRound();
             GameSessionMgr.Instance.SwitchShufflePlayer();
             

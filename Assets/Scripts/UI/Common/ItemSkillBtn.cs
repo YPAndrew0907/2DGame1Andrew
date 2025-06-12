@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Base;
 using Mgr;
@@ -51,15 +52,25 @@ namespace UI
 		    }
 	    }
 
-	    public void SetShow(bool inMyRound)
+	    public int SetShow(bool inMyRound)
 	    {
-		    if (_skill == PlayerSkill.Lie)
+		    var show = false;
+		    switch (_skill)
 		    {
-			    gameObject.SetActive(!inMyRound);
-		    }else
-		    {
-			    gameObject.SetActive(inMyRound);   
+			    case PlayerSkill.Lie:
+				    show = !inMyRound;
+				    gameObject.SetActive(show);
+				    break;
+			    case PlayerSkill.Switch:
+				    show = inMyRound;
+				    break;
+			    case PlayerSkill.Detect:
+				    show = !inMyRound;
+				    gameObject.SetActive(show);
+				    break;
 		    }
+		    gameObject.SetActive(show);
+		    return show? 1 : 0;
 	    }
     }
 }

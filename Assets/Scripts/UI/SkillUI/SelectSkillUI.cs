@@ -52,11 +52,13 @@ namespace UI
         {
             NotifyMgr.SendEvent(NotifyDefine.SKILL_SELECT,
                 new List<int> { (int)PlayerType.Player, (int)_leftSkill });
+            Hide();
         }
         private void OnClickRightSelect()
         {
             NotifyMgr.SendEvent(NotifyDefine.SKILL_SELECT,
                 new List<int> { (int)PlayerType.Player, (int)_rightSkill });
+            Hide();
         }
     }
 }

@@ -27,9 +27,9 @@ namespace UI
 		private UI.DealCardAIUI MonoDealCardAI 
 				=> _monoDealCardAI ??= transform.Find("mono_DealCardAI").GetComponent<UI.DealCardAIUI>();
 
-		private UI.DealCardPlayerUI _monoDealPlayerCard;
-		private UI.DealCardPlayerUI MonoDealPlayerCard 
-				=> _monoDealPlayerCard ??= transform.Find("mono_DealPlayerCard").GetComponent<UI.DealCardPlayerUI>();
+		private UI.DealCardPlayerUI _monoDealCardPlayer;
+		private UI.DealCardPlayerUI MonoDealCardPlayer 
+				=> _monoDealCardPlayer ??= transform.Find("mono_DealCardPlayer").GetComponent<UI.DealCardPlayerUI>();
 
 		private UI.GameLossUI _monoLossUI;
 		private UI.GameLossUI MonoLossUI 
@@ -43,6 +43,10 @@ namespace UI
 		private UI.HomeUI MonoHomeUI 
 				=> _monoHomeUI ??= transform.Find("mono_HomeUI").GetComponent<UI.HomeUI>();
 
+		private UI.InsertAndReplaceUI _monoInsertAndReplace;
+		private UI.InsertAndReplaceUI MonoInsertAndReplace 
+				=> _monoInsertAndReplace ??= transform.Find("mono_InsertAndReplace").GetComponent<UI.InsertAndReplaceUI>();
+
 		private UI.LevelInfoUI _monoLevelInfo;
 		private UI.LevelInfoUI MonoLevelInfo 
 				=> _monoLevelInfo ??= transform.Find("mono_LevelInfo").GetComponent<UI.LevelInfoUI>();
@@ -54,10 +58,6 @@ namespace UI
 		private UI.PlayedCardUI _monoPlayedCardUI;
 		private UI.PlayedCardUI MonoPlayedCardUI 
 				=> _monoPlayedCardUI ??= transform.Find("mono_PlayedCardUI").GetComponent<UI.PlayedCardUI>();
-
-		private UI.InsertAndReplaceUI _monoInsertAndReplace;
-		private UI.InsertAndReplaceUI MonoInsertAndReplace 
-				=> _monoInsertAndReplace ??= transform.Find("mono_InsertAndReplace").GetComponent<UI.InsertAndReplaceUI>();
 
 		private UI.SelectCardUI _monoSelectCardUI;
 		private UI.SelectCardUI MonoSelectCardUI 
@@ -117,26 +117,26 @@ namespace UI
 			CoroutineMgr.Instance.StartCoroutine(XAttachMachine.EnterState(HomeUIState.StateIDStr));
 		}
         #region UI元素
-		public InsertAndReplaceUI        InsertAndReplaceUI        => MonoInsertAndReplace;
-		public SelectCardUI     SelectCardUI     => MonoSelectCardUI;
-		public SelectSkillUI    SelectSkillUI    => MonoSelectSkillUI;
-		public TotalCardHeapUI  TotalCardHeapUI  => MonoTotalCardHeap;
-		public DealCardAIUI     DealCardAIUI     => MonoDealCardAI;
-		public DealCardAIUI     AICardUI         => MonoDealCardAI;
-		public DealCardPlayerUI DealCardPlayerUI => MonoDealPlayerCard;
-		public DealCardPlayerUI PlayerUI         => MonoDealPlayerCard;
-		public BetUI            BetUI            => MonoBetPanel;
-		public LevelInfoUI      LevelInfoUI      => MonoLevelInfo;
-		public SkillsUI         SkillsUI         => MonoSkillUI;
-		public GameLossUI       GameLossUI       => MonoLossUI;
-		public GameWinUI        GameWinUI        => MonoWinUI;
-		public HomeUI           HomeUI           => MonoHomeUI;
-		public AskCardUI        AskCardUI        => MonoAskUI;
-		public PlayedCardUI     PlayedCardUI     => MonoPlayedCardUI;
-		public TotalCardHeapUI  ShuffleUI        => TotalCardHeapUI;
-		public CompareCardUI    CompareCardUI    => MonoCompareCardUI;
-		public NoticeMsgUI      NoticeMsgUI      => MonoNoticeMsgUI;
-		public SkillUpgradeUI   SkillUpgradeUI   => MonoSkillUpgradeUI;
+		public InsertAndReplaceUI InsertAndReplaceUI => MonoInsertAndReplace;
+		public SelectCardUI       SelectCardUI       => MonoSelectCardUI;
+		public SelectSkillUI      SelectSkillUI      => MonoSelectSkillUI;
+		public TotalCardHeapUI    TotalCardHeapUI    => MonoTotalCardHeap;
+		public DealCardAIUI       DealCardAIUI       => MonoDealCardAI;
+		public DealCardAIUI       AICardUI           => MonoDealCardAI;
+		public DealCardPlayerUI   DealCardPlayerUI   => MonoDealCardPlayer;
+		public DealCardPlayerUI   PlayerUI           => MonoDealCardPlayer;
+		public BetUI              BetUI              => MonoBetPanel;
+		public LevelInfoUI        LevelInfoUI        => MonoLevelInfo;
+		public SkillsUI           SkillsUI           => MonoSkillUI;
+		public GameLossUI         GameLossUI         => MonoLossUI;
+		public GameWinUI          GameWinUI          => MonoWinUI;
+		public HomeUI             HomeUI             => MonoHomeUI;
+		public AskCardUI          AskCardUI          => MonoAskUI;
+		public PlayedCardUI       PlayedCardUI       => MonoPlayedCardUI;
+		public TotalCardHeapUI    ShuffleUI          => TotalCardHeapUI;
+		public CompareCardUI      CompareCardUI      => MonoCompareCardUI;
+		public NoticeMsgUI        NoticeMsgUI        => MonoNoticeMsgUI;
+		public SkillUpgradeUI     SkillUpgradeUI     => MonoSkillUpgradeUI;
         #endregion
 	}
 }

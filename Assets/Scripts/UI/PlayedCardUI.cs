@@ -12,9 +12,9 @@ namespace UI
     	private UnityEngine.CanvasGroup CgAniPanel 
     			=> _cgAniPanel ??= transform.Find("go_bg/cg_aniPanel").GetComponent<UnityEngine.CanvasGroup>();
 
-    	private UI.CardHeap _monoCards2;
-    	private UI.CardHeap MonoCards2 
-    			=> _monoCards2 ??= transform.Find("go_bg/mono_Cards2").GetComponent<UI.CardHeap>();
+    	private UI.CardZone _monoCards2;
+    	private UI.CardZone MonoCards2 
+    			=> _monoCards2 ??= transform.Find("go_bg/mono_Cards2").GetComponent<UI.CardZone>();
 
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 

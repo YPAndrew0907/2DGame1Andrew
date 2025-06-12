@@ -12,7 +12,7 @@
         Spade = 0, Heart, Club, Diamond
     }
 
-    public class CardObj: IComparable<CardObj>
+    public class CardObj: IComparable<CardObj>,IEquatable<CardObj>
     {
         public readonly CardValue  Value;
         public readonly CardSuit   Suit;
@@ -57,6 +57,32 @@
         public CardObj DeepCopy()
         {
             return (CardObj)MemberwiseClone();
+        }
+
+
+        public bool Equals(CardObj other)
+        {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return Value == other.Value && Suit == other.Suit && IsFirstCard == other.IsFirstCard && IsRemembered == other.IsRemembered && IsCopy == other.IsCopy && Owner == other.Owner;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((CardObj)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine((int)Value, (int)Suit, IsFirstCard, IsRemembered, IsCopy, (int)Owner);
         }
     }
 }
