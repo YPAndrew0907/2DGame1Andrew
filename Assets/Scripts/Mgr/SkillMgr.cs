@@ -52,9 +52,9 @@ namespace Mgr
             #if UNITY_EDITOR
             _skillLevels.TryAdd(PlayerSkill.CopyAndSwitch, 1);
             _skillLevels.TryAdd(PlayerSkill.StealAndInsert, 1);
-            // _skillLevels.TryAdd(PlayerSkill.GuessOrRemember, 1);
-            // _skillLevels.TryAdd(PlayerSkill.Lie, 1);
-            // _skillLevels.TryAdd(PlayerSkill.Detect, 1);
+            _skillLevels.TryAdd(PlayerSkill.GuessOrRemember, 1);
+            _skillLevels.TryAdd(PlayerSkill.Lie, 1);
+            _skillLevels.TryAdd(PlayerSkill.Detect, 1);
             
             #endif
             SkillCardCount = 0;
@@ -71,7 +71,7 @@ namespace Mgr
             }
 
 
-            SkillPoint = PlayerPrefs.GetInt(Key_SkillPoint, 0);
+            SkillPoint = PlayerPrefs.GetInt(Key_SkillPoint, 3);
         }
 
         public void SaveSkillData()
@@ -144,13 +144,13 @@ namespace Mgr
         /// <summary>
         /// 获取技能参数
         /// </summary>
-        /// <param name="skill"></param>
+        /// <param name="skill">技能得名。不能是子技能</param>
         /// <param name="level"> 0 时获取玩家的等级。</param>
         public (float hitRate, int parameter) GetSkillParameters(PlayerSkill skill, int level = 1)
         {
             if (_skillConfigs.TryGetValue(skill, out SkillConfig config))
             {
-                int lv = level != 0 ? level : GetSkillLevel(skill);
+                int lv = level > 0 ? level : GetSkillLevel(skill);
                 float hitRate = config.baseHitRate + config.hitRateIncreasePerLevel * (lv - 1);
                 int parameter = config.baseParameter + config.parameterIncreasePerLevel * (lv - 1);
                 return (hitRate, parameter);

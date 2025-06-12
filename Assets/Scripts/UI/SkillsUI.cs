@@ -3,23 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using Base;
 using Cfg;
-using Cysharp.Threading.Tasks.Triggers;
+using DG.Tweening;
 using Mgr;
 using Obj;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
 	public class SkillsUI : BaseViewMono
 	{
 		//AUTO-GENERATE
-		private UI.CardZone _monoSkillCardZone;
-		private UI.CardZone MonoSkillCardZone 
-				=> _monoSkillCardZone ??= transform.Find("go_Bg/go_mono_SkillCardHeap").GetComponent<UI.CardZone>();
+		private UI.CardZone _monoSkillCardHeap;
+		private UI.CardZone MonoSkillCardHeap 
+				=> _monoSkillCardHeap ??= transform.Find("go_Bg/go_mono_SkillCardHeap").GetComponent<UI.CardZone>();
 
 		private UnityEngine.GameObject _goBg;
 		private UnityEngine.GameObject GoBg 
 				=> _goBg ??= transform.Find("go_Bg").gameObject;
+
+		private UnityEngine.GameObject _goDetectFlag;
+		private UnityEngine.GameObject GoDetectFlag 
+				=> _goDetectFlag ??= transform.Find("go_Bg/go_DetectFlag").gameObject;
 
 		private UnityEngine.GameObject _goSkillCardHeap;
 		private UnityEngine.GameObject GoSkillCardHeap 
@@ -43,27 +48,26 @@ namespace UI
 		/// 开局送的牌
 		/// </summary>
 		private List<CardObj> _skillCardList;
-		private int           SkillCardCount => _skillCardList.Count;
-		private int           _maxCardCount;
-
+		private int                                   SkillCardCount => _skillCardList.Count;
+		private int                                   _maxCardCount;
 		private List<ItemSkillBtn>                    _addedBtn;
 		private Dictionary<PlayerSkill, ItemSkillBtn> _dictionary = new();
 		public void Init()
 		{
 			GoBg.SetActive(false);
 			MonoItemSkill.gameObject.SetActive(false);
-			
-			MonoSkillCardZone.SetCard(null, CardMgr.IsCardShowSkillCardList);
-			MonoSkillCardZone.RefreshCard();
+			MonoSkillCardHeap.SetCard(null, CardMgr.IsCardShowSkillCardList);
+			MonoSkillCardHeap.RefreshCard();
 			_skillCardList = new List<CardObj>();
 			_addedBtn      = new List<ItemSkillBtn>();
+			GoDetectFlag.SetActive(false);
 		}
 		public void Show(int maxCardCount,IEnumerable<PlayerSkill> skills)
 		{
 			_maxCardCount = maxCardCount;
-			MonoSkillCardZone.ClearCard();
-			MonoSkillCardZone.RefreshCard();
-			GoSkillCardHeap.SetActive(_maxCardCount != 0);
+			MonoSkillCardHeap.ClearCard();
+			MonoSkillCardHeap.RefreshCard();
+			GoSkillCardHeap.SetActive(_maxCardCount!= 0);
 			SetSkills(skills);
 		}
 		public void Hide()
@@ -72,7 +76,7 @@ namespace UI
 		}
 		private void RefreshSkillCard()
 		{
-			MonoSkillCardZone.SetCard(_skillCardList.ToArray(),CardMgr.IsCardShowSkillCardList);
+			MonoSkillCardHeap.SetCard(_skillCardList.ToArray(),CardMgr.IsCardShowSkillCardList);
 		}
 		public void SetSkills(IEnumerable<PlayerSkill> skills)
 		{
@@ -99,7 +103,6 @@ namespace UI
 				trans.Init(playerSkills[i]);
 				_dictionary.Add(playerSkills[i],trans);
 			}
-
 			if (i< _addedBtn.Count)
 			{
 				for (int j = i; j < _addedBtn.Count; j++)
@@ -107,7 +110,6 @@ namespace UI
 					_addedBtn[j].gameObject.SetActive(false);
 				}
 			}
-
 			if (playerSkills.Count > 0)
 			{
 				GoBg.SetActive(true);
@@ -130,7 +132,6 @@ namespace UI
 		{
 			RefreshSkillCard();
 		}
-
 		public void ShowSkills(bool inMyRound)
 		{
 			var count = 0;
@@ -138,8 +139,18 @@ namespace UI
 			{
 				count+= value.SetShow(inMyRound);
 			}
-
 			GoSkillList.SetActive(count > 0);
+		}
+
+		public void ShowDetectFlag(bool isShow)
+		{
+			GoDetectFlag.SetActive(isShow);
+			var tweener = GoDetectFlag.transform.GetComponent<Image>().DOFade(0f, 1f).SetEase(Ease.InOutSine)
+			                          .SetLoops(3, LoopType.Yoyo);
+			tweener.OnComplete(() =>
+			{
+				GoDetectFlag.SetActive(false);
+			});
 		}
 	}
 }

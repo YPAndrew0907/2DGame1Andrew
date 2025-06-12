@@ -45,12 +45,25 @@ namespace UI
 		{
 			MonoPlayerCardZone.AddCard(card);
 			MonoPlayerCardZone.RefreshCard();
+			RefreshCardRange();
+		}
+
+		private void RefreshCardRange()
+		{
 			TxtTotalNum.text = MonoPlayerCardZone.CardNum().ToString();
 		}
+
 		public void RemoveCurHandCards()
 		{
-			MonoPlayerCardZone.RemoveAll();
+			MonoPlayerCardZone.ClearCard();
 			MonoPlayerCardZone.RefreshCard();
+		}
+
+		public void UpdateCards(List<CardObj> cards)
+		{
+			RemoveCurHandCards();
+			MonoPlayerCardZone.SetCard(cards,CardMgr.IsCardShowPlayerCardList);
+			RefreshCardRange();
 		}
     }
 }

@@ -57,7 +57,7 @@ namespace AttachMachine
                 if (shuffleRole == PlayerType.Player
                     && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.StealAndInsert))
                 {
-                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
+                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert, -1);
                     _shuffleUIState.InsertAndReplaceUI.Show(GameSessionMgr.Instance.PlayerSkillCards,
                         CardMgr.Instance.CardsList, true, stealCount);
                     _stealIsOpen = true;
@@ -67,7 +67,7 @@ namespace AttachMachine
                 else if (shuffleRole == PlayerType.AI
                          && GameSessionMgr.Instance.CurBossSkills.Contains(PlayerSkill.StealAndInsert))
                 {
-                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
+                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert, -1);
                     var copyIndexList = AIMgr.AIRandomStealCard(CardMgr.Instance.Cards, stealCount);
                     var cardList      = CardMgr.Instance.StealCard(copyIndexList);
                     NotifyMgr.SendEvent(NotifyDefine.CARD_STEAL_INSERT, new OperationData
@@ -75,6 +75,7 @@ namespace AttachMachine
                         IsAI        = true,
                         SelectCards = cardList
                     });
+                    NotifyMgr.SendEvent(NotifyDefine.FIRE_SKILL, new List<int>(){(int)PlayerType.AI,(int)PlayerSkill.StealAndInsert});
                 }
                 
 

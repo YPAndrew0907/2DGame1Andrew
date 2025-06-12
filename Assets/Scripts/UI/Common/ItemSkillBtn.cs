@@ -58,15 +58,13 @@ namespace UI
 		    switch (_skill)
 		    {
 			    case PlayerSkill.Lie:
-				    show = !inMyRound;
-				    gameObject.SetActive(show);
+				    show = false;
 				    break;
 			    case PlayerSkill.Switch:
 				    show = inMyRound;
 				    break;
 			    case PlayerSkill.Detect:
 				    show = !inMyRound;
-				    gameObject.SetActive(show);
 				    break;
 		    }
 		    gameObject.SetActive(show);

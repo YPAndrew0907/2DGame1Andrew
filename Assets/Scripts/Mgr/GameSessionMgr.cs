@@ -250,30 +250,38 @@ namespace Mgr
             }
         }
 
-        public void SwitchCard(bool isAI, int[] curIndex, int[] replaceIndex)
+        public void SwitchCard(bool isAI, List<CardObj> curIndex, List<CardObj> replaceIndex)
         {
-            if (curIndex.Length!= replaceIndex.Length )
+            if (curIndex.Count!= replaceIndex.Count )
             {
                 return;
             }
             if (isAI)
             {
-                for (var i = 0; i < curIndex.Length; i++)
+                for (var i = 0; i < curIndex.Count; i++)
                 {
-                    var ci = curIndex[i];
-                    var ri = replaceIndex[i];
-                    (AICards[ci], BossSkillCards[ri]) = (BossSkillCards[ri], AICards[ci]);
-                    Debug.Log($"【替换牌】： AI 手牌{AICards[ci]} -> {BossSkillCards[ri]}");
+                    var cc =  curIndex[i];
+                    var rc = replaceIndex[i];
+                    BossSkillCards.Remove(rc);
+                    BossSkillCards.Add(cc);
+                    AICards.Remove(cc);
+                    AICards.Add(rc);
+                    
+                    Debug.Log($"【替换牌】： AI 手牌{cc} -> {rc}");
                 }
             }
             else
             {
-                for (var i = 0; i < curIndex.Length; i++)
+                for (var i = 0; i < curIndex.Count; i++)
                 {
-                    var ci = curIndex[i];
-                    var ri = replaceIndex[i];
-                    (PlayerCards[ci], PlayerSkillCards[ri]) = (PlayerSkillCards[ri], PlayerCards[ci]);
-                    Debug.Log($"【替换牌】：玩家 手牌{PlayerCards[ci]} -> {PlayerSkillCards[ri]}");
+                    var cc =  curIndex[i];
+                    var rc = replaceIndex[i];
+                    PlayerSkillCards.Remove(rc);
+                    PlayerSkillCards.Add(cc);
+                    PlayerCards.Remove(cc);
+                    PlayerCards.Add(rc);
+                    
+                    Debug.Log($"【替换牌】：玩家 手牌{cc} -> {rc}");
                 }
             }
         }

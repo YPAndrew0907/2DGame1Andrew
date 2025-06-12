@@ -39,9 +39,9 @@
     {
       "skillType": "Detect",
       "name": "识破",
-      "baseHitRate": 0.2,
+      "baseHitRate": 0.1,
       "baseParameter": 0,
-      "hitRateIncreasePerLevel": 0.1,
+      "hitRateIncreasePerLevel": 0.4,
       "parameterIncreasePerLevel": 0,
       "desc": "你能捕捉对手出千的蛛丝马迹，发现概率为{0:P0}，每级提升{1:P0}。"
     }

@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -22,7 +23,6 @@ namespace UI
     			=> _txtTitleAndNum ??= transform.Find("txt_TitleAndNum").GetComponent<TMPro.TextMeshProUGUI>();
 
     	//AUTO-GENERATE-END
-
         [FormerlySerializedAs("drappable")]
         [Header("配置项")] 
         public bool                droppable = false;
@@ -33,7 +33,6 @@ namespace UI
         private readonly List<BaseCardItem>  _cardGoList   = new();
         public           List<CardObj>       CardList     => _cardDataList;
         public           List<BaseCardItem> CardItemList => _cardGoList;
-
         public void OnEnable()
         {
             if (cardItemPrefab != null && cardItemPrefab.gameObject.activeSelf)
@@ -41,7 +40,6 @@ namespace UI
                 cardItemPrefab.gameObject.SetActive(false);
             }
         }
-
         public void SetCard(IReadOnlyList<CardObj> cards, Func<CardObj, bool> func, Action<int, BaseCardItem> onClick = null)
         {
             _isCardShowFunc = func;
@@ -104,7 +102,17 @@ namespace UI
         }
         public void ClearCard()
         {
+            for (int i = 0; i < _cardGoList.Count; i++)
+            {
+                var item = _cardGoList[i];
+                if (item != null)
+                {
+                    Destroy(item.gameObject);
+                    _cardGoList[i] = null;
+                }
+            }
             _cardDataList.Clear();
+            _cardGoList.Clear();
         }
         public void RefreshCard()
         {
@@ -129,10 +137,6 @@ namespace UI
                 }
             }
             RefreshTitle();
-        }
-        public void RemoveAll()
-        {
-            _cardDataList.Clear();
         }
         public int CardNum()
         {
@@ -160,7 +164,6 @@ namespace UI
         public void OnDrop(PointerEventData eventData)
         {
             if (!droppable || eventData.pointerDrag == null) return;
-
             if (eventData.pointerDrag.transform.parent.TryGetComponent(out DraggableCard draggedCard))
             {
                 if (draggedCard.CurrentZone != this)
@@ -183,14 +186,12 @@ namespace UI
                 }
             }
         }
-
         private System.Collections.IEnumerator DelayRefreshCard(CardZone lastZone)
         {
             yield return null; // 等待一帧，让 OnEndDrag 执行完
             lastZone?.RefreshCard();
             RefreshCard();
+            GetComponent<ScrollRect>().verticalNormalizedPosition = 0;
         }
-
-
     }
 }

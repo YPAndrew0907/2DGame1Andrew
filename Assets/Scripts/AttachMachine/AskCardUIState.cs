@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
 using Cfg;
 using Mgr;
 using Obj;
@@ -74,25 +73,23 @@ namespace AttachMachine
             {
                 // AI换牌
                 var (rate, param) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
-                if (AIMgr.IsCanDoSkill(rate))
+                var (curIndex, replaceIndex) = AIMgr.AIReplaceCard(GameSessionMgr.Instance.AICards,
+                    GameSessionMgr.Instance.BossSkillCards, param);
+                if (replaceIndex is { Count: > 0 })
                 {
-                    var (curIndex,replaceIndex) = AIMgr.AIReplaceCard(GameSessionMgr.Instance.AICards, GameSessionMgr.Instance.BossSkillCards,param);
-                    if (replaceIndex is { Length: > 0 })
+                    NotifyMgr.SendEvent(NotifyDefine.REPLACE_CARD, new ReplaceCardData()
                     {
-                        NotifyMgr.SendEvent(NotifyDefine.REPLACE_CARD,new ReplaceData()
-                        {
-                            IsAI         = true,
-                            CurIndex     = curIndex,
-                            ReplaceIndex = replaceIndex
-                        } );
-                    }
+                        IsAI       = true,
+                        TargetList = curIndex,
+                        SkillCard  = replaceIndex
+                    });
                 }
                 else
                 {
                     Debug.Log($"【放技能】：释放技能失败，rate:{rate}");
                 }
             }
-            
+
             Debug.Log($"【切要牌】 {nextPlayer} 要牌");
             if (_isAskCard)
             {
@@ -133,13 +130,6 @@ namespace AttachMachine
                 XAttachMachine.ExitState(StateIDStr);
             }
         }
-    }
-
-    public class ReplaceData
-    {
-        public bool  IsAI;
-        public int[] CurIndex;
-        public int[] ReplaceIndex;
     }
 
     public interface IAskCardUIState : IBaseAttachUI

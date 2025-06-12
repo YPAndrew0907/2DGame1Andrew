@@ -37,12 +37,45 @@ namespace UI
     			=> _txtFlag ??= transform.Find("go_txt_Flag").GetComponent<TMPro.TextMeshProUGUI>();
 
     	//AUTO-GENERATE-END
-     
+        
         private Transform  _originalParent;
         private GameObject _placeholder;
         private Vector2    _dragOffset;
 
         private List<InsertMoveData> _moveData = new();
+        
+        private static readonly List<DraggableCard> AllCards = new();
+
+        protected void OnEnable()
+        {
+            if (!AllCards.Contains(this))
+                AllCards.Add(this);
+        }
+
+        protected void OnDisable()
+        {
+            AllCards.Remove(this);
+        }
+        protected void Awake()
+        {
+            AddTriggerEvent(EventTriggerType.BeginDrag, OnBeginDrag);
+            AddTriggerEvent(EventTriggerType.Drag, OnDrag);
+            AddTriggerEvent(EventTriggerType.EndDrag, OnEndDrag);
+        }
+        
+        protected void OnDestroy()
+        {
+            AllCards.Remove(this);
+        }
+
+        public static void SetAllRaycastTargets(bool enabled)
+        {
+            foreach (var card in AllCards)
+            {
+                if (card != null && card.ImgCard != null)
+                    card.ImgCard.raycastTarget = enabled;
+            }
+        }
         
         public override void SetCard(CardObj cardValue, Func<CardObj, bool> isShow)
         {
@@ -149,12 +182,7 @@ namespace UI
                 }
             }
         }
-        protected void Awake()
-        {
-            AddTriggerEvent(EventTriggerType.BeginDrag, OnBeginDrag);
-            AddTriggerEvent(EventTriggerType.Drag, OnDrag);
-            AddTriggerEvent(EventTriggerType.EndDrag, OnEndDrag);
-        }
+        
         private void OnBeginDrag(BaseEventData eventData)
         {
             if (eventData is PointerEventData pointerData)
@@ -165,18 +193,22 @@ namespace UI
                     pointerData.pressEventCamera,
                     out _dragOffset
                 );
+
+                _originalParent = transform.parent;
+
+                _placeholder = new GameObject("Placeholder");
+                var rect = _placeholder.AddComponent<RectTransform>();
+                rect.SetParent(_originalParent);
+                rect.SetSiblingIndex(transform.GetSiblingIndex());
+                rect.sizeDelta = (transform as RectTransform).sizeDelta;
+
+                transform.SetParent(transform.root);
+                CgCard.blocksRaycasts = false;
+
+                SetAllRaycastTargets(false);
             }
-            _originalParent = transform.parent;
-
-            _placeholder = new GameObject("Placeholder");
-            var rect = _placeholder.AddComponent<RectTransform>();
-            rect.SetParent(_originalParent);
-            rect.SetSiblingIndex(transform.GetSiblingIndex());
-            rect.sizeDelta = (transform as RectTransform).sizeDelta;
-
-            transform.SetParent(transform.root); // 抬高层级
-            CgCard.blocksRaycasts = false;
         }
+
 
         private void OnDrag(BaseEventData eventData)
         {
@@ -198,6 +230,8 @@ namespace UI
         {
             CgCard.blocksRaycasts = true;
 
+            SetAllRaycastTargets(true); 
+
             bool backToOriginal = _placeholder != null && _placeholder.transform.parent == _originalParent;
             if (backToOriginal)
             {
@@ -214,6 +248,7 @@ namespace UI
 
             CurrentZone?.RefreshCard();
         }
+
         
         public override void SetClickCallback(Action callback)
         {

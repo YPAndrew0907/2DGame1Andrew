@@ -78,7 +78,8 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            yield return XAttachMachine.EnterState(AskCardUIState.StateIDStr);
+            if (payload == null)
+                yield return XAttachMachine.EnterState(AskCardUIState.StateIDStr);
         }
 
         public override void OnUpdate(float deltaTime)

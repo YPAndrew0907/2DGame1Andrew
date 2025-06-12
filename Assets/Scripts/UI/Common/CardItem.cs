@@ -142,6 +142,12 @@ namespace UI
                 }
             }
         }
+        
+        public override void SetClickCallback(System.Action callback)
+        {
+            AddTriggerEvent(EventTriggerType.PointerClick, _ => callback?.Invoke());
+        }
+        
         // private string GetRangeStr()
         // {
         //     var realValue = (int)Value.Value;

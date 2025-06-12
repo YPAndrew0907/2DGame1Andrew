@@ -81,9 +81,6 @@ namespace UI
 		private readonly List<CardObj> _selectedOwnIndexes = new();
 		private readonly List<InsertMoveData> _operationList = new();
 		
-		private List<CardObj> _topList;
-		private List<CardObj> _skillList;
-		
 		public void Init()
 		{
 			GoBg.SetActive(false);
@@ -111,12 +108,10 @@ namespace UI
 			_operateCount = operateCount;
 			_selectedTopIndexes.Clear();
 			_selectedOwnIndexes.Clear();
-			_topList   = topCards;
-			_skillList = skillCards;
 			
+			RefreshOperateCount();
 			if (isInsert)
 			{
-				RefreshOperateCount();
 				MonoCollectedCardHeap.cardItemPrefab = MonoDrappableCardItem;
 				MonoTotalCardHeap.cardItemPrefab     = MonoDrappableCardItem;
 				
@@ -125,30 +120,33 @@ namespace UI
 				GoHandCardHeap.SetActive(false);
 				GoTotalCardHeap.SetActive(true);
 				MonoTotalCardHeap.SetCard(topCards, CardMgr.IsCardShowSelectCard, OnCurCardClick);
+				MonoCollectedCardHeap.SetCard(skillCards, CardMgr.IsCardShowSelectCard);
 				
 				MonoTotalCardHeap.droppable     = true;
 				MonoCollectedCardHeap.droppable = true;
+				
 				GoUndo.SetActive(true);
 				BtnUndo.onClick.RemoveAllListeners();
 				BtnUndo.onClick.AddListener(OnUndoClick);
 			}
 			else
 			{
-				// 替换
 				MonoCollectedCardHeap.cardItemPrefab = MonoCardItem;
 				MonoTotalCardHeap.cardItemPrefab     = MonoCardItem;
+				
 				_isShowReplace                       = true;
 				_isShowInsert                        = false;
 				MonoHandCardHeap.SetCard(topCards, CardMgr.IsCardShowSelectCard, OnCurCardClick);
+				MonoCollectedCardHeap.SetCard(skillCards, CardMgr.IsCardShowSelectCard, OnCollectedCardClick);
+				
 				MonoHandCardHeap.droppable = false;
-
 				MonoCollectedCardHeap.droppable = false;
+				
 				GoTotalCardHeap.SetActive(false);
 				GoHandCardHeap.SetActive(true);
 				GoUndo.SetActive(false);
 			}
-
-			MonoCollectedCardHeap.SetCard(skillCards, CardMgr.IsCardShowSelectCard, OnCollectedCardClick);
+			
 			GoBg.SetActive(true);
 		}
 		private void RefreshOperateCount()
@@ -203,7 +201,8 @@ namespace UI
 		}
 		private void OnCollectedCardClick(int idx, BaseCardItem card)
 		{
-			RefreshOperateCount();
+			if (_isShowInsert)
+				RefreshOperateCount();
 			if (_selectedOwnIndexes.Contains(card.Value))
 			{
 				_selectedOwnIndexes.Remove(card.Value);

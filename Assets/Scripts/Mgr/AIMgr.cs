@@ -72,10 +72,9 @@ namespace Mgr
         }
 
         //  AI 替换 逻辑。每次只替换一个的前提下。
-        public static (int[] curIndexes, int[] repIndexes) AIReplaceCard(
+        public static (List<CardObj> curCardObjs, List<CardObj> repCardObjs) AIReplaceCard(
             List<CardObj> curCards, List<CardObj> skillCards, int replaceNum)
         {
-            // 在方法开头先计算“不替换”时的情况
             int originalTotal = curCards.Sum(card => (int)card.Value + 1);
             int originalDelta = originalTotal > 21 ? int.MaxValue : Math.Abs(21 - originalTotal);
 
@@ -84,7 +83,6 @@ namespace Mgr
             int[] bestCur        = null;
             int[] bestRep        = null;
 
-            // 原本的替换逻辑
             for (int n = 1; n <= replaceNum; n++)
             {
                 if (n > curCards.Count || n > skillCards.Count)
@@ -110,9 +108,8 @@ namespace Mgr
 
                         int delta = Math.Abs(21 - total);
 
-                        bool isBetter =
-                            delta < bestDelta
-                            || (delta == bestDelta && n < minReplaceUsed);
+                        bool isBetter = delta < bestDelta
+                                        || (delta == bestDelta && n < minReplaceUsed);
 
                         if (isBetter)
                         {
@@ -125,12 +122,15 @@ namespace Mgr
                 }
             }
 
-            // 如果不替换点数最优，直接返回null
             if (bestCur == null || bestRep == null || minReplaceUsed == 0)
                 return (null, null);
 
-            return (bestCur, bestRep);
+            var curResult = bestCur.Select(i => curCards[i]).ToList();
+            var repResult = bestRep.Select(i => skillCards[i]).ToList();
+
+            return (curResult, repResult);
         }
+
 
         private static List<int[]> GetCombinations(int n, int max)
         {

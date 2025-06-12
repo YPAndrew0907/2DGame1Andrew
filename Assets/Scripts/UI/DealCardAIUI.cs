@@ -63,14 +63,28 @@ namespace UI
 		{
 			MonoAICardZone.AddCard(card);
 			MonoAICardZone.RefreshCard();
+			RefreshNum();
+		}
+
+		private void RefreshNum()
+		{
 			var realValue = MonoAICardZone.CardNum();
 			var min       = Math.Max(0, realValue - Random.Range(3, 5));
 			var max       = realValue + Random.Range(3, 5);
 			TxtRangeNum.text = $"{min} ~ {max}";
 		}
+
+		public void UpdateCards(List<CardObj> cards)
+		{
+			MonoAICardZone.ClearCard();
+			foreach (var card in cards){MonoAICardZone.AddCard(card);}
+			
+			MonoAICardZone.RefreshCard();
+			RefreshNum();
+		}
 		public void RemoveToPublic()
 		{
-			MonoAICardZone.RemoveAll();
+			MonoAICardZone.ClearCard();
 			MonoAICardZone.RefreshCard();
 		}
 		public void ClearCard()

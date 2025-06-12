@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Cfg;
 using Mgr;
 using Obj;
@@ -33,6 +34,7 @@ namespace AttachMachine
                 NotifyMgr.RegisterNotify(NotifyDefine.REPLACE_CARD, OnReplaceCard);
                 NotifyMgr.RegisterNotify(NotifyDefine.SKILL_SELECT, OnSelectSkill);
                 NotifyMgr.RegisterNotify(NotifyDefine.SKILL_CLICK, OnSkillClick);
+                NotifyMgr.RegisterNotify(NotifyDefine.FIRE_SKILL, OnFireSkill);
                 
                 NotifyMgr.RegisterNotify(NotifyDefine.CLOSE_PANEL, OnClosePanel);
             }
@@ -99,8 +101,8 @@ namespace AttachMachine
                         break;
                     case PlayerSkill.CopyAndSwitch:
                         GameSessionMgr.Instance.SelectSkill(PlayerType.Player, PlayerSkill.Switch);
-                        var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.CopyAndSwitch,0);
-                        _skillUI.SelectCardUI.Show("选择本局需要携带的牌", NotifyDefine.CARD_COPY_SELECT, (int)stealCount);
+                        var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.CopyAndSwitch,-1);
+                        _skillUI.SelectCardUI.Show("选择本局需要携带的牌", NotifyDefine.CARD_COPY_SELECT, stealCount);
                         uiShowing = true;
                         break;
                 }
@@ -135,10 +137,18 @@ namespace AttachMachine
         {
             if (obj.Param is CustomParam param)
             {
-                var data = (ReplaceData)param.Value;
+                var data = (ReplaceCardData)param.Value;
                 if (data != null)
                 {
-                    GameSessionMgr.Instance.SwitchCard(data.IsAI, data.CurIndex, data.ReplaceIndex);
+                    GameSessionMgr.Instance.SwitchCard(data.IsAI, data.TargetList, data.SkillCard);
+                    if (data.IsAI)
+                        _skillUI.DealCardAIUI.UpdateCards(GameSessionMgr.Instance.AICards);
+                    else
+                    {
+                        _skillUI.DealCardPlayerUI.UpdateCards(GameSessionMgr.Instance.PlayerCards);
+                        _skillUI.SkillsUI.SetSkillCard(GameSessionMgr.Instance.PlayerSkillCards);
+                        NotifyMgr.SendEvent(NotifyDefine.FIRE_SKILL, new List<int>(){(int)PlayerType.Player,(int)PlayerSkill.Switch});
+                    }
                     if(!data.IsAI) _skillUI.InsertAndReplaceUI.Hide();
                 }
             }
@@ -159,7 +169,7 @@ namespace AttachMachine
                             _skillUI.SkillsUI.SetSkillCard(GameSessionMgr.Instance.PlayerSkillCards);
                             _skillUI.SkillsUI.RefreshUI();
                         }
-                        
+                        NotifyMgr.SendEvent(NotifyDefine.FIRE_SKILL, new List<int>(){(int)PlayerType.Player,(int)PlayerSkill.StealAndInsert});
                         Debug.Log($"【偷得牌】IsAI={data.IsAI}：{string.Join(",", data.ToCollectList)}");
                     }
 
@@ -168,6 +178,10 @@ namespace AttachMachine
                         CardMgr.Instance.PushCard(data.ToTotalList.ToArray());
                         Debug.Log($"【插入牌】IsAI={data.IsAI}：{string.Join(",", data.ToTotalList)}");
                     }
+                    
+                    NotifyMgr.SendEvent(NotifyDefine.FIRE_SKILL,
+                        new List<int>(){data.IsAI ? (int)PlayerType.AI : (int)PlayerType.Player
+                            ,(int)PlayerSkill.StealAndInsert});
                 }
             }
             
@@ -218,9 +232,7 @@ namespace AttachMachine
                         _skillUI.SkillsUI.RefreshUI();
                         uiShowing = false;
                     }
-
-                    // UI刷新可选
-
+                     // UI刷新可选
                     Debug.Log($"【复制牌】IsAI={selectData.IsAI}：{string.Join(",", copiedList)}");
                 }
                 else
@@ -256,14 +268,53 @@ namespace AttachMachine
                 var skill = (PlayerSkill)param.IntValue;
                 switch (skill)
                 {
-                    case PlayerSkill.StealAndInsert:
+                    case PlayerSkill.CopyAndSwitch:
                     case PlayerSkill.Switch:
                         // 都是换牌。只不过有的牌是场外的。
-                        var (skillParam, rate) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.Switch,0);
+                        var (rate, skillParam) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.CopyAndSwitch,-1);
                         _skillUI.InsertAndReplaceUI.Show(GameSessionMgr.Instance.PlayerSkillCards,
-                            GameSessionMgr.Instance.PlayerCards, false, (int)skillParam);
+                            GameSessionMgr.Instance.PlayerCards, false, skillParam);
+                        break;
+                    case PlayerSkill.Detect:
+                        XAttachMachine.SwitchState(DealCardUIState.StateIDStr, CompareCardUIState.StateIDStr, PlayerType.AI);
                         break;
                     default:              throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private void OnFireSkill(NotifyMsg msg)
+        {
+            if (msg.Param is CustomParam param)
+            {
+                var paramList = param.Value as List<int>;
+                if (paramList== null) return;
+                var playerType = (PlayerType)paramList[0]; 
+                var skill = (PlayerSkill)paramList[1];
+
+                if (playerType == PlayerType.AI)
+                {
+                    if (GameSessionMgr.Instance.CurBossSkills.Contains(skill))
+                    {
+                        var (rate, paramV) =  SkillMgr.Instance.GetSkillParameters(skill);
+                        var isFire         =  AIMgr.IsCanDoSkill(rate);
+                        if (isFire)
+                        {
+                            XAttachMachine.SwitchState(DealCardUIState.StateIDStr,CompareCardUIState.StateIDStr, PlayerType.Player);
+                        }
+                    }
+                }
+                else if (playerType == PlayerType.Player)
+                {
+                    if (GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.Detect))
+                    {
+                        var (rate, paramV) =  SkillMgr.Instance.GetSkillParameters(PlayerSkill.Detect, -1);
+                        var isDetect       =  AIMgr.IsCanDoSkill(rate);
+                        if (isDetect)
+                        {
+                            _skillUI.SkillsUI.ShowDetectFlag(true);
+                        }
+                    }
                 }
             }
         }
@@ -276,5 +327,8 @@ namespace AttachMachine
         public InsertAndReplaceUI     InsertAndReplaceUI     { get; }
         public SelectCardUI  SelectCardUI  { get; }
         public SelectSkillUI SelectSkillUI { get; }
+        
+        public DealCardPlayerUI DealCardPlayerUI { get; }
+        public DealCardAIUI     DealCardAIUI     { get; }
     }
 }

@@ -27,6 +27,8 @@ public static class NotifyDefine
 
     // public static readonly int SHUFFLE_START           = EventDefine.eventId;
     // public static readonly int SHUFFLE_END             = EventDefine.eventId;
+    
+    public static readonly int FIRE_SKILL = EventDefine.eventId;
 
     public static readonly int SKILL_SELECT         = EventDefine.eventId; // 部分技能需要先选哪个功能
     public static readonly int SKILL_CLICK          = EventDefine.eventId; // 发动技能
