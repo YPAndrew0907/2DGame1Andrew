@@ -43,7 +43,6 @@ namespace AttachMachine
             if (GameSessionMgr.Instance.WillShuffle)
             {
                 var shuffleRole = GameSessionMgr.Instance.CurShuffleRole;
-                CardMgr.Instance.ResetCards();
                 _shuffleUIState.PlayedCardUI.ClearCards();
                 
                 if (shuffleRole == PlayerType.Player

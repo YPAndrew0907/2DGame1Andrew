@@ -31,19 +31,23 @@ namespace AttachMachine
             if (payload is GameEndCode endCode)
             {
                 _curCode = endCode;
-                var moneyDelta = GameSessionMgr.Instance.PlayerChips - PlayerProfileMgr.Instance.Money;
-                PlayerProfileMgr.Instance.SetMoney(GameSessionMgr.Instance.PlayerChips);
-                PlayerProfileMgr.Instance.SaveProfile();
 
+                var moneyDelta = GameSessionMgr.Instance.PlayerChips - PlayerProfileMgr.Instance.Money;
                 switch (endCode)
                 {
                     case GameEndCode.GiveUp: 
                         _gameEndUI.GameLossUI.Show(endCode,0);
                         break;
                     case GameEndCode.Lose:
+                        PlayerProfileMgr.Instance.SetMoney(GameSessionMgr.Instance.PlayerChips);
+                        PlayerProfileMgr.Instance.SaveProfile();
+
                         _gameEndUI.GameLossUI.Show(endCode,moneyDelta);
                         break;
                     case GameEndCode.Win:
+                        PlayerProfileMgr.Instance.SetMoney(GameSessionMgr.Instance.PlayerChips);
+                        PlayerProfileMgr.Instance.SaveProfile();
+
                         SkillMgr.Instance.WinUnLockSkill(GameSessionMgr.Instance.CurBossSkills);
                         LevelMgr.Instance.SetCurrentLevel(LevelMgr.Instance.CurrentLevel + 1);
                         LevelMgr.Instance.SaveLevel();
@@ -57,6 +61,7 @@ namespace AttachMachine
         public override IEnumerator OnExitAsync(object payload)
         {
             _curCode = GameEndCode.None;
+            CardMgr.Instance.ResetCards(true);
             NotifyMgr.SendEvent(NotifyDefine.GAME_END_BACK_HOME);
             yield break;
         }

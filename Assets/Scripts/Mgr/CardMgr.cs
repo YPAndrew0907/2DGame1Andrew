@@ -10,12 +10,10 @@ namespace Mgr
 {
     public class CardMgr : BaseSingle<CardMgr>
     {
-        public IReadOnlyList<CardObj> Cards; // 所有的牌
-        public List<CardObj> CardsList => new Span<CardObj>(_cards, 0, _curMaxLength).ToArray().ToList(); // 记忆的牌
-
         private CardObj[] _cards = new CardObj[GameCfg.MaxCardNum * 2]; // 所有的牌
-
-        // public static    List<CardObj>          RememberCardList { get; set; }
+        public IReadOnlyList<CardObj> Cards; // 所有的牌
+        public List<CardObj> CardsList ; 
+        
         private int _curCardIndex = 0;
         private int _curMaxLength;
 
@@ -31,8 +29,7 @@ namespace Mgr
                 }
             }
 
-            Cards         = new Span<CardObj>(_cards, 0, _curMaxLength).ToArray();
-            _curCardIndex = Cards.Count - 1;
+            RefreshCardList();
         }
 
         public void ResetCards(bool removeCopyCard = false)
@@ -72,6 +69,7 @@ namespace Mgr
                 cardObj.Owner        = PlayerType.None;
                 cardObj.TimeTicks    = DateTime.Now.Ticks;
             }
+            RefreshCardList();
         }
 
 
@@ -93,8 +91,15 @@ namespace Mgr
                 _cards[i]           = _cards[randomIndex];
                 _cards[randomIndex] = temp;
             }
+            
+            RefreshCardList();
+        }
 
-            Cards         = _cards;
+        private void RefreshCardList()
+        {
+            Cards         = new Span<CardObj>(_cards, 0, _curMaxLength).ToArray();
+            CardsList = new Span<CardObj>(_cards, 0, _curMaxLength).ToArray().ToList();
+            
             _curCardIndex = _curMaxLength - 1;
         }
 
@@ -107,6 +112,7 @@ namespace Mgr
             return Cards[--_curCardIndex];
         }
 
+        // 获取多张牌
         public List<CardObj> GetCards(int i)
         {
             var result = new List<CardObj>();
@@ -142,21 +148,6 @@ namespace Mgr
 
             return i;
         }
-
-        #region Filter
-
-        public List<CardObj> FilterCopy(List<CardObj> list)
-        {
-            return list.FindAll(item => item.IsCopy);
-        }
-
-        public List<CardObj> FilterRemember(List<CardObj> list)
-        {
-            return list.FindAll(item => item.IsRemembered);
-        }
-
-
-        #endregion
 
         public static bool IsCardShowCompareResult(CardObj cardObj)  => true;
         public static bool IsCardShowSelectCard(CardObj cardObj)     => true;

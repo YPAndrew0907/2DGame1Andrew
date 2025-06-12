@@ -60,14 +60,14 @@ namespace Mgr
             SkillCardCount = 0;
             if (_skillLevels.ContainsKey(PlayerSkill.CopyAndSwitch))
             {
-                var (param, _) =  GetSkillParameters(PlayerSkill.CopyAndSwitch,0);
-                SkillCardCount += (int)param;
+                var (rate, param) =  GetSkillParameters(PlayerSkill.CopyAndSwitch,0);
+                SkillCardCount += param;
             }
 
             if (_skillLevels.ContainsKey(PlayerSkill.StealAndInsert))
             {
-                var (param, _)     =  GetSkillParameters(PlayerSkill.StealAndInsert,0);
-                SkillCardCount += (int)param;
+                var (rate,  param)     =  GetSkillParameters(PlayerSkill.StealAndInsert,0);
+                SkillCardCount += param;
             }
 
 

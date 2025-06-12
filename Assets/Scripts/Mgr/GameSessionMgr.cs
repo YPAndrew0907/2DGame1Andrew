@@ -147,15 +147,6 @@ namespace Mgr
             else if (player == PlayerType.AI)
                 CurBossSkills = list;
         }
-
-        
-        /// <summary>
-        /// 游戏轮次计数器，用于到达指定轮次洗牌
-        /// </summary>
-        public void ResetRound()
-        {
-            RoundTimes = 0;
-        }
         
         /// <summary>
         /// 切换洗牌人员

@@ -42,13 +42,13 @@
                 return 0;
             if (ReferenceEquals(null, other))
                 return 1;
-            var faceUpComparison = IsFaceUp.CompareTo(other.IsFaceUp);
-            if (faceUpComparison != 0)
-                return faceUpComparison;
             var valueComparison  = Value.CompareTo(other.Value);
             if (valueComparison != 0)
                 return valueComparison;
             var suitComparison = Suit.CompareTo(other.Suit);
+            var faceUpComparison = IsFaceUp.CompareTo(other.IsFaceUp);
+            if (faceUpComparison != 0)
+                return faceUpComparison;
             if (suitComparison != 0)
                 return suitComparison;
             return TimeTicks.CompareTo(other.TimeTicks);

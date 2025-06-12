@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AttachMachine;
 using Base;
+using Cysharp.Threading.Tasks.Triggers;
 using Mgr;
 using Obj;
 using Unity.Mathematics;
@@ -122,8 +123,11 @@ namespace UI
 				_isShowInsert  = true;
 				_isShowReplace = false;
 				GoHandCardHeap.SetActive(false);
-				MonoTotalCardHeap.SetCard(topCards, CardMgr.IsCardShowSelectCard, OnCurCardClick);
 				GoTotalCardHeap.SetActive(true);
+				MonoTotalCardHeap.SetCard(topCards, CardMgr.IsCardShowSelectCard, OnCurCardClick);
+				
+				MonoTotalCardHeap.droppable     = true;
+				MonoCollectedCardHeap.droppable = true;
 				GoUndo.SetActive(true);
 				BtnUndo.onClick.RemoveAllListeners();
 				BtnUndo.onClick.AddListener(OnUndoClick);
@@ -135,11 +139,15 @@ namespace UI
 				MonoTotalCardHeap.cardItemPrefab     = MonoCardItem;
 				_isShowReplace                       = true;
 				_isShowInsert                        = false;
-				GoTotalCardHeap.SetActive(false);
 				MonoHandCardHeap.SetCard(topCards, CardMgr.IsCardShowSelectCard, OnCurCardClick);
+				MonoHandCardHeap.droppable = false;
+
+				MonoCollectedCardHeap.droppable = false;
+				GoTotalCardHeap.SetActive(false);
 				GoHandCardHeap.SetActive(true);
 				GoUndo.SetActive(false);
 			}
+
 			MonoCollectedCardHeap.SetCard(skillCards, CardMgr.IsCardShowSelectCard, OnCollectedCardClick);
 			GoBg.SetActive(true);
 		}
@@ -273,6 +281,8 @@ namespace UI
 						TargetList = _selectedTopIndexes,
 						IsAI       = false
 					});
+					
+					Hide();
 				}
 				else
 				{
@@ -287,8 +297,9 @@ namespace UI
 					ToTotalList = _operationList.FindAll(item => item.ToZone == MonoTotalCardHeap).ConvertAll(item => item.TargetCard),
 					ToCollectList = _operationList.FindAll(item => item.ToZone == MonoCollectedCardHeap).ConvertAll(item => item.TargetCard)
 				});
+				
+				Hide();
 			}
-			Hide();
 		}
 
 		private void OnCloseClick()

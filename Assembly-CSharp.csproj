@@ -58,20 +58,16 @@
     <Compile Include="Assets\Scripts\Mgr\NotifyMgr.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyMsg.cs" />
     <Compile Include="Assets\Scripts\Obj\SkillConfig.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\CardDecks\SimpleCurvedCardDeck.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMonoSingleton.cs" />
     <Compile Include="Assets\Scripts\Obj\ESpecialCondition.cs" />
     <Compile Include="Assets\Scripts\UI\GameLossUI.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\CardTooltip.cs" />
     <Compile Include="Assets\Scripts\Cfg\GameCfg.cs" />
     <Compile Include="Assets\Scripts\Mgr\SkillMgr.cs" />
     <Compile Include="Assets\Scripts\UI\Common\CardZone.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\Obj\LevelData.cs" />
     <Compile Include="Assets\Scripts\UI\NoticeMsgUI.cs" />
     <Compile Include="Assets\Scripts\UI\CompareCardUI.cs" />
     <Compile Include="Assets\Scripts\Mgr\CardMgr.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\CardDecks\RingCardDeck.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\GameEndUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\IAttachState.cs" />
     <Compile Include="Assets\Scripts\Mgr\ResMgr.cs" />
@@ -82,7 +78,6 @@
     <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTk2d.cs" />
     <Compile Include="Assets\Scripts\UI\Common\CardItem.cs" />
     <Compile Include="Assets\Scripts\Base\BaseAutoMonoSingle.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\CardDecks\PieCardDeck.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\DealCardUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\BetUIState.cs" />
     <Compile Include="Assets\Scripts\Mgr\RoundMgr.cs" />
@@ -101,7 +96,6 @@
     <Compile Include="Assets\Scripts\Mgr\NotifyParamMgr.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\Sample.cs" />
     <Compile Include="Assets\Scripts\Base\BaseSingle.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Scripts\UI\SkillUI\InsertAndReplaceUI.cs" />
@@ -112,7 +106,6 @@
     <Compile Include="Assets\Scripts\UI\GameSceneUI.cs" />
     <Compile Include="Assets\Scripts\Obj\NotifyParam.cs" />
     <Compile Include="Assets\Scripts\UI\DealCardAIUI.cs" />
-    <Compile Include="Assets\CardSelect\Scripts\CardDecks\CardDeckInterface.cs" />
     <Compile Include="Assets\Scripts\UI\Common\BaseCardItem.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\TotalCardHeapUIState.cs" />
     <Compile Include="Assets\Scripts\UI\PlayedCardUI.cs" />

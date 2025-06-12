@@ -139,7 +139,7 @@ namespace UI
 				count+= value.SetShow(inMyRound);
 			}
 
-			GoBg.SetActive(count > 0);
+			GoSkillList.SetActive(count > 0);
 		}
 	}
 }

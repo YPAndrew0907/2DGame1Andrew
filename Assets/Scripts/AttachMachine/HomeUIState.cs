@@ -37,12 +37,11 @@ namespace AttachMachine
             else if (payload.Equals(BetUIState.StateIDStr))
             {
                 // 初始化 要牌玩家
-                GameSessionMgr.Instance.NextPlayerAskCard();
-
-                XAttachMachine.ActiveAll();
-                
                 GameSessionMgr.Instance.InitSession(PlayerProfileMgr.Instance.Money, LevelMgr.Instance.BossChip,
                     SkillMgr.Instance.UnLockSkillList(),LevelMgr.Instance.LevelBossSkill);
+                GameSessionMgr.Instance.NextPlayerAskCard();
+                XAttachMachine.ActiveAll();
+                
                 yield return XAttachMachine.EnterState(BetUIState.StateIDStr);
             }
         }

@@ -41,7 +41,6 @@ namespace AttachMachine
         public override void OnActive()
         {
             base.OnActive();
-            _skillUI.SkillsUI.Hide();
             _skillUI.SelectSkillUI.Hide();
 
             var skills = GameSessionMgr.Instance.CurPlayerSkills;
@@ -49,8 +48,6 @@ namespace AttachMachine
             {
                 return;
             }
-
-            _skillUI.SkillsUI.Show(SkillMgr.Instance.SkillCardCount, GameSessionMgr.Instance.CurPlayerSkills);
         }
 
         public override void OnInActive()
@@ -78,7 +75,7 @@ namespace AttachMachine
                         break;
                     case PlayerSkill.CopyAndSwitch:
                         var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.CopyAndSwitch);
-                        var copyIndexList = AIMgr.AIRandomCopyCard(CardMgr.Instance.Cards, (int)stealCount);
+                        var copyIndexList = AIMgr.AIRandomCopyCard(CardMgr.Instance.Cards, stealCount);
                         var cardList      = CardMgr.Instance.CopyCard(copyIndexList);
                         NotifyMgr.SendEvent(NotifyDefine.CARD_COPY_SELECT, new OperationData
                         {
@@ -92,6 +89,7 @@ namespace AttachMachine
 
             for (var index = 0; index < list2.Count; index++)
             {
+                yield return new WaitForSeconds(0.3f);
                 var skill = list2[index];
                 switch (skill)
                 {
@@ -108,15 +106,15 @@ namespace AttachMachine
                 }
 
                 yield return new WaitUntil(() => !uiShowing);
-                yield return new WaitForSeconds(0.5f);
             }
+            
+            _skillUI.SkillsUI.Show(SkillMgr.Instance.SkillCardCount, GameSessionMgr.Instance.CurPlayerSkills);
 
             yield return XAttachMachine.ExitStateCor(StateIDStr);
         }
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _skillUI.SkillsUI.Hide();
             yield return XAttachMachine.EnterState(ShuffleUIState.StateIDStr);
         }
 
