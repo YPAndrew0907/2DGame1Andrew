@@ -13,8 +13,6 @@ namespace AttachMachine
         public const    string          StateIDStr = "GameEndUIState";
         private         IGameEndUIState _gameEndUI;
 
-        private GameEndCode _curCode;
-
         public override void OnCreate(IMachineMaster sceneUI)
         {
             if (sceneUI is IGameEndUIState ui)
@@ -30,8 +28,6 @@ namespace AttachMachine
         {
             if (payload is GameEndCode endCode)
             {
-                _curCode = endCode;
-
                 var moneyDelta = GameSessionMgr.Instance.PlayerChips - PlayerProfileMgr.Instance.Money;
                 switch (endCode)
                 {
@@ -60,20 +56,13 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _curCode = GameEndCode.None;
-            CardMgr.Instance.ResetCards(true);
-            NotifyMgr.SendEvent(NotifyDefine.GAME_END_BACK_HOME);
             yield break;
-        }
-
-        public override void  OnUpdate(float deltaTime)
-        {
-            
         }
 
         private void OnCloseGameEndUI(NotifyMsg obj)
         {
-            XAttachMachine.ExitState(StateIDStr, 1);
+            CardMgr.Instance.ResetCards(true);
+            NotifyMgr.SendEvent(NotifyDefine.GAME_END_BACK_HOME);
         }
     }
 

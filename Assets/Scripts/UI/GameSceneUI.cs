@@ -114,7 +114,7 @@ namespace UI
 		private void OnGameEndBackHome(NotifyMsg obj)
 		{
 			XAttachMachine.InActiveAll();
-			CoroutineMgr.Instance.StartCoroutine(XAttachMachine.EnterState(HomeUIState.StateIDStr));
+			XAttachMachine.StartMachine(HomeUIState.StateIDStr);
 		}
         #region UI元素
 		public InsertAndReplaceUI InsertAndReplaceUI => MonoInsertAndReplace;

@@ -22,7 +22,8 @@ namespace AttachMachine
                 _uiState = ui;
                 _uiState.CompareCardUI.Init();
 
-                NotifyMgr.RegisterNotify(NotifyDefine.GAME_END_GIVEUP, OnGameGiveUp);
+                NotifyMgr.RegisterNotify(NotifyDefine.GAME_END, OnGameEnd);
+                NotifyMgr.RegisterNotify(NotifyDefine.GAME_NEXT_ROUND, OnNextRound);
             }
         }
 
@@ -68,44 +69,47 @@ namespace AttachMachine
             yield break;
         }
 
-        public override IEnumerator OnExitAsync(object payload)
+        private void OnGameEnd(NotifyMsg obj)
         {
-            GameSessionMgr.Instance.NextRound();
-            GameSessionMgr.Instance.SwitchShufflePlayer();
-            
-            
-            if (payload == null)
+            if (obj.Param is NormalParam param)
             {
-                if (GameSessionMgr.Instance.BossEnough && GameSessionMgr.Instance.PlayerEnough)
-                {
-                    yield return XAttachMachine.EnterState(BetUIState.StateIDStr);
-                }
-                else
-                {
-                    yield return XAttachMachine.EnterState(GameEndUIState.StateIDStr,
-                        GameSessionMgr.Instance.PlayerEnough ? GameEndCode.Win : GameEndCode.Lose);
-                }
+                WillExit(true, param.IntValue);
+            }
+        }
+
+        private void OnNextRound(NotifyMsg obj)
+        {
+            WillExit(false,0);
+        }
+
+        private void WillExit(bool isEnd, int endState)
+        {
+            if (!isEnd)
+            {
+                GameSessionMgr.Instance.NextRound();
+                GameSessionMgr.Instance.SwitchShufflePlayer();
+                XAttachMachine.SwitchState(StateIDStr, BetUIState.StateIDStr);
+                return;
+            }
+            
+            if (endState == 0)
+            {
+                XAttachMachine.SwitchState(StateIDStr, GameEndUIState.StateIDStr, GameEndCode.GiveUp);
             }
             else
             {
-                yield return XAttachMachine.EnterState(GameEndUIState.StateIDStr, GameEndCode.GiveUp);
+                XAttachMachine.SwitchState(StateIDStr, GameEndUIState.StateIDStr,
+                    endState > 0 ? GameEndCode.Win : GameEndCode.Lose);
             }
-        }
-
-        public override void OnUpdate(float deltaTime)
-        {
-            
-        }
-
-        private void OnGameGiveUp(NotifyMsg obj)
-        {
-            XAttachMachine.ExitState(StateIDStr, 1);
         }
 
         private void ClearHandCards()
         {
             _uiState.DealCardPlayerUI.RemoveCurHandCards();
             _uiState.DealCardAIUI.RemoveToPublic();
+            var list = new List<CardObj>(GameSessionMgr.Instance.PlayerCards);
+            list.AddRange(GameSessionMgr.Instance.AICards);
+            NotifyMgr.SendEvent(NotifyDefine.COLLECT_PLAYED_CARD, list);
             GameSessionMgr.Instance.StoreLastCard();
         }
     }

@@ -1,5 +1,4 @@
  using System;
- using UnityEditorInternal;
 
  public interface INotifyParam
     {

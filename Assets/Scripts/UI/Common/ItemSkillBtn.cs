@@ -55,16 +55,11 @@ namespace UI
 	    public int SetShow(bool inMyRound)
 	    {
 		    var show = false;
+		    // 目前只有 换牌可以显示，回合内显示，回合外隐藏
 		    switch (_skill)
 		    {
-			    case PlayerSkill.Lie:
-				    show = false;
-				    break;
 			    case PlayerSkill.Switch:
 				    show = inMyRound;
-				    break;
-			    case PlayerSkill.Detect:
-				    show = !inMyRound;
 				    break;
 		    }
 		    gameObject.SetActive(show);

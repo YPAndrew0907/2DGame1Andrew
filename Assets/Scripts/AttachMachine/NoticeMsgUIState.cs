@@ -20,20 +20,8 @@ namespace AttachMachine
             }
         }
 
-        public override IEnumerator OnEnterAsync(object payload)
-        {
-            
-            yield break;
-        }
-
-        public override IEnumerator OnExitAsync(object payload)
-        {
-            yield break;
-        }
-
         public override void        OnUpdate(float deltaTime)
         {
-            
         }
 
         private void Notice(NotifyMsg msg)

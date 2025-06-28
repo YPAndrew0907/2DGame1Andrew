@@ -302,6 +302,9 @@
     <Reference Include="UnityEditor.Graphs">
       <HintPath>P:\UnityEditor\2021.3.27f1\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.OSXStandalone.Extensions">
+      <HintPath>P:\UnityEditor\2021.3.27f1\Editor\Data\PlaybackEngines\MacStandaloneSupport\UnityEditor.OSXStandalone.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>P:\UnityEditor\2021.3.27f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
@@ -725,17 +728,9 @@
       <Project>{9f9b94b2-1dcd-22d0-d836-994c60fe0f14}</Project>
       <Name>UniTask.TextMeshPro</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.Toolchain.Macos-arm64-Linux-x86_64.csproj">
-      <Project>{90aaee62-9535-e513-4694-2ae2c37a78fb}</Project>
-      <Name>Unity.Toolchain.Macos-arm64-Linux-x86_64</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
       <Project>{1dfb64bd-1f64-0931-f350-9ee7aab8aad4}</Project>
       <Name>Unity.TextMeshPro.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Sysroot.Linux_x86_64.csproj">
-      <Project>{93250786-ff39-6ece-24d0-17efa0b80c66}</Project>
-      <Name>Unity.Sysroot.Linux_x86_64</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Timeline.Editor.csproj">
       <Project>{d249b05a-2758-7d06-c453-3abfaa94e198}</Project>
@@ -780,10 +775,6 @@
     <ProjectReference Include="UniTask.Linq.csproj">
       <Project>{3ada58d4-9b03-7a32-ac2a-95df7dd14a15}</Project>
       <Name>UniTask.Linq</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.SysrootPackage.Editor.csproj">
-      <Project>{f2c7c332-213f-8969-21c7-e43d557b1bf0}</Project>
-      <Name>Unity.SysrootPackage.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Mathematics.csproj">
       <Project>{72434ce9-7358-7a75-43c3-b68d4d2cb35b}</Project>

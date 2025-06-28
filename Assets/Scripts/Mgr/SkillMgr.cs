@@ -49,14 +49,16 @@ namespace Mgr
             _skillLevels.Clear();
             string json = PlayerPrefs.GetString(SkillDataKey, "{}");
             _skillLevels   = JsonConvert.DeserializeObject<Dictionary<PlayerSkill, int>>(json);
-            #if UNITY_EDITOR
-            _skillLevels.TryAdd(PlayerSkill.CopyAndSwitch, 1);
-            _skillLevels.TryAdd(PlayerSkill.StealAndInsert, 1);
-            _skillLevels.TryAdd(PlayerSkill.GuessOrRemember, 1);
-            _skillLevels.TryAdd(PlayerSkill.Lie, 1);
-            _skillLevels.TryAdd(PlayerSkill.Detect, 1);
+
+            // #if UNITY_EDITOR
+            // _skillLevels.TryAdd(PlayerSkill.CopyAndSwitch, 1);
+            // _skillLevels.TryAdd(PlayerSkill.StealAndInsert, 1);
+            // _skillLevels.TryAdd(PlayerSkill.GuessOrRemember, 1);
+            // _skillLevels.TryAdd(PlayerSkill.Lie, 1);
+            // _skillLevels.TryAdd(PlayerSkill.Detect, 1);
+            //
+            // #endif
             
-            #endif
             SkillCardCount = 0;
             if (_skillLevels.ContainsKey(PlayerSkill.CopyAndSwitch))
             {
@@ -71,7 +73,7 @@ namespace Mgr
             }
 
 
-            SkillPoint = PlayerPrefs.GetInt(Key_SkillPoint, 3);
+            SkillPoint = PlayerPrefs.GetInt(Key_SkillPoint, 0);
         }
 
         public void SaveSkillData()
@@ -144,8 +146,8 @@ namespace Mgr
         /// <summary>
         /// 获取技能参数
         /// </summary>
-        /// <param name="skill">技能得名。不能是子技能</param>
-        /// <param name="level"> 0 时获取玩家的等级。</param>
+        /// <param name="skill">技能名。不能是子技能</param>
+        /// <param name="level"> level <= 0 时获取玩家技能等级，默认获取1级参数</param>
         public (float hitRate, int parameter) GetSkillParameters(PlayerSkill skill, int level = 1)
         {
             if (_skillConfigs.TryGetValue(skill, out SkillConfig config))

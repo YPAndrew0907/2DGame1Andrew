@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Base;
 using Mgr;
 using Obj;
@@ -38,7 +39,6 @@ namespace UI
         
         public void Show(PlayerSkill leftSkill, PlayerSkill rightSkill)
         {
-            Debug.Log($"【选技能】 {LevelData.GetSkillsDesc(new [] { leftSkill, rightSkill })} 技能");
             _leftSkill = leftSkill;
             _rightSkill = rightSkill;
 			

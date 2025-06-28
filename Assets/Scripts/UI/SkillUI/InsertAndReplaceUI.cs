@@ -109,7 +109,6 @@ namespace UI
 			_selectedTopIndexes.Clear();
 			_selectedOwnIndexes.Clear();
 			
-			RefreshOperateCount();
 			if (isInsert)
 			{
 				MonoCollectedCardHeap.cardItemPrefab = MonoDrappableCardItem;
@@ -147,6 +146,7 @@ namespace UI
 				GoUndo.SetActive(false);
 			}
 			
+			RefreshOperateCount();
 			GoBg.SetActive(true);
 		}
 		private void RefreshOperateCount()

@@ -16,7 +16,6 @@ namespace AttachMachine
             if (sceneUI is ISkillUpgradeUIState ui)
             {
                 _uiState = ui;
-                
                 _uiState.SkillUpgradeUI.Init();
             }
         }
@@ -27,12 +26,7 @@ namespace AttachMachine
             _uiState.SkillUpgradeUI.Show(cfgs);
             yield break;
         }
-
-        public override IEnumerator OnExitAsync(object payload)
-        {
-            yield break;
-        }
-
+        
         public override void OnUpdate(float deltaTime)
         {
 

@@ -121,9 +121,9 @@ namespace UI
             if (btnTxt != null)
             {
                 btnTxt.text = SkillMgr.Instance.IsUnLock(_skillConfig.skillType) ? "升级" : "未解锁";
-                BtnSkillOpera.interactable = SkillMgr.Instance.IsUnLock(_skillConfig.skillType)
-                                             && SkillMgr.Instance.SkillPoint > 0;
             }
+            BtnSkillOpera.interactable = SkillMgr.Instance.IsUnLock(_skillConfig.skillType)
+                                         && SkillMgr.Instance.SkillPoint > 0 && _curLevel < 5;
         }
 
         private string FormatWithUpgrade(float baseValue, float upgradedValue)
@@ -162,13 +162,8 @@ namespace UI
                 Debug.Log("技能未解锁，无法升级");
             }
 
-            RefreshUI();
             OnUpgradeOrUnlock?.Invoke();
-        }
-
-        public void SetActive(bool isActive)
-        {
-            BtnSkillOpera.interactable = isActive;
+            RefreshUI();
         }
     }
 }

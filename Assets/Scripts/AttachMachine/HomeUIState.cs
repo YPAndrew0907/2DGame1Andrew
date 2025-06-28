@@ -29,21 +29,8 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            _homeUIState.HomeUI.HideUI();
-            if (payload.Equals(SkillUpgradeUIState.StateIDStr))
-            {
-                yield return XAttachMachine.EnterState(SkillUpgradeUIState.StateIDStr);
-            }
-            else if (payload.Equals(BetUIState.StateIDStr))
-            {
-                // 初始化 要牌玩家
-                GameSessionMgr.Instance.InitSession(PlayerProfileMgr.Instance.Money, LevelMgr.Instance.BossChip,
-                    SkillMgr.Instance.UnLockSkillList(),LevelMgr.Instance.LevelBossSkill);
-                GameSessionMgr.Instance.NextPlayerAskCard();
-                XAttachMachine.ActiveAll();
-                
-                yield return XAttachMachine.EnterState(BetUIState.StateIDStr);
-            }
+            _homeUIState.HomeUI.HideUI(); 
+            yield break;
         }
 
         public override void OnUpdate(float deltaTime)

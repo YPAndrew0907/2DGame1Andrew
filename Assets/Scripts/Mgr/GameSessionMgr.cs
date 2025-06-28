@@ -5,6 +5,7 @@ using Cfg;
 using Obj;
 using Unity.Mathematics;
 using UnityEngine;
+using XYZFrameWork;
 using XYZFrameWork.Base;
 using Random = UnityEngine.Random;
 
@@ -15,14 +16,14 @@ namespace Mgr
     /// </summary>
     public class GameSessionMgr : BaseSingle<GameSessionMgr>
     {
-        public int           CurrentBossBet  { get; private set; }
-        public int           CurrentPlayerBet  { get; private set; }
-        public int           PlayerChips { get; private set; }
-        public int           AIChips     { get; private set; }
-        public List<CardObj> PlayerCards { get; private set; } = new();
-        public List<CardObj> AICards     { get; private set; } = new();
-        public List<CardObj> PlayerSkillCards  { get; private set; } = new();
-        public List<CardObj> BossSkillCards  { get; private set; } = new();
+        public          int           CurrentAIBet   { get; private set; }
+        public          int           CurrentPlayerBet { get; private set; }
+        public          int           PlayerChips      { get; private set; }
+        public          int           AIChips          { get; private set; }
+        public          List<CardObj> PlayerCards      { get; private set; } = new();
+        public          List<CardObj> AICards          { get; private set; } = new();
+        public readonly List<CardObj> PlayerSkillCards = new();
+        public readonly List<CardObj> AISkillCards   = new();
 
         public PlayerType                 CurrentTurnPlayer    { get; private set; }
         public int                        RoundTimes           { get; private set; } // 回合
@@ -36,6 +37,10 @@ namespace Mgr
         public IReadOnlyList<CardObj>     LastRoundPlayerCards { get; private set; }
         public IReadOnlyList<CardObj>     LastRoundAICards     { get; private set; }
 
+        public GameSessionMgr()
+        {
+            NotifyMgr.RegisterNotify(NotifyDefine.GAME_END_BACK_HOME,Reset);
+        }
         public void InitSession(int playerChips, int aiChips, IReadOnlyList<PlayerSkill> playerSkills,
                                 IReadOnlyList<PlayerSkill> bossSkills)
         {
@@ -45,7 +50,7 @@ namespace Mgr
             PlayerCards.Clear();
             AICards.Clear();
             PlayerSkillCards.Clear();
-            BossSkillCards.Clear();
+            AISkillCards.Clear();
             CurrentTurnPlayer = PlayerType.Player;
             RoundTimes          = 0;
             PlayerIsContinue  = true;
@@ -95,17 +100,17 @@ namespace Mgr
             if (playerType == PlayerType.Player)
                 CurrentPlayerBet = amount;
             else if (playerType == PlayerType.AI)
-                CurrentBossBet = amount;
+                CurrentAIBet = amount;
         }
 
-        public void PayChip(bool playerIsWin)
+        public void PayChip(int playerIsWin)
         {
-            if (playerIsWin)
+            if (playerIsWin>0)
             {
-                AIChips     =  math.max(0, AIChips - CurrentBossBet);
-                PlayerChips += CurrentBossBet;
+                AIChips     =  math.max(0, AIChips - CurrentAIBet);
+                PlayerChips += CurrentAIBet;
             }
-            else
+            else if (playerIsWin<0)
             {
                 PlayerChips =  math.max(0, PlayerChips - CurrentPlayerBet);
                 AIChips     += CurrentPlayerBet;
@@ -154,9 +159,8 @@ namespace Mgr
         public void NextShuffleRole()
         {
             if (CurShuffleRole == PlayerType.None)
-            {
-                // CurShuffleRole = Random.Range(-1, 1) >= 0 ? PlayerType.Player : PlayerType.AI;
-                CurShuffleRole = PlayerType.Player;
+            { 
+                CurShuffleRole = Random.Range(-1, 1) >= 0 ? PlayerType.Player : PlayerType.AI;
             }
             else
             {
@@ -213,9 +217,6 @@ namespace Mgr
 
         public void StoreLastCard()
         {
-            var list = new List<CardObj>(PlayerCards);
-            list.AddRange(AICards);
-            NotifyMgr.SendEvent(NotifyDefine.COLLECT_PLAYED_CARD, list);
             LastRoundPlayerCards = PlayerCards;
             LastRoundAICards     = AICards;
             PlayerCards          = new List<CardObj>();
@@ -234,7 +235,7 @@ namespace Mgr
             }
             else
             {
-                BossSkillCards.AddRange(cardList);
+                AISkillCards.AddRange(cardList);
             }
         }
 
@@ -246,7 +247,7 @@ namespace Mgr
             }
             else if (ai == PlayerType.AI)
             {
-                BossSkillCards.RemoveAll(cardObjs.Contains);
+                AISkillCards.RemoveAll(cardObjs.Contains);
             }
         }
 
@@ -262,8 +263,8 @@ namespace Mgr
                 {
                     var cc =  curIndex[i];
                     var rc = replaceIndex[i];
-                    BossSkillCards.Remove(rc);
-                    BossSkillCards.Add(cc);
+                    AISkillCards.Remove(rc);
+                    AISkillCards.Add(cc);
                     AICards.Remove(cc);
                     AICards.Add(rc);
                     
@@ -284,6 +285,22 @@ namespace Mgr
                     Debug.Log($"【替换牌】：玩家 手牌{cc} -> {rc}");
                 }
             }
+        }
+
+        public void Reset(NotifyMsg notifyMsg)
+        {
+            CurrentAIBet   = 0;
+            CurrentPlayerBet = 0;
+            PlayerChips      = 0;
+            AIChips        = 0;
+            PlayerCards.Clear();
+            AICards.Clear();
+            PlayerSkillCards.Clear();
+            AISkillCards.Clear();
+            CurrentTurnPlayer = PlayerType.None;
+            RoundTimes        = 0;
+            PlayerIsContinue  = true;
+            AIIsContinue      = true;
         }
     }
 }

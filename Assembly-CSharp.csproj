@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\AttachMachine\GameEndUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\IAttachState.cs" />
     <Compile Include="Assets\Scripts\Mgr\ResMgr.cs" />
+    <Compile Include="Assets\Scripts\UI\ICanShowDetectFlag.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\PlayerInfoUIState.cs" />
     <Compile Include="Assets\Scripts\AttachMachine\IBaseAttachUI.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics2D.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets\Scripts\UI\SkillUI\InsertAndReplaceUI.cs" />
     <Compile Include="Assets\Scripts\UI\DealCardPlayerUI.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
+    <Compile Include="Assets\Scripts\UI\QuitUI.cs" />
     <Compile Include="Assets\Scripts\UI\HomeUI.cs" />
     <Compile Include="Assets\Scripts\UI\BetUI.cs" />
     <Compile Include="Assets\Scripts\UI\GameSceneUI.cs" />
@@ -125,33 +127,86 @@
     <Compile Include="Assets\Scripts\AttachMachine\SkillUpgradeUIState.cs" />
     <Compile Include="Assets\Scripts\Base\BaseMono.cs" />
     <Compile Include="Assets\Scripts\Obj\CardValue.cs" />
+    <None Include="Library\PackageCache\com.unity.modules.subsystems@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Library\PackageCache\com.unity.modules.jsonserialize@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.screencapture@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.cloth@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.ai@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.ugui@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.ext.nunit@1.0.6\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.assetbundle@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\package.json" />
     <None Include="Assets\Resources\SkillCfg.json" />
+    <None Include="Library\PackageCache\com.unity.modules.imgui@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.tilemap@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.timeline@1.6.5\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
+    <None Include="Library\PackageCache\com.unity.modules.terrainphysics@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.mathematics@1.2.6\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Demigiant\readme_DOTweenPro.txt" />
+    <None Include="Library\PackageCache\com.unity.timeline@1.6.5\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\PackageConversionData.json" />
+    <None Include="Library\PackageCache\com.unity.modules.unitywebrequestassetbundle@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Library\PackageCache\com.unity.modules.imageconversion@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.modules.unityanalytics@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.ide.rider@3.0.36\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.video@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.ide.rider@3.0.36\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.test-framework@1.1.33\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.particlesystem@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.physics2d@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Library\PackageCache\com.unity.modules.vr@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\link.xml" />
+    <None Include="Library\PackageCache\com.unity.modules.wind@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Library\PackageCache\com.unity.modules.umbra@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Library\PackageCache\com.unity.modules.audio@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.physics@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.vehicles@1.0.0\package.json" />
     <None Include="Assets\Demigiant\DOTweenPro\readme.txt" />
+    <None Include="Library\PackageCache\com.unity.modules.uielementsnative@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.unitywebrequestwww@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Library\PackageCache\com.unity.modules.unitywebrequestaudio@1.0.0\package.json" />
     <None Include="Assets\Demigiant\DemiLib\Core\DemiLib.xml" />
     <None Include="Assets\Resources\LevelData.json" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\Editor Resources\Shaders\TMP_SDF_SSD.cginc" />
+    <None Include="Library\PackageCache\com.unity.modules.xr@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\Editor Resources\Shaders\TMP_Properties.cginc" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\AOT\Newtonsoft.Json.xml" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\Editor Resources\Shaders\TMP_SDF Internal Editor.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Library\PackageCache\com.unity.modules.director@1.0.0\package.json" />
     <None Include="Assets\Demigiant\DOTween\readme.txt" />
+    <None Include="Library\PackageCache\com.unity.modules.terrain@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.androidjni@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Library\PackageCache\com.unity.textmeshpro@3.0.9\PackageConversionData_Assets.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Library\PackageCache\com.unity.mathematics@1.2.6\ValidationExceptions.json" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Library\PackageCache\com.unity.modules.animation@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Library\PackageCache\com.unity.modules.unitywebrequest@1.0.0\package.json" />
+    <None Include="Library\PackageCache\com.unity.modules.uielements@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne.json" />
+    <None Include="Library\PackageCache\com.unity.modules.ui@1.0.0\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
     <None Include="Assets\Resources\SkillData.json" />
     <Reference Include="UnityEngine">
@@ -778,46 +833,51 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>P:\UnityEditor\2021.3.27f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Rider.Editor">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics">
-      <HintPath>P:\UnityProject\21Dot\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UniTask.TextMeshPro.csproj">
       <Project>{9f9b94b2-1dcd-22d0-d836-994c60fe0f14}</Project>
       <Name>UniTask.TextMeshPro</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
+      <Project>{1dfb64bd-1f64-0931-f350-9ee7aab8aad4}</Project>
+      <Name>Unity.TextMeshPro.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.Editor.csproj">
+      <Project>{d249b05a-2758-7d06-c453-3abfaa94e198}</Project>
+      <Name>Unity.Timeline.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.csproj">
+      <Project>{bfe8441f-69c2-08a4-56d3-57ce227a19fc}</Project>
+      <Name>Unity.Timeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TextMeshPro.csproj">
+      <Project>{0e82c301-5716-569b-3794-e93fc929dcb0}</Project>
+      <Name>Unity.TextMeshPro</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.Editor.csproj">
+      <Project>{5a34699a-feeb-86f6-16b7-8e6eb646a5d2}</Project>
+      <Name>Unity.Mathematics.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="UniTask.DOTween.csproj">
       <Project>{44c13e6d-5bc1-0cab-3d6c-9d42a919c20a}</Project>
       <Name>UniTask.DOTween</Name>
     </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{088d1b51-9060-d3cb-a65f-b26f3249c0f2}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Rider.Editor.csproj">
+      <Project>{6c727281-a31a-f8e6-a4f8-e098596fdd3a}</Project>
+      <Name>Unity.Rider.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="UniTask.csproj">
       <Project>{250ab150-bd69-7002-4192-e6f02307faea}</Project>
       <Name>UniTask</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{6382bc4a-19bf-4176-0713-e487de8d8f04}</Project>
+      <Name>UnityEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UniTask.Addressables.csproj">
       <Project>{7751c00a-93fc-aca7-ef4d-7aad6c4d0638}</Project>
@@ -826,6 +886,10 @@
     <ProjectReference Include="UniTask.Linq.csproj">
       <Project>{3ada58d4-9b03-7a32-ac2a-95df7dd14a15}</Project>
       <Name>UniTask.Linq</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.csproj">
+      <Project>{72434ce9-7358-7a75-43c3-b68d4d2cb35b}</Project>
+      <Name>Unity.Mathematics</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

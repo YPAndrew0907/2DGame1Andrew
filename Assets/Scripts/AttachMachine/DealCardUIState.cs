@@ -53,7 +53,7 @@ namespace AttachMachine
                 card.Owner = GameSessionMgr.Instance.LastPlayerType;
 
                 yield return DealCard(card);
-                yield return XAttachMachine.ExitStateCor(StateIDStr);
+                XAttachMachine.SwitchState(StateIDStr, AskCardUIState.StateIDStr);
             }
             else
             {
@@ -72,20 +72,10 @@ namespace AttachMachine
                 }
 
                 yield return DealCards(cards);
-                yield return XAttachMachine.ExitStateCor(StateIDStr);
+                XAttachMachine.SwitchState(StateIDStr, AskCardUIState.StateIDStr);
             }
         }
-
-        public override IEnumerator OnExitAsync(object payload)
-        {
-            if (payload == null)
-                yield return XAttachMachine.EnterState(AskCardUIState.StateIDStr);
-        }
-
-        public override void OnUpdate(float deltaTime)
-        {
-            
-        }
+        
 
         private IEnumerator DealCards(List<CardObj> cardObjs)
         {

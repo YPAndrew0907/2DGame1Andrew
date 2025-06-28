@@ -47,7 +47,8 @@ namespace AttachMachine
             var curPlayer = GameSessionMgr.Instance.CurPlayerType;
             if (curPlayer == PlayerType.None)
             {
-                yield return XAttachMachine.ExitStateCor(StateIDStr);
+                Debug.LogError("【有错误】逻辑不对，当前玩家为 none");
+                yield break;
             }
             else
             {
@@ -67,39 +68,16 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            var curPlayer = GameSessionMgr.Instance.CurPlayerType;
-            var nextPlayer     = GameSessionMgr.Instance.NextPlayerAskCard();
-            if (curPlayer == PlayerType.AI)
+            if (payload == XAttachMachine.ExitNullObject)
             {
-                // AI换牌
-                var (rate, param) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
-                var (curIndex, replaceIndex) = AIMgr.AIReplaceCard(GameSessionMgr.Instance.AICards,
-                    GameSessionMgr.Instance.BossSkillCards, param);
-                if (replaceIndex is { Count: > 0 })
-                {
-                    NotifyMgr.SendEvent(NotifyDefine.REPLACE_CARD, new ReplaceCardData()
-                    {
-                        IsAI       = true,
-                        TargetList = curIndex,
-                        SkillCard  = replaceIndex
-                    });
-                }
-                else
-                {
-                    Debug.Log($"【放技能】：释放技能失败，rate:{rate}");
-                }
-            }
-
-            Debug.Log($"【切要牌】 {nextPlayer} 要牌");
-            if (_isAskCard)
-            {
-                yield return XAttachMachine.EnterState(DealCardUIState.StateIDStr);
+                _askCardUI.AskCardUI.Hide();
+                _askCardUI.SkillsUI.Hide();
             }
             else
             {
-                var anyIsContinue = GameSessionMgr.Instance.AIIsContinue || GameSessionMgr.Instance.PlayerIsContinue;
-                yield return XAttachMachine.EnterState(anyIsContinue ? StateIDStr : CompareCardUIState.StateIDStr);
+                _askCardUI.AskCardUI.Hide();
             }
+            yield break;
         }
 
         public override void OnUpdate(float deltaTime)
@@ -127,7 +105,39 @@ namespace AttachMachine
                     else
                         GameSessionMgr.Instance.PlayerIsContinue = false;
                 }
-                XAttachMachine.ExitState(StateIDStr);
+                var curPlayer  = GameSessionMgr.Instance.CurPlayerType;
+                var nextPlayer = GameSessionMgr.Instance.NextPlayerAskCard();
+                if (curPlayer == PlayerType.AI)
+                {
+                    // AI换牌
+                    var (_, count) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert);
+                    var (curIndex, replaceIndex) = AIMgr.AIReplaceCard(GameSessionMgr.Instance.AICards,
+                        GameSessionMgr.Instance.AISkillCards, count);
+                    if (replaceIndex is { Count: > 0 })
+                    {
+                        NotifyMgr.SendEvent(NotifyDefine.REPLACE_CARD, new ReplaceCardData()
+                        {
+                            IsAI       = true,
+                            TargetList = curIndex,
+                            SkillCard  = replaceIndex
+                        });
+                    }
+                    else
+                    {
+                        Debug.Log($"【放技能】：释放技能，无需替换");
+                    }
+                }
+
+                Debug.Log($"【切要牌】 {nextPlayer} 要牌");
+                if (_isAskCard)
+                {
+                    XAttachMachine.SwitchState(StateIDStr, DealCardUIState.StateIDStr);
+                }
+                else
+                {
+                    var anyIsContinue = GameSessionMgr.Instance.AIIsContinue || GameSessionMgr.Instance.PlayerIsContinue;
+                    XAttachMachine.SwitchState(StateIDStr, anyIsContinue ? StateIDStr : CompareCardUIState.StateIDStr);
+                }
             }
         }
     }

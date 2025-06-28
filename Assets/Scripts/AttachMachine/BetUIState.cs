@@ -35,14 +35,13 @@ namespace AttachMachine
 
         public override IEnumerator OnExitAsync(object payload)
         {
-            yield return XAttachMachine.EnterState(SkillUIState.StateIDStr);
+            if (payload == XAttachMachine.ExitNullObject)
+            {
+                _betUI.BetUI.Hide();
+            }
+            yield break;
         }
-
-        public override void OnUpdate(float deltaTime)
-        {
-
-        }
-
+        
         private void OnBetChip(NotifyMsg obj)
         {
             if (obj.Param is NormalParam param)
@@ -54,7 +53,7 @@ namespace AttachMachine
                 
                 _betUI.LevelInfoUI.SetCurBet(PlayerType.Player, param.IntValue);
                 _betUI.LevelInfoUI.SetCurBet(PlayerType.AI, randomBet);
-                XAttachMachine.ExitState(StateIDStr);
+                XAttachMachine.SwitchState(StateIDStr, SkillUIState.StateIDStr);
             }
         }
     }

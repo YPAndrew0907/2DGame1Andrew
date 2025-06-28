@@ -32,9 +32,9 @@ namespace Mgr
         public void LoadProfile()
         {
             _money = PlayerPrefs.GetInt(Key_Money, 200);
-            if (_money<20)
+            if (_money < 50)
             {
-                SetMoney(20);
+                SetMoney(50);
             }
         }
 
@@ -47,20 +47,6 @@ namespace Mgr
         public void SetMoney(int value)
         {
             Money = value;
-        }
-
-        public void SpendMoney(int value)
-        {
-            Money = Mathf.Max(0, Money - value);
-        }
-        
-
-        [System.Serializable]
-        class PlayerSkillSetWrapper
-        {
-            public List<PlayerSkill> skills = new();
-            public PlayerSkillSetWrapper() { }
-            public PlayerSkillSetWrapper(IEnumerable<PlayerSkill> set) { skills = new List<PlayerSkill>(set); }
         }
     }
 }

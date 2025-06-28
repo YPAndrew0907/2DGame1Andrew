@@ -57,6 +57,7 @@ namespace UI
 		{
 			MonoPlayerCardZone.ClearCard();
 			MonoPlayerCardZone.RefreshCard();
+			RefreshCardRange();
 		}
 
 		public void UpdateCards(List<CardObj> cards)

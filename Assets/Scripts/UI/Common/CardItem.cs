@@ -59,10 +59,10 @@ namespace UI
             }
             else
             {
-                if (cardValue.IsCopy && cardValue.Owner == PlayerType.AI)
+                if (cardValue.IsCopy && cardValue.Owner == PlayerType.Player)
                 {
                     GoFlag.SetActive(true);
-                    TxtFlag.text = "C";
+                    TxtFlag.text = "COPY";
                 }
                 else
                 {

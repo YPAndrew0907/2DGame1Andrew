@@ -14,24 +14,41 @@ namespace Mgr
             return curNum < 16;
         }
 
-        public static bool AIIsLoss(int aiNum, int playerNum)
+        /// <summary>
+        /// ai 输了返回 1，赢了返回 -1，平局返回 0
+        /// </summary>
+        /// <param name="aiNum">AI分数</param>
+        /// <param name="playerNum">玩家分数</param>
+        /// <returns></returns>
+        public static int AIIsLoss(int aiNum, int playerNum)
         {
-            if (aiNum == 0)
-                return true;
-            if (playerNum == 0)
-                return false;
-            if (aiNum > 21)
+            if (aiNum < 0) return 1;
+            if (playerNum < 0) return -1;
+            
+            // 0视为爆牌/特殊情况，优先判负
+            if (aiNum == 0 && playerNum != 0) return 1;  // AI爆/弃
+            if (playerNum == 0 && aiNum != 0) return -1; // 玩家爆/弃
+            if (aiNum == 0 && playerNum == 0) return 0;  // 都弃/爆
+
+            bool aiBust     = aiNum > 21;
+            bool playerBust = playerNum > 21;
+
+            // 双方都未爆
+            if (!aiBust && !playerBust)
             {
-                if (playerNum <= 21)
-                    return true;
-                return playerNum < aiNum;
+                if (aiNum > playerNum) return -1; // AI赢
+                if (aiNum < playerNum) return 1;  // AI输
+                return 0;                         // 平局
             }
-            else
-            {
-                if (playerNum <= 21)
-                    return playerNum >= aiNum;
-                return false;
-            }
+            // AI爆，玩家未爆
+            if (aiBust && !playerBust) return 1;        // AI输
+            // 玩家爆，AI未爆
+            if (!aiBust && playerBust) return -1;       // AI赢
+
+            // 双方都爆，分数小的赢
+            if (aiNum < playerNum) return -1; // AI赢（爆得少）
+            if (aiNum > playerNum) return 1;  // AI输
+            return 0;                         // 平局
         }
 
         public static int AIRandomGuessOrRemember()
@@ -212,6 +229,103 @@ namespace Mgr
             return bet;
         }
 
+        /// <summary>
+        /// 随机选择偷还是插入
+        /// </summary>
+        /// <param name="count">当前收藏的牌的数量</param>
+        /// <returns>false 是偷，true 是插入</returns>
+        public static bool RandomStealOrInsert(int count)
+        {
+            if (count == 0)
+                return false;
+            return Random.Range(0, 1.0f) > 0.5;
+        }
 
+
+        public static (List<CardObj> ToCollect, List<CardObj> ToTotal)
+            SelectCards(IReadOnlyList<CardObj> totalCards, List<CardObj> collectCard, int moveCount)
+        {
+            var toCollect = new List<CardObj>();
+            var toTotal   = new List<CardObj>();
+            // 合并所有牌用于评分（确保评分时能看到全部牌面）
+            var allCards  = totalCards.Concat(collectCard).ToList();
+            var allPoints = allCards.Select(x => GetCardPoint(x.Value)).ToList();
+
+            // 作弊贡献评分
+            int ScoreCard(CardObj card)
+            {
+                int myPoint = GetCardPoint(card.Value);
+                int score   = 0;
+                for (int i = 0; i < allPoints.Count; i++)
+                {
+                    for (int j = 0; j < allPoints.Count; j++)
+                    {
+                        if (i == j)
+                            continue;
+                        int origin = allPoints[i] + allPoints[j];
+                        if (origin >= 21)
+                            continue; // 已爆，不考虑
+                        int withCheat = Math.Max(origin, origin + myPoint);
+                        // 拉低爆牌风险 or 提高低分
+                        if (origin < 17 && withCheat >= 17 && withCheat <= 21)
+                            score++;
+                        else if (origin >= 19 && withCheat <= 21)
+                            score++;
+                    }
+                }
+
+                return score;
+            }
+
+            // 评分
+            var totalScores = totalCards
+                              .Select(card => (card, score: ScoreCard(card)))
+                              .ToList();
+            var collectScores = collectCard
+                                .Select(card => (card, score: ScoreCard(card)))
+                                .ToList();
+
+            // 排序
+            totalScores   = totalScores.OrderByDescending(c => c.score).ToList();
+            collectScores = collectScores.OrderBy(c => c.score).ToList();
+
+            int move = 0, iTotal = 0, iCollect = 0;
+            // 用moveCount次机会，每次把提升最大的牌换进collect，换出最差的
+            while (move < moveCount && iTotal < totalScores.Count)
+            {
+                // 如果collect满了且有比collect最差还高分的牌，执行交换
+                if (iCollect < collectScores.Count && totalScores[iTotal].score > collectScores[iCollect].score)
+                {
+                    toCollect.Add(totalScores[iTotal].card);
+                    toTotal.Add(collectScores[iCollect].card);
+                    iCollect++;
+                    iTotal++;
+                }
+                // 如果collect没满，只加牌
+                else if (collectCard.Count + toCollect.Count < totalCards.Count)
+                {
+                    toCollect.Add(totalScores[iTotal].card);
+                    iTotal++;
+                }
+                else
+                    break;
+
+                move++;
+            }
+
+            return (toCollect, toTotal);
+        }
+
+        // 牌点数换算
+        private static int GetCardPoint(CardValue val)
+        {
+            if (val == CardValue.A)
+                return 1;
+            if (val >= CardValue.Two && val <= CardValue.Ten)
+                return (int)val + 1;
+            if (val >= CardValue.J && val <= CardValue.K)
+                return 10;
+            return 0;
+        }
     }
 }

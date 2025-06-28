@@ -62,9 +62,9 @@ namespace UI
 			else if (playerType == PlayerType.Player)
 				TxtCurBet.text = curBet.ToString();
 		}
-		public void SetCurRound(int curBet)
+		public void SetCurRound(int roundTimes)
 		{
-			TxtCurRound.text = (curBet+1).ToString();
+			TxtCurRound.text = (roundTimes+1).ToString();
 		}
 		public void Init()
 		{

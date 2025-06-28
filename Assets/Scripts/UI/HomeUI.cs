@@ -1,7 +1,8 @@
 using AttachMachine;
 using Base;
 using Mgr;
-using XYZFrameWork;
+using UnityEngine;
+
 namespace UI
 {
     public class HomeUI : BaseViewMono
@@ -71,7 +72,11 @@ namespace UI
 		{
 			if (PlayerProfileMgr.Instance.Money>= LevelMgr.Instance.CurMinBetChip)
 			{
-				XAttachMachine.ExitState(HomeUIState.StateIDStr,BetUIState.StateIDStr);
+				GameSessionMgr.Instance.InitSession(PlayerProfileMgr.Instance.Money, LevelMgr.Instance.BossChip,
+					SkillMgr.Instance.UnLockSkillList(), LevelMgr.Instance.LevelBossSkill);
+				XAttachMachine.ActiveAll();
+				
+				XAttachMachine.SwitchState(HomeUIState.StateIDStr, BetUIState.StateIDStr,BetUIState.StateIDStr);
 			}
 			else
 			{
@@ -89,9 +94,9 @@ namespace UI
 
 		private void OnSkillListClick()
 		{
-			XAttachMachine.ExitState(HomeUIState.StateIDStr, SkillUpgradeUIState.StateIDStr);
+			XAttachMachine.SwitchState(HomeUIState.StateIDStr, SkillUpgradeUIState.StateIDStr);
 		}
-		
+
 		private void OnLastLevelClick()
 		{
 			LevelMgr.Instance.SetCurrentLevel(LevelMgr.Instance.CurrentLevel - 1);

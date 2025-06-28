@@ -14,6 +14,7 @@ namespace AttachMachine
         /// 状态唯一标识（建议使用枚举或字符串常量）
         /// </summary>
         string StateID { get; }
+        bool isEntered { get; set; }
 
         void OnCreate(IMachineMaster sceneUI);
 
@@ -32,7 +33,7 @@ namespace AttachMachine
         IEnumerator OnEnterAsync(object payload);
 
         /// <summary>
-        /// 异步退出状态
+        /// 异步退出状态 ，如果payload == XAttachMachine.ExitNullObject ，则说明为强制退出。
         /// </summary>
         IEnumerator OnExitAsync(object payload);
 

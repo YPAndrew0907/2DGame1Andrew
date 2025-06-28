@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Base;
 using Mgr;
 using Obj;
-
 namespace UI
 {
     public class PlayedCardUI : BaseViewMono
@@ -40,13 +39,11 @@ namespace UI
         {
 	        GoBg.SetActive(false);
         }
-
         public void AddCards(List<CardObj> list)
         {
 	        MonoCards2.AddCard(list);
 	        MonoCards2.RefreshCard();
         }
-
         public void ClearCards()
         {
 	        MonoCards2.ClearCard();

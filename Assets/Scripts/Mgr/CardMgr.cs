@@ -135,10 +135,8 @@ namespace Mgr
 
         public static int TotalCardNum(IReadOnlyList<CardObj> list)
         {
-            if (list is not { Count: > 0 })
-            {
-                return 0;
-            }
+            if (list == null) return -1;
+            if (list.Count == 0) return 0;
 
             int i = 0;
             foreach (var card in list)
@@ -212,6 +210,7 @@ namespace Mgr
         }
 
 
+        // 插入牌
         public void PushCard(CardObj[] toArray)
         {
             if (toArray == null || toArray.Length == 0)
@@ -219,6 +218,7 @@ namespace Mgr
 
             foreach (var card in toArray)
             {
+                card.Owner = PlayerType.None;
                 if (_curMaxLength >= _cards.Length)
                 {
                     // 扩容

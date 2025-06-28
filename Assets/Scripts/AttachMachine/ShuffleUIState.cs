@@ -6,6 +6,7 @@ using Obj;
 using UI;
 using UnityEngine;
 using XYZFrameWork;
+using InsertCardData = Obj.InsertCardData;
 
 namespace AttachMachine
 {
@@ -17,6 +18,8 @@ namespace AttachMachine
 
         private bool _rememberIsOpen;
         private bool _stealIsOpen;
+
+        private Coroutine _shuffleCor;
 
         public override void OnCreate(IMachineMaster sceneUI)
         {
@@ -36,7 +39,6 @@ namespace AttachMachine
             _stealIsOpen    = false;
             _rememberIsOpen = false;
         }
-
         public override IEnumerator OnEnterAsync(object payload)
         {
             _shuffleUIState.LevelInfoUI.SetCurRound(GameSessionMgr.Instance.RoundTimes);
@@ -44,66 +46,96 @@ namespace AttachMachine
             {
                 var shuffleRole = GameSessionMgr.Instance.CurShuffleRole;
                 _shuffleUIState.PlayedCardUI.ClearCards();
-                
-                if (shuffleRole == PlayerType.Player
-                    && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.Remember))
-                {
-                    _shuffleUIState.SelectCardUI.Show("选择需要记忆的牌", NotifyDefine.CARD_REMEMBER_SELECT, 1);
-                    _rememberIsOpen = true;
-                    yield return new WaitUntil(() => !_rememberIsOpen);
-                    yield return new WaitForSeconds(1);
-                }
-                
-                if (shuffleRole == PlayerType.Player
-                    && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.StealAndInsert))
-                {
-                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert, -1);
-                    _shuffleUIState.InsertAndReplaceUI.Show(GameSessionMgr.Instance.PlayerSkillCards,
-                        CardMgr.Instance.CardsList, true, stealCount);
-                    _stealIsOpen = true;
-                    yield return new WaitUntil(() => !_stealIsOpen);
-                    yield return new WaitForSeconds(0.5f);
-                }
-                else if (shuffleRole == PlayerType.AI
-                         && GameSessionMgr.Instance.CurBossSkills.Contains(PlayerSkill.StealAndInsert))
-                {
-                    var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert, -1);
-                    var copyIndexList = AIMgr.AIRandomStealCard(CardMgr.Instance.Cards, stealCount);
-                    var cardList      = CardMgr.Instance.StealCard(copyIndexList);
-                    NotifyMgr.SendEvent(NotifyDefine.CARD_STEAL_INSERT, new OperationData
-                    {
-                        IsAI        = true,
-                        SelectCards = cardList
-                    });
-                    NotifyMgr.SendEvent(NotifyDefine.FIRE_SKILL, new List<int>(){(int)PlayerType.AI,(int)PlayerSkill.StealAndInsert});
-                }
-                
 
-                yield return _shuffleUIState.ShuffleUI.CorShuffleStartAni(shuffleRole);
+                yield return HandleRememberSkill(shuffleRole);
+                if (!isEntered) yield break;
 
-                CardMgr.Instance.Shuffle();
-                var list = CardMgr.Instance.Cards.ToList();
-                _shuffleUIState.ShuffleUI.SetCard(list);
+                yield return HandleStealAndInsertSkill(shuffleRole);
+                if (!isEntered) yield break;
 
-                XAttachMachine.ExitState(StateIDStr, 0);
+                _shuffleCor = CoroutineMgr.Instance.StartCoroutine(ShuffleAndShowCards(shuffleRole));
+                yield return _shuffleCor;
+                if (!isEntered) yield break;
             }
             else
             {
                 _shuffleUIState.LevelInfoUI.SetCurRound(GameSessionMgr.Instance.RoundTimes);
-                XAttachMachine.ExitState(StateIDStr);
+            }
+            GameSessionMgr.Instance.NextPlayerAskCard();
+
+            yield return XAttachMachine.SwitchStateCor(null, DealCardUIState.StateIDStr, 1);
+        }
+        
+        private IEnumerator HandleRememberSkill(PlayerType shuffleRole)
+        {
+            if (shuffleRole == PlayerType.Player && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.Remember))
+            {
+                _shuffleUIState.SelectCardUI.Show("选择需要记忆的牌", NotifyDefine.CARD_REMEMBER_SELECT, 1);
+                _rememberIsOpen = true;
+                yield return new WaitUntil(() => !_rememberIsOpen);
+                yield return new WaitForSeconds(1);
             }
         }
 
+        private IEnumerator HandleStealAndInsertSkill(PlayerType shuffleRole)
+        {
+            if (shuffleRole == PlayerType.Player && GameSessionMgr.Instance.CurPlayerSkills.Contains(PlayerSkill.StealAndInsert))
+            {
+                var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert, -1);
+                _shuffleUIState.InsertAndReplaceUI.Show(GameSessionMgr.Instance.PlayerSkillCards,
+                    CardMgr.Instance.CardsList, true, stealCount);
+                _stealIsOpen = true;
+                yield return new WaitUntil(() => !_stealIsOpen);
+                yield return new WaitForSeconds(0.5f);
+            }
+            else if (shuffleRole == PlayerType.AI && GameSessionMgr.Instance.CurBossSkills.Contains(PlayerSkill.StealAndInsert))
+            {
+                var (_, stealCount) = SkillMgr.Instance.GetSkillParameters(PlayerSkill.StealAndInsert, -1);
+                var isInsert = AIMgr.RandomStealOrInsert(GameSessionMgr.Instance.AISkillCards.Count);
+                if (isInsert)
+                {
+                    var (toCollect, toTotal) = AIMgr.SelectCards(CardMgr.Instance.Cards, GameSessionMgr.Instance.AISkillCards, stealCount);
+                    NotifyMgr.SendEvent(NotifyDefine.CARD_STEAL_INSERT, new InsertCardData
+                    {
+                        IsAI          = true,
+                        ToCollectList = toCollect,
+                        ToTotalList   = toTotal
+                    });
+                }
+                else
+                {
+                    var copyIndexList = AIMgr.AIRandomStealCard(CardMgr.Instance.Cards, stealCount);
+                    var cardList      = CardMgr.Instance.StealCard(copyIndexList);
+                    NotifyMgr.SendEvent(NotifyDefine.CARD_STEAL_INSERT, new InsertCardData
+                    {
+                        IsAI          = true,
+                        ToCollectList = cardList
+                    });
+                }
+            }
+        }
+        private IEnumerator ShuffleAndShowCards(PlayerType shuffleRole)
+        {
+            yield return _shuffleUIState.ShuffleUI.CorShuffleStartAni(shuffleRole);
+
+            CardMgr.Instance.Shuffle();
+            var list = CardMgr.Instance.Cards.ToList();
+            _shuffleUIState.ShuffleUI.SetCard(list);
+            
+            GameSessionMgr.Instance.NextShuffleRole();
+            yield return _shuffleUIState.ShuffleUI.CorShuffleEndAni();
+        }
+        
         public override IEnumerator OnExitAsync(object payload)
         {
-            // 是否洗牌
-            if (payload != null)
+            if (payload == XAttachMachine.ExitNullObject)
             {
-                yield return _shuffleUIState.ShuffleUI.CorShuffleEndAni();
-                GameSessionMgr.Instance.NextShuffleRole();
+                if (_shuffleCor!= null)
+                {
+                    yield return _shuffleCor;
+                }
             }
-
-            yield return XAttachMachine.EnterState(DealCardUIState.StateIDStr, 1);
+            _shuffleCor = null;
         }
 
         public override void OnUpdate(float deltaTime)

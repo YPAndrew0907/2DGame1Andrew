@@ -18,13 +18,13 @@ public static class NotifyDefine
     public static readonly int ROUND_NEXT  = EventDefine.eventId;
 
     public static readonly int GAME_END           = EventDefine.eventId;
-    public static readonly int GAME_END_GIVEUP    = EventDefine.eventId;
     public static readonly int GAME_END_BACK_HOME = EventDefine.eventId;
 
     #endregion
 
     #region 特殊时刻
 
+    public static readonly int GAME_NEXT_ROUND = EventDefine.eventId;
     // public static readonly int SHUFFLE_START           = EventDefine.eventId;
     // public static readonly int SHUFFLE_END             = EventDefine.eventId;
     

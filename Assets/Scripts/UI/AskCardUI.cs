@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Base;
 using Mgr;
 using UnityEngine;
-using UnityEngine.iOS;
-using XYZFrameWork;
 
 namespace UI
 {

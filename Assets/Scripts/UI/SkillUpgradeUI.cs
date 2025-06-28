@@ -71,10 +71,6 @@ namespace UI
 	    private void RefreshSkillPoint()
 	    {
 		    TxtSkillPoint.text = $"可用技能点：{SkillMgr.Instance.SkillPoint}";
-		    foreach (var item in _items)
-		    {
-			    item.SetActive(SkillMgr.Instance.SkillPoint > 0);
-		    }
 	    }
     }
 }

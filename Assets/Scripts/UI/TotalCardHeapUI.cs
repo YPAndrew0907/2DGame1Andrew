@@ -5,11 +5,16 @@ using Base;
 using DG.Tweening;
 using Mgr;
 using Obj;
+using UnityEngine.UI;
 namespace UI
 {
-    public class TotalCardHeapUI : BaseViewMono
+    public class TotalCardHeapUI : BaseViewMono,ICanShowDetectFlag
     {
     	//AUTO-GENERATE
+    	private UnityEngine.UI.Button _btnDetectFlag;
+    	private UnityEngine.UI.Button BtnDetectFlag 
+    			=> _btnDetectFlag ??= transform.Find("go_bg/go_btn_img_DetectFlag").GetComponent<UnityEngine.UI.Button>();
+
     	private UnityEngine.CanvasGroup _cgAniPanel;
     	private UnityEngine.CanvasGroup CgAniPanel 
     			=> _cgAniPanel ??= transform.Find("go_bg/cg_aniPanel").GetComponent<UnityEngine.CanvasGroup>();
@@ -21,6 +26,14 @@ namespace UI
     	private UnityEngine.GameObject _goBg;
     	private UnityEngine.GameObject GoBg 
     			=> _goBg ??= transform.Find("go_bg").gameObject;
+
+    	private UnityEngine.GameObject _goDetectFlag;
+    	private UnityEngine.GameObject GoDetectFlag 
+    			=> _goDetectFlag ??= transform.Find("go_bg/go_btn_img_DetectFlag").gameObject;
+
+    	private UnityEngine.UI.Image _imgDetectFlag;
+    	private UnityEngine.UI.Image ImgDetectFlag 
+    			=> _imgDetectFlag ??= transform.Find("go_bg/go_btn_img_DetectFlag").GetComponent<UnityEngine.UI.Image>();
 
     	private UnityEngine.UI.ScrollRect _scrollCards2;
     	private UnityEngine.UI.ScrollRect ScrollCards2 
@@ -43,7 +56,10 @@ namespace UI
 		public void Init()
 		{
 			GoBg.SetActive(false);
+			GoDetectFlag.SetActive(false);
 			MonoCards2.SetCard(null, CardMgr.IsCardShowTotalCardList);
+			BtnDetectFlag.onClick.RemoveAllListeners();
+			BtnDetectFlag.onClick.AddListener(OnDetectFlagClick);
 			shuffleAni.alpha =0;
 		}
 		
@@ -58,7 +74,6 @@ namespace UI
 		{
 			GoBg.SetActive(false);
 		}
-
 		public void SetCard(List<CardObj> cardObjs)
 		{
 			_remainCard = cardObjs;
@@ -92,7 +107,6 @@ namespace UI
 			shuffleAni.DOFade(0, .7f);
 			yield return new WaitForSeconds(.8f);
 		}
-
 		public void RemoveAndRefresh(params CardObj[] cards)
 		{
 			if (cards is {Length:>0})
@@ -102,15 +116,28 @@ namespace UI
 					_remainCard.Remove(card);
 				}
 			}
-
 			RefreshCardHeap();
 		}
-
 		private void RefreshCardHeap()
 		{
 			MonoCards2.SetCard(_remainCard,CardMgr.IsCardShowTotalCardList);
 			// 移除刚发的牌，然后刷新
 			MonoCards2.RefreshCard();
+		}
+		public void OnDetectFlagClick()
+		{
+			NotifyMgr.SendEvent(NotifyDefine.SKILL_CLICK, (int)PlayerSkill.Detect);
+		}
+		public void ShowDetectFlag()
+		{
+			GoDetectFlag.SetActive(true);
+			ImgDetectFlag.color = new Color(0.76f,0.56f,0,  1);
+			var tweener = ImgDetectFlag.DOFade(0f, 1f).SetEase(Ease.InOutSine)
+			                           .SetLoops(3, LoopType.Yoyo);
+			tweener.OnComplete(() =>
+			{
+				GoDetectFlag.SetActive(false);
+			});
 		}
     }
 }
